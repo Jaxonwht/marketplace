@@ -1,4 +1,4 @@
-"""empty message
+"""Create the basic database schema according to discussion
 
 Revision ID: b37ac8239e55
 Revises: 4647d62ae349
