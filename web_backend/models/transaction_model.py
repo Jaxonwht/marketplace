@@ -1,21 +1,22 @@
 """In platform transactions."""
 from datetime import datetime
 
+from sqlalchemy import Column, Float, ForeignKey, Integer, String
+from sqlalchemy.dialects.postgresql import TIMESTAMP
+
 from db import flask_db
 
 
 class Transaction(flask_db.Model):
     """One transaction of shares."""
 
-    buyer_name = flask_db.Column(
-        flask_db.String,
-        flask_db.ForeignKey("buyer.name", ondelete="CASCADE"),
+    buyer_name = Column(
+        String,
+        ForeignKey("buyer.name", ondelete="CASCADE"),
         primary_key=True,
     )
-    deal_serial_id = flask_db.Column(
-        flask_db.Integer, flask_db.ForeignKey("deal.serial_id", ondelete="CASCADE"), primary_key=True
-    )
-    shares = flask_db.Column(flask_db.Integer, nullable=False)
-    timestamp = flask_db.Column(flask_db.TIMESTAMP, nullable=False, default=datetime.now)
-    rate = flask_db.Column(flask_db.Float, nullable=False)
-    close_timestamp = flask_db.Column(flask_db.TIMESTAMP, nullable=False)
+    deal_serial_id = Column(Integer, ForeignKey("deal.serial_id", ondelete="CASCADE"), primary_key=True)
+    shares = Column(Integer, nullable=False)
+    timestamp = Column(TIMESTAMP, nullable=False, default=datetime.now)
+    rate = Column(Float, nullable=False)
+    close_timestamp = Column(TIMESTAMP, nullable=False)

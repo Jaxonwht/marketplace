@@ -12,7 +12,10 @@ def get_counter():
     """
     Return current counter.
     """
-    return jsonify(get_current_counter())
+    counter = get_current_counter()
+    if counter:
+        return jsonify(counter.number)
+    return NotFound()
 
 
 @counter_bp.route("/initialize", methods=["GET"])
@@ -24,10 +27,16 @@ def initialize_counter():
 @counter_bp.route("/add", methods=["GET"])
 def increase_counter():
     change = request.args.get("change", default=1, type=int)
-    return jsonify(change_counter(change).number)
+    changed_counter = change_counter(change)
+    if changed_counter:
+        return jsonify(changed_counter.number)
+    return NotFound()
 
 
 @counter_bp.route("/reduce", methods=["GET"])
 def reduce_counter():
     change = request.args.get("change", default=1, type=int)
-    return jsonify(change_counter(-change).number)
+    changed_counter = change_counter(-change)
+    if changed_counter:
+        return jsonify(changed_counter.number)
+    return NotFound()
