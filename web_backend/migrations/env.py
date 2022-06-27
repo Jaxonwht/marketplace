@@ -20,6 +20,12 @@ logger = logging.getLogger("alembic.env")
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
+from models.buyer_model import Buyer  # noqa: E402
+from models.deal_model import Deal  # noqa: E402
+from models.dealer_model import Dealer  # noqa: E402
+from models.platform_transaction_model import PlatformTransaction  # noqa: E402
+from models.transaction_model import Transaction  # noqa: E402
+
 config.set_main_option("sqlalchemy.url", str(current_app.extensions["migrate"].db.get_engine().url).replace("%", "%%"))
 target_metadata = current_app.extensions["migrate"].db.metadata
 

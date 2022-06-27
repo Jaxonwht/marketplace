@@ -43,6 +43,9 @@ that actually add the code into the images themselves via `COPY` or `ADD`.
 
 ### Database Migration
 
+First remember to import your model into [migrations/env.py](./web_backend/migrations/env.py). Otherwise,
+Migrate may not be able to detect your model at all.
+
 In development context, the Postgres server is running as a docker image. We use [Flask-Migrate](https://flask-migrate.readthedocs.io/en/latest/)
 to do automatic database migrations through SQLAlchemy. Normally you do not have to carry out migration
 unless you define a new SQLAlchemy model or modify an existing one. You cannot run `flask db <command>` directly
