@@ -15,8 +15,8 @@ class Transaction(flask_db.Model):
         ForeignKey("buyer.name", ondelete="CASCADE"),
         primary_key=True,
     )
+    asset_price = Column(Float)
     deal_serial_id = Column(Integer, ForeignKey("deal.serial_id", ondelete="CASCADE"), primary_key=True)
     shares = Column(Integer, nullable=False)
     timestamp = Column(TIMESTAMP, nullable=False, default=datetime.now)
     rate = Column(Float, nullable=False)
-    close_timestamp = Column(TIMESTAMP, nullable=False)

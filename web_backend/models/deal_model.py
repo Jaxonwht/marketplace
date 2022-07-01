@@ -15,6 +15,8 @@ class Deal(flask_db.Model):
     share_price = Column(Float, nullable=False)
     allowed_rates = Column(ARRAY(Float))
     shares_remaining = Column(Integer, nullable=False)
+    open_asset_price = Column(Float)
+    closed_asset_price = Column(Float)
     start_time = Column(TIMESTAMP, nullable=False)
     end_time = Column(TIMESTAMP, nullable=False)
     closed = Column(Boolean, nullable=False)
