@@ -65,9 +65,13 @@ mccabe==0.6.1
 msgpack==1.0.4
     # via pynvim
 mypy==0.961
-    # via -r dev-requirements.in
+    # via
+    #   -r dev-requirements.in
+    #   -r requirements.txt
+    #   sqlalchemy
 mypy-extensions==0.4.3
     # via
+    #   -r requirements.txt
     #   black
     #   mypy
 pathspec==0.9.0
@@ -88,20 +92,28 @@ pylint==2.14.2
     # via -r dev-requirements.in
 pynvim==0.4.3
     # via -r dev-requirements.in
-sqlalchemy==1.4.37
+sqlalchemy[mypy]==1.4.37
     # via
     #   -r requirements.txt
     #   alembic
     #   flask-sqlalchemy
+sqlalchemy2-stubs==0.0.2a24
+    # via
+    #   -r requirements.txt
+    #   sqlalchemy
 tomli==2.0.1
     # via
+    #   -r requirements.txt
     #   black
     #   mypy
     #   pylint
 tomlkit==0.11.0
     # via pylint
 typing-extensions==4.2.0
-    # via mypy
+    # via
+    #   -r requirements.txt
+    #   mypy
+    #   sqlalchemy2-stubs
 uwsgi==2.0.20
     # via -r requirements.txt
 werkzeug==2.1.2

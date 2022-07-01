@@ -1,4 +1,5 @@
 """A deal is one game."""
+from typing import List
 from sqlalchemy import Boolean, Column, Float, ForeignKey, Integer, String
 from sqlalchemy.dialects.postgresql import ARRAY, TIMESTAMP
 from sqlalchemy.orm import backref, relationship
@@ -20,5 +21,6 @@ class Deal(flask_db.Model):
     start_time = Column(TIMESTAMP, nullable=False)
     end_time = Column(TIMESTAMP, nullable=False)
     closed = Column(Boolean, nullable=False)
-    buyers = relationship("Buyer", secondary=Transaction.__table__, backref=backref("deals"))
-    transactions = relationship("Transaction", backref=backref("deal"), cascade="all, delete", passive_deletes=True)
+    transactions: List[Transaction] = relationship(
+        "Transaction", backref=backref("deal"), cascade="all, delete", passive_deletes=True
+    )
