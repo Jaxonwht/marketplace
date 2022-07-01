@@ -1,8 +1,8 @@
-"""Create the basic database schema according to discussion
+"""Create all tables
 
-Revision ID: b37ac8239e55
-Revises: 4647d62ae349
-Create Date: 2022-06-27 02:28:12.207348
+Revision ID: eedb6129d593
+Revises:
+Create Date: 2022-07-01 14:45:15.347970
 
 """
 from alembic import op
@@ -10,8 +10,8 @@ import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
-revision = "b37ac8239e55"
-down_revision = "4647d62ae349"
+revision = "eedb6129d593"
+down_revision = None
 branch_labels = None
 depends_on = None
 
@@ -21,14 +21,16 @@ def upgrade():
     op.create_table(
         "buyer",
         sa.Column("name", sa.String(), nullable=False),
-        sa.Column("balance", sa.Float(), nullable=False),
+        sa.Column("balance", sa.Float(), sa.CheckConstraint("balance >= 0"), nullable=False),
         sa.PrimaryKeyConstraint("name"),
     )
+    op.create_table("counter", sa.Column("number", sa.Integer(), nullable=False), sa.PrimaryKeyConstraint("number"))
     op.create_table(
         "dealer",
         sa.Column("name", sa.String(), nullable=False),
-        sa.Column("balance", sa.Float(), nullable=False),
-        sa.Column("lockup_balance", sa.Float(), nullable=False),
+        sa.Column("balance", sa.Float(), sa.CheckConstraint("balance >= 0"), nullable=False),
+        sa.Column("lockup_balance", sa.Float(), sa.CheckConstraint("lockup_balance >= 0"), nullable=False),
+        sa.CheckConstraint("lockup_balance <= balance"),
         sa.PrimaryKeyConstraint("name"),
     )
     op.create_table(
@@ -36,11 +38,13 @@ def upgrade():
         sa.Column("serial_id", sa.Integer(), nullable=False),
         sa.Column("dealer_name", sa.String(), nullable=True),
         sa.Column("nft_id", sa.String(), nullable=False),
-        sa.Column("share_price", sa.Float(), nullable=False),
+        sa.Column("share_price", sa.Float(), sa.CheckConstraint("share_price > 0"), nullable=False),
         sa.Column("allowed_rates", postgresql.ARRAY(sa.Float()), nullable=True),
-        sa.Column("shares_remaining", sa.Integer(), nullable=False),
-        sa.Column("start_time", sa.TIMESTAMP(), nullable=False),
-        sa.Column("end_time", sa.TIMESTAMP(), nullable=False),
+        sa.Column("shares_remaining", sa.Integer(), sa.CheckConstraint("shares_remaining >= 0"), nullable=False),
+        sa.Column("open_asset_price", sa.Float(), sa.CheckConstraint("open_asset_price > 0"), nullable=True),
+        sa.Column("closed_asset_price", sa.Float(), sa.CheckConstraint("closed_asset_price > 0"), nullable=True),
+        sa.Column("start_time", postgresql.TIMESTAMP(), nullable=False),
+        sa.Column("end_time", postgresql.TIMESTAMP(), nullable=False),
         sa.Column("closed", sa.Boolean(), nullable=False),
         sa.ForeignKeyConstraint(
             ["dealer_name"],
@@ -52,7 +56,7 @@ def upgrade():
         "platform_transaction",
         sa.Column("id", sa.Integer(), nullable=False),
         sa.Column("amount", sa.Float(), nullable=False),
-        sa.Column("timestamp", sa.TIMESTAMP(), nullable=False),
+        sa.Column("timestamp", postgresql.TIMESTAMP(), nullable=False),
         sa.Column("buyer_name", sa.String(), nullable=True),
         sa.Column("dealer_name", sa.String(), nullable=True),
         sa.ForeignKeyConstraint(["buyer_name"], ["buyer.name"], ondelete="CASCADE"),
@@ -62,11 +66,11 @@ def upgrade():
     op.create_table(
         "transaction",
         sa.Column("buyer_name", sa.String(), nullable=False),
+        sa.Column("asset_price", sa.Float(), sa.CheckConstraint("asset_price > 0"), nullable=True),
         sa.Column("deal_serial_id", sa.Integer(), nullable=False),
         sa.Column("shares", sa.Integer(), nullable=False),
-        sa.Column("timestamp", sa.TIMESTAMP(), nullable=False),
+        sa.Column("timestamp", postgresql.TIMESTAMP(), nullable=False),
         sa.Column("rate", sa.Float(), nullable=False),
-        sa.Column("close_timestamp", sa.TIMESTAMP(), nullable=False),
         sa.ForeignKeyConstraint(["buyer_name"], ["buyer.name"], ondelete="CASCADE"),
         sa.ForeignKeyConstraint(["deal_serial_id"], ["deal.serial_id"], ondelete="CASCADE"),
         sa.PrimaryKeyConstraint("buyer_name", "deal_serial_id"),
@@ -80,5 +84,6 @@ def downgrade():
     op.drop_table("platform_transaction")
     op.drop_table("deal")
     op.drop_table("dealer")
+    op.drop_table("counter")
     op.drop_table("buyer")
     # ### end Alembic commands ###

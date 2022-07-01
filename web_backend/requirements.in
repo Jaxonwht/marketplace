@@ -2,6 +2,5 @@ Flask==2.1.2
 Flask-Sqlalchemy==2.5.1
 Flask-Migrate==3.1.0
 psycopg2-binary==2.9.3
-sqlalchemy[mypy]==1.4.37
-sqlalchemy2-stubs==0.0.2a24
+sqlalchemy==1.4.37
 uwsgi==2.0.20

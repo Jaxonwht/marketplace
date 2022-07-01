@@ -1,6 +1,6 @@
 """A deal is one game."""
 from typing import List
-from sqlalchemy import Boolean, Column, Float, ForeignKey, Integer, String
+from sqlalchemy import Boolean, CheckConstraint, Column, Float, ForeignKey, Integer, String
 from sqlalchemy.dialects.postgresql import ARRAY, TIMESTAMP
 from sqlalchemy.orm import backref, relationship
 from db import flask_db
@@ -13,11 +13,11 @@ class Deal(flask_db.Model):
     serial_id = Column(Integer, primary_key=True)
     dealer_name = Column(String, ForeignKey("dealer.name"))
     nft_id = Column(String, nullable=False)
-    share_price = Column(Float, nullable=False)
+    share_price = Column(Float, CheckConstraint("share_price > 0"), nullable=False)
     allowed_rates = Column(ARRAY(Float))
-    shares_remaining = Column(Integer, nullable=False)
-    open_asset_price = Column(Float)
-    closed_asset_price = Column(Float)
+    shares_remaining = Column(Integer, CheckConstraint("shares_remaining >= 0"), nullable=False)
+    open_asset_price = Column(Float, CheckConstraint("open_asset_price > 0"))
+    closed_asset_price = Column(Float, CheckConstraint("closed_asset_price > 0"))
     start_time = Column(TIMESTAMP, nullable=False)
     end_time = Column(TIMESTAMP, nullable=False)
     closed = Column(Boolean, nullable=False)
