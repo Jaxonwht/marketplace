@@ -1,6 +1,4 @@
 from datetime import datetime
-from dal.buyer_dal import get_buyer_by_name
-from dal.deal_dal import get_deal_by_name
 from db import flask_session
 from models.buyer_model import Buyer
 from models.deal_model import Deal
@@ -18,7 +16,7 @@ def buy_shares(
     shares: int,
     rate: float,
 ) -> Transaction:
-    deal = get_deal_by_name(deal_name)
+    deal = flask_session.get(Deal, deal_name, with_for_update={"key_share": True})
     if not deal:
         raise TransactionException(f"Deal {deal_name} not found")
     if deal.closed:
@@ -27,7 +25,7 @@ def buy_shares(
         raise TransactionException(f"Deal {deal_name} has started at {deal.start_time}")
     if rate not in deal.allowed_rates:
         raise TransactionException(f"Deal {deal_name} does have a rate of {rate}%")
-    buyer = get_buyer_by_name(buyer_name)
+    buyer = flask_session.get(Buyer, buyer_name, with_for_update={"key_share": True})
     if buyer is None:
         raise TransactionException(f"Can't find buyer {buyer_name}")
     user_balance = buyer.balance
@@ -39,4 +37,5 @@ def buy_shares(
     buyer.balance = Buyer.balance - amount_needed
     deal.shares_remaining = Deal.shares_remaining - shares
     flask_session.commit()
+    # After commit, transaction will be reloaded.
     return transaction

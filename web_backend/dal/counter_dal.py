@@ -6,12 +6,11 @@ from db import flask_session
 
 
 def get_current_counter() -> Optional[Counter]:
-    statement = select(Counter)
-    return flask_session.scalar(statement)
+    return flask_session.scalar(select(Counter))
 
 
 def initialize_counter_to_zero() -> None:
-    current_counter = get_current_counter()
+    current_counter: Optional[Counter] = flask_session.scalar(select(Counter).with_for_update())
     if not current_counter:
         flask_session.add(Counter(number=0))
     else:
@@ -20,9 +19,9 @@ def initialize_counter_to_zero() -> None:
 
 
 def change_counter(change: int) -> Optional[Counter]:
-    existing_counter = flask_session.scalar(select(Counter))
+    existing_counter = flask_session.scalar(select(Counter).with_for_update())
     if existing_counter:
-        existing_counter.number += change
+        existing_counter.number = Counter.number + change
         flask_session.commit()
         return existing_counter
     return None

@@ -1,4 +1,5 @@
 """Create the flask instance."""
+from logging import INFO
 from flask import Flask
 
 
@@ -10,6 +11,8 @@ def create_app() -> Flask:
     # Default to configs.Config which is the base configuration shared by all environments.
     flask_config = app.config.get("CONFIG", "Config")
     app.config.from_object(f"configs.{flask_config}")
+
+    app.logger.setLevel(app.config.get("MAIN_LOGGING_LEVEL", INFO))
 
     from views.hello_world import hello_world_bp  # pylint: disable=import-outside-toplevel
     from views.counter import counter_bp  # pylint: disable=import-outside-toplevel
