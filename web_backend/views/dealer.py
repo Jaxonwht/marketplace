@@ -22,7 +22,7 @@ def create_new_dealer():
     if request_body_json is None:
         abort(400, "Request body is not a valid JSON")
     dealer_name = get_not_none(request_body_json, "dealer_name")
-    if get_deal_by_name(dealer_name):
+    if get_dealer_by_name(dealer_name):
         abort(409, f"Dealer with name {dealer_name} already exists")
     starting_balance = request_body_json.get("starting_balance")
     create_dealer(dealer_name, starting_balance)
@@ -41,6 +41,7 @@ def get_dealers():
             {
                 "name": str,
                 "balance": float
+                "lockup_balance": float
             }
         ]
     """
@@ -58,4 +59,4 @@ def get_dealer(name: str):
     dealer = get_dealer_by_name(name)
     if dealer is None:
         abort(404, f"Dealer with name {name} is not found")
-    return dealer.info
+    return jsonify(dealer.info)

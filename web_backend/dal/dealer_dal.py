@@ -6,7 +6,7 @@ from models.dealer_model import Dealer
 from db import flask_session
 
 
-def create_dealer(dealer_name: str, starting_balance: Optional[float] = None) -> Dealer:
+def create_dealer(dealer_name: str, starting_balance: Optional[float]) -> Dealer:
     dealer = Dealer(name=dealer_name, balance=starting_balance)
     flask_session.add(dealer)
     flask_session.commit()

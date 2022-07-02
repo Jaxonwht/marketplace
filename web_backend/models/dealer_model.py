@@ -1,5 +1,5 @@
 """Dealer is the party that issues shares."""
-from typing import List
+from typing import Dict, List
 from sqlalchemy import CheckConstraint, Column, Float, String
 from sqlalchemy.orm import backref, relationship
 from db import flask_db
@@ -21,5 +21,5 @@ class Dealer(flask_db.Model):
     )
 
     @property
-    def info(self):
+    def info(self) -> Dict[str, str | float]:
         return {"name": self.name, "balance": self.balance, "lockup_balance": self.lockup_balance}

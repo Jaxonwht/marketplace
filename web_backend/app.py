@@ -12,12 +12,13 @@ def create_app() -> Flask:
     flask_config = app.config.get("CONFIG", "Config")
     app.config.from_object(f"configs.{flask_config}")
 
-    app.logger.setLevel(app.config.get("MAIN_LOGGING_LEVEL", INFO))
+    app.logger.setLevel(app.config.get("MAIN_LOGGING_LEVEL", INFO))  # pylint: disable=no-member
 
     from views.hello_world import hello_world_bp  # pylint: disable=import-outside-toplevel
     from views.counter import counter_bp  # pylint: disable=import-outside-toplevel
     from views.deal import deal_bp  # pylint: disable=import-outside-toplevel
     from views.dealer import dealer_bp  # pylint: disable=import-outside-toplevel
+    from views.buyer import buyer_bp  # pylint: disable=import-outside-toplevel
     from db import flask_db  # pylint: disable=import-outside-toplevel
     from migrate import flask_migrate  # pylint: disable=import-outside-toplevel
 
@@ -27,5 +28,6 @@ def create_app() -> Flask:
     app.register_blueprint(hello_world_bp)
     app.register_blueprint(counter_bp)
     app.register_blueprint(dealer_bp)
+    app.register_blueprint(buyer_bp)
 
     return app

@@ -1,5 +1,5 @@
 """Contains the buyer information"""
-from typing import List
+from typing import Dict, List
 from sqlalchemy import CheckConstraint, Column, Float, String
 from sqlalchemy.engine import Transaction
 from sqlalchemy.orm import backref, relationship
@@ -18,3 +18,7 @@ class Buyer(flask_db.Model):
     platform_transactions: List[PlatformTransaction] = relationship(
         "PlatformTransaction", backref=backref("buyer"), cascade="all, delete", passive_deletes=True
     )
+
+    @property
+    def info(self) -> Dict[str, str | float]:
+        return {"name": self.name, "balance": self.balance}
