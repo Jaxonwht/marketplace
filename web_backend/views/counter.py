@@ -18,13 +18,13 @@ def get_counter():
     return NotFound()
 
 
-@counter_bp.route("/initialize", methods=["GET"])
+@counter_bp.route("/initialize", methods=["POST"])
 def initialize_counter():
     initialize_counter_to_zero()
     return jsonify("OK")
 
 
-@counter_bp.route("/add", methods=["GET"])
+@counter_bp.route("/add", methods=["PATCH"])
 def increase_counter():
     change = request.args.get("change", default=1, type=int)
     changed_counter = change_counter(change)
@@ -33,7 +33,7 @@ def increase_counter():
     return NotFound()
 
 
-@counter_bp.route("/reduce", methods=["GET"])
+@counter_bp.route("/reduce", methods=["PATCH"])
 def reduce_counter():
     change = request.args.get("change", default=1, type=int)
     changed_counter = change_counter(-change)

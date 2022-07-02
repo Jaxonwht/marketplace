@@ -17,6 +17,7 @@ def create_app() -> Flask:
     from views.hello_world import hello_world_bp  # pylint: disable=import-outside-toplevel
     from views.counter import counter_bp  # pylint: disable=import-outside-toplevel
     from views.deal import deal_bp  # pylint: disable=import-outside-toplevel
+    from views.dealer import dealer_bp  # pylint: disable=import-outside-toplevel
     from db import flask_db  # pylint: disable=import-outside-toplevel
     from migrate import flask_migrate  # pylint: disable=import-outside-toplevel
 
@@ -25,5 +26,6 @@ def create_app() -> Flask:
     app.register_blueprint(deal_bp)
     app.register_blueprint(hello_world_bp)
     app.register_blueprint(counter_bp)
+    app.register_blueprint(dealer_bp)
 
     return app

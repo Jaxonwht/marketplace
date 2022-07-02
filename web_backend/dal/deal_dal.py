@@ -32,9 +32,10 @@ def create_deal(
         nft_id=nft_id,
         share_price=share_price,
         allowed_rates=allowed_rates,
-        initial_number_of_shares=initial_number_of_shares,
+        shares_remaining=initial_number_of_shares,
         start_time=start_time,
         end_time=end_time,
+        closed=False,
     )
     flask_session.add(new_deal)
     flask_session.commit()

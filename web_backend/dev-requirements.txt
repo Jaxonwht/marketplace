@@ -88,6 +88,12 @@ pylint==2.14.4
     # via -r dev-requirements.in
 pynvim==0.4.3
     # via -r dev-requirements.in
+python-dateutil==2.8.2
+    # via -r requirements.txt
+six==1.16.0
+    # via
+    #   -r requirements.txt
+    #   python-dateutil
 sqlalchemy==1.4.37
     # via
     #   -r requirements.txt
@@ -100,6 +106,8 @@ tomli==2.0.1
     #   pylint
 tomlkit==0.11.0
     # via pylint
+types-python-dateutil==2.8.18
+    # via -r dev-requirements.in
 typing-extensions==4.3.0
     # via mypy
 uwsgi==2.0.20

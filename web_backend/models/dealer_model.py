@@ -19,3 +19,7 @@ class Dealer(flask_db.Model):
     platform_transactions: List[PlatformTransaction] = relationship(
         "PlatformTransaction", backref=backref("dealer"), cascade="all, delete", passive_deletes=True
     )
+
+    @property
+    def info(self):
+        return {"name": self.name, "balance": self.balance, "lockup_balance": self.lockup_balance}
