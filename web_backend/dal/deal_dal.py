@@ -36,7 +36,7 @@ def create_deal(
     if not allowed_rates:
         abort(400, "You must specify non-empty list of allowed rates")
     for rate in allowed_rates:
-        if rate <= 0 or rate >= _MAXIMUM_ALLOWED_RATE:
+        if rate <= 0 or rate > _MAXIMUM_ALLOWED_RATE:
             abort(400, f"The rate {rate} does not fall within the range of (0, {_MAXIMUM_ALLOWED_RATE}]")
     if share_price <= 0:
         abort(400, "Share price must be positive")
