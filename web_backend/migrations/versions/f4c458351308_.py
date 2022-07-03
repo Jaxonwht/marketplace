@@ -1,8 +1,8 @@
-"""Create all tables
+"""Initial table creation
 
-Revision ID: eedb6129d593
+Revision ID: f4c458351308
 Revises:
-Create Date: 2022-07-01 14:45:15.347970
+Create Date: 2022-07-03 16:54:31.991463
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
-revision = "eedb6129d593"
+revision = "f4c458351308"
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -29,7 +29,7 @@ def upgrade():
         "dealer",
         sa.Column("name", sa.String(), nullable=False),
         sa.Column("balance", sa.Float(), sa.CheckConstraint("balance >= 0"), nullable=False),
-        sa.Column("lockup_balance", sa.Float(), sa.CheckConstraint("lockup_balance >= 0"), nullable=False),
+        sa.Column("lockup_balance", sa.Float(), nullable=False),
         sa.CheckConstraint("lockup_balance <= balance"),
         sa.PrimaryKeyConstraint("name"),
     )
@@ -65,6 +65,7 @@ def upgrade():
     )
     op.create_table(
         "transaction",
+        sa.Column("serial_id", sa.Integer(), nullable=False),
         sa.Column("buyer_name", sa.String(), nullable=False),
         sa.Column("asset_price", sa.Float(), sa.CheckConstraint("asset_price > 0"), nullable=True),
         sa.Column("deal_serial_id", sa.Integer(), nullable=False),
@@ -73,7 +74,7 @@ def upgrade():
         sa.Column("rate", sa.Float(), nullable=False),
         sa.ForeignKeyConstraint(["buyer_name"], ["buyer.name"], ondelete="CASCADE"),
         sa.ForeignKeyConstraint(["deal_serial_id"], ["deal.serial_id"], ondelete="CASCADE"),
-        sa.PrimaryKeyConstraint("buyer_name", "deal_serial_id"),
+        sa.PrimaryKeyConstraint("serial_id"),
     )
     # ### end Alembic commands ###
 

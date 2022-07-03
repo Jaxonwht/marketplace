@@ -15,9 +15,9 @@ class Dealer(flask_db.Model):
     name = Column(String, primary_key=True)
     balance = Column(Float, CheckConstraint("balance >= 0"), nullable=False, default=0)
     lockup_balance = Column(Float, CheckConstraint("lockup_balance >= 0"), nullable=False, default=0)
-    deals: List[Deal] = relationship("Deal", backref=backref("dealer"), cascade="all, delete", passive_deletes=True)
+    deals: List[Deal] = relationship(Deal, backref=backref("dealer"), cascade="all, delete", passive_deletes=True)
     platform_transactions: List[PlatformTransaction] = relationship(
-        "PlatformTransaction", backref=backref("dealer"), cascade="all, delete", passive_deletes=True
+        PlatformTransaction, backref=backref("dealer"), cascade="all, delete", passive_deletes=True
     )
 
     @property

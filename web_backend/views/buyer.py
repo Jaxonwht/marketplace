@@ -1,6 +1,5 @@
 from flask import Blueprint, abort, jsonify, request
 from dal.buyer_dal import create_buyer, get_buyer_by_name, get_byers_by_names
-from dal.deal_dal import get_deal_by_name
 
 from utils.json_utils import get_not_none
 
@@ -22,7 +21,7 @@ def create_new_buyer():
     if request_body_json is None:
         abort(400, "Request body is not a valid JSON")
     buyer_name = get_not_none(request_body_json, "buyer_name")
-    if get_deal_by_name(buyer_name):
+    if get_buyer_by_name(buyer_name):
         abort(409, f"Buyer with name {buyer_name} already exists")
     starting_balance = request_body_json.get("starting_balance")
     create_buyer(buyer_name, starting_balance)

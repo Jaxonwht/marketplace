@@ -9,18 +9,18 @@ deal_bp = Blueprint("deal", __name__, url_prefix="/deal")
 
 
 @deal_bp.route("/open", methods=["GET"])
-def get_open_deal_names():
+def get_open_deal_ids():
     """
     Request Params:
         max_share_price (Optional[float]): Maximum share price to scan for.
 
     Returns:
-        List of deal names that satisfy the constraints. Empty list if None matches.
+        List of deal IDS that satisfy the constraints. Empty list if None matches.
         Will not return None.
     """
     max_share_price = request.args.get("max_share_price", type=float)
     deals = current_open_deals(max_share_price)
-    return jsonify(tuple(deal.dealer_name for deal in deals))
+    return jsonify(tuple(deal.serial_id for deal in deals))
 
 
 @deal_bp.route("/", methods=["POST"])
@@ -42,7 +42,7 @@ def create_new_deal():
         end_time (str): Ending time of the deal.
 
     Returns:
-        "OK" if the deal is created. Otherwise, an error will be raised.
+        ID of the deal if the deal is created. Otherwise, an error will be raised.
     """
     request_body_json = request.json
     if request_body_json is None:
@@ -56,5 +56,7 @@ def create_new_deal():
     start_time = format_datetime_str_or_raise(start_time_str, current_app.logger)
     end_time_str = get_not_none(request_body_json, "end_time")
     end_time = format_datetime_str_or_raise(end_time_str, current_app.logger)
-    create_deal(dealer_name, nft_id, share_price, allowed_rates, initial_number_of_shares, start_time, end_time)
-    return jsonify("OK")
+    created_deal = create_deal(
+        dealer_name, nft_id, share_price, allowed_rates, initial_number_of_shares, start_time, end_time
+    )
+    return jsonify(created_deal.serial_id)
