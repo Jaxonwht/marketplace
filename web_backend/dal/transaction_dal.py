@@ -3,9 +3,11 @@ from datetime import datetime
 from typing import Optional
 from flask import abort
 from sqlalchemy import select
+from sqlalchemy.dialects.postgresql import insert
 from db import flask_session
 from models.buyer_model import Buyer
 from models.deal_model import Deal
+from models.ownership_model import Ownership
 
 from models.transaction_model import Transaction
 
@@ -28,10 +30,18 @@ def buy_shares(
     buyer = flask_session.get(Buyer, buyer_name, with_for_update={"key_share": True})
     if buyer is None:
         abort(404, f"Can't find buyer {buyer_name}")
+
+    # Execute upsert for ownerships
+    flask_session.execute(
+        insert(Ownership)
+        .values(buyer_name=buyer_name, deal_serial_id=deal_serial_id, rate=rate, shares=shares)
+        .on_conflict_do_update(constraint="ownership_pkey", set_={"shares": Ownership.shares + shares})
+    )
+
     user_balance = buyer.balance
     amount_needed = shares * deal.share_price
     if user_balance < amount_needed:
-        abort(409, f"Buyer has {user_balance}, need at least {amount_needed}")
+        abort(409, f"Buyer has {user_balance}, need at leart {amount_needed}")
     transaction = Transaction(buyer_name=buyer_name, deal_serial_id=deal.serial_id, shares=shares, rate=rate)
     flask_session.add(transaction)
     buyer.balance = Buyer.balance - amount_needed

@@ -4,6 +4,7 @@ from sqlalchemy import Boolean, CheckConstraint, Column, Float, ForeignKey, Inte
 from sqlalchemy.dialects.postgresql import ARRAY, TIMESTAMP
 from sqlalchemy.orm import backref, relationship
 from db import flask_db
+from models.ownership_model import Ownership
 from models.transaction_model import Transaction
 
 
@@ -22,5 +23,8 @@ class Deal(flask_db.Model):
     end_time = Column(TIMESTAMP, nullable=False)
     closed = Column(Boolean, nullable=False)
     transactions: List[Transaction] = relationship(
-        "Transaction", backref=backref("deal"), cascade="all, delete", passive_deletes=True
+        Transaction, backref=backref("deal"), cascade="all, delete", passive_deletes=True
+    )
+    ownerships: List[Ownership] = relationship(
+        Ownership, backref=backref("deal"), cascade="all, delete", passive_deletes=True
     )
