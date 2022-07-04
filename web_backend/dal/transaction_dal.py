@@ -31,17 +31,16 @@ def buy_shares(
     if buyer is None:
         abort(404, f"Can't find buyer {buyer_name}")
 
+    user_balance = buyer.balance
+    amount_needed = shares * deal.share_price
+    if user_balance < amount_needed:
+        abort(409, f"Buyer has {user_balance}, need at leart {amount_needed}")
     # Execute upsert for ownerships
     flask_session.execute(
         insert(Ownership)
         .values(buyer_name=buyer_name, deal_serial_id=deal_serial_id, rate=rate, shares=shares)
         .on_conflict_do_update(constraint="ownership_pkey", set_={"shares": Ownership.shares + shares})
     )
-
-    user_balance = buyer.balance
-    amount_needed = shares * deal.share_price
-    if user_balance < amount_needed:
-        abort(409, f"Buyer has {user_balance}, need at leart {amount_needed}")
     transaction = Transaction(buyer_name=buyer_name, deal_serial_id=deal.serial_id, shares=shares, rate=rate)
     flask_session.add(transaction)
     buyer.balance = Buyer.balance - amount_needed
