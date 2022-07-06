@@ -1,6 +1,6 @@
 from flask import Blueprint, abort, current_app, jsonify, request
 
-from dal.deal_dal import create_deal, current_open_deals
+from dal.deal_dal import create_deal, current_open_deals, patch_deal_open_asset_price
 from utils.datetime_utils import format_datetime_str_or_raise
 from utils.json_utils import get_not_none
 
@@ -21,6 +21,31 @@ def get_open_deal_ids():
     max_share_price = request.args.get("max_share_price", type=float)
     deals = current_open_deals(max_share_price)
     return jsonify(tuple(deal.serial_id for deal in deals))
+
+
+@deal_bp.route("/", methods=["POST"])
+def patch_deal_open_asset_price():
+    """
+    Update an existing deal. If a deal with provided serial_id is not found,
+    raise an appropriate error.
+
+    Request Headers:
+        Content-Type must be application/json.
+
+    Body Params:
+        serial_id (int): Id of the deal
+        open_asset_price (float): Asset price at starting time of the deal.
+
+    Returns:
+        The deal if the deal is updated. Otherwise, an error will be raised.
+    """
+    request_body_json = request.json
+    if request_body_json is None:
+        abort(400, "Request body is not a valid JSON")
+    serial_id = get_not_none(request_body_json, "serial_id")
+    open_asset_price = get_not_none(request_body_json, "open_asset_price")
+    updated_deal = patch_deal_open_asset_price(serial_id, open_asset_price)
+    return jsonify({"serial_id": updated_deal.serial_id, "open_asset_price": updated_deal.open_asset_price})
 
 
 @deal_bp.route("/", methods=["POST"])

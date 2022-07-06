@@ -24,6 +24,17 @@ def get_deal_by_name(deal_name: str) -> Optional[Deal]:
     return flask_session.get(Deal, deal_name)
 
 
+def patch_deal_open_asset_price(serial_id: int, open_asset_price: float) -> Deal:
+    if open_asset_price <= 0:
+        abort(400, f"Open asset price must be positive")
+    deal = flask_session.get(Deal, serial_id, with_for_update={"key_share": True})
+    if not deal:
+        abort(404, f"Deal {serial_id} not found")
+    deal.open_asset_price = open_asset_price
+    flask_session.commit()
+    return deal
+
+
 def create_deal(
     dealer_name: str,
     nft_id: str,
