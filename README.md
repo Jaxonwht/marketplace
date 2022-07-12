@@ -31,7 +31,7 @@ which will use this [config file](./web_backend/configs/docker_dev.py).
 
 ### Docker Setup
 
-Start the database by `docker compose up db`. Start the development server by `docker compose up web_backend`.
+Start the database by `docker compose up db`. Start the development server by `docker compose build web_backend` and `docker compose up web_backend`.
 
 - The web backend server is accessible at `localhost:5000`.
 - The postgres server will run at `localhost:5432`.
