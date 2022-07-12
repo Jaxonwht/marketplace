@@ -17,6 +17,19 @@ services:
       - backend
     depends_on:
       - db
+  apscheduler:
+    build:
+      context: .
+      dockerfile: Dockerfile.apscheduler.dev
+    volumes:
+      - ./apscheduler:/apscheduler
+    environment:
+      SCHEDULER_CONFIG: DockerDevelopmentConfig
+    networks:
+      - backend
+    depends_on:
+      - db
+      - web_backend
   db:
     image: postgres:14.3
     environment:
