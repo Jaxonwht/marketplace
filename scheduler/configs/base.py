@@ -10,6 +10,7 @@ class Config:  # pylint: disable=too-few-public-methods
 
     TESTING = False
     SQLALCHEMY_DATABASE_URI = "postgresql://local_user:dev_password@localhost:5432/local_db"
+    SCHEDULER_API_ENABLED = True
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_ECHO = True
@@ -20,4 +21,4 @@ class Config:  # pylint: disable=too-few-public-methods
         "default": ThreadPoolExecutor(5),
     }
     SCHEDULER_JOB_DEFAULTS = {"max_instances": 3}
-    SCHEDULER_TIMEZONE: {"timezone": utc}
+    SCHEDULER_TIMEZONE = utc

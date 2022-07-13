@@ -16,10 +16,7 @@ flask==2.1.2
     # via
     #   -r requirements.in
     #   flask-apscheduler
-    #   flask-sqlalchemy
 flask-apscheduler==1.12.4
-    # via -r requirements.in
-flask-sqlalchemy==2.5.1
     # via -r requirements.in
 greenlet==1.1.2
     # via sqlalchemy
@@ -48,9 +45,7 @@ six==1.16.0
     #   apscheduler
     #   python-dateutil
 sqlalchemy==1.4.37
-    # via
-    #   -r requirements.in
-    #   flask-sqlalchemy
+    # via -r requirements.in
 tzdata==2022.1
     # via pytz-deprecation-shim
 tzlocal==4.2

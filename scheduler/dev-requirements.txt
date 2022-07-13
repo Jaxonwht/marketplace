@@ -33,10 +33,7 @@ flask==2.1.2
     # via
     #   -r requirements.txt
     #   flask-apscheduler
-    #   flask-sqlalchemy
 flask-apscheduler==1.12.4
-    # via -r requirements.txt
-flask-sqlalchemy==2.5.1
     # via -r requirements.txt
 greenlet==1.1.2
     # via
@@ -113,9 +110,7 @@ six==1.16.0
     #   apscheduler
     #   python-dateutil
 sqlalchemy==1.4.37
-    # via
-    #   -r requirements.txt
-    #   flask-sqlalchemy
+    # via -r requirements.txt
 tomli==2.0.1
     # via
     #   black

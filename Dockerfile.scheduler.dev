@@ -12,4 +12,4 @@ RUN pip install -U pip wheel \
 
 WORKDIR /scheduler
 
-CMD ["flask", "run", "--host=0.0.0.0"]
+CMD ["flask", "run", "--host=0.0.0.0", "--port=4000"]
