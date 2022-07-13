@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-backend-deployment-prod
+spec:
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  replicas: 2
+  selector:
+    matchLabels:
+      app: web-backend-prod
+  template:
+    metadata:
+      labels:
+        app: web-backend-prod
+    spec:
+      containers:
+        - name: web-backend-prod
+          image: registry.cloud.okteto.net/zhoujc999/marketplace-web-backend:latest
+          resources:
+            limits:
+              cpu: "1"
+              memory: "2Gi"
+            requests:
+              cpu: "1"
+              memory: "2Gi"
+          ports:
+            - containerPort: 5000
+          env:
+            - name: FLASK_ENV
+              value: production
+            - name: CONFIG_ENV
+              value: prod.py
