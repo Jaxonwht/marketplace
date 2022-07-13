@@ -17,14 +17,18 @@ services:
       - backend
     depends_on:
       - db
-  apscheduler:
+  scheduler:
     build:
       context: .
-      dockerfile: Dockerfile.apscheduler.dev
+      dockerfile: Dockerfile.scheduler.dev
+    ports:
+      - "4000:4000"
     volumes:
-      - ./apscheduler:/apscheduler
+      - ./scheduler:/scheduler
     environment:
-      SCHEDULER_CONFIG: DockerDevelopmentConfig
+      FLASK_APP: app
+      FLASK_ENV: development
+      FLASK_CONFIG: DockerDevelopmentConfig
     networks:
       - backend
     depends_on:
