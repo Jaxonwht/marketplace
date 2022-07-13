@@ -75,3 +75,12 @@ Always double-check the auto-generated migration file before commiting to the up
 1. `curl https://get.okteto.com -sSfL | sh` to install the Okteto CLI.
 2. `okteto context use https://cloud.okteto.com -n <namespace> -t <token>` to configure CLI.
 3. `okteto build . -f Dockerfile.web -t okteto.dev/marketplace-web-backend:latest` to build and push web_backend image to Okteto registry.
+
+### Stage
+
+In this repository, the staging environment refers to running the different services with the production setup but in
+docker compose. You can start the staging environment with `docker compose -f docker-compose.stage.yaml up`. Note
+that the stage environment tries to mimic the production envrionment as much as possible. Therefore, the web_backend
+and scheduler in staging mode exposes uwsgi sockets instead of http sockets and the client does implement reverse proxy.
+If you want to send a request to the `web_backend`, you should not use `localhost:5000` as the endpoint. Rather, use
+`localhost/api`. Similarly, `scheduler`'s endpoint is no longer `localhost:4000`, but `localhost/scheduler`.
