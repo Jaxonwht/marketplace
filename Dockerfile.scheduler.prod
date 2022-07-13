@@ -4,14 +4,14 @@ RUN apt-get update \
   && apt-get install -y build-essential python-dev \
   && rm -rf /var/lib/apt/lists/*
 
-COPY web_backend/requirements.txt .
+COPY scheduler/requirements.txt .
 
 RUN pip install -U pip wheel \
   && pip install -r requirements.txt
 
-WORKDIR /web_backend
+WORKDIR /scheduler
 
-COPY web_backend .
+COPY scheduler .
 
 ENV FLASK_CONFIG ProductionConfig
-CMD ["bash", "-c", "flask db upgrade && uwsgi uwsgi.ini"]
+CMD ["uwsgi", "uwsgi.ini"]
