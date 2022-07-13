@@ -70,3 +70,8 @@ need to run `flask db init`. If you just cloned the repository and need to have 
 tables, you do not need to run any migration either. You can simply invoke the `flask db upgrade` command.
 
 Always double-check the auto-generated migration file before commiting to the upgrade.
+
+### Okteto cluster deployment
+1. `curl https://get.okteto.com -sSfL | sh` to install the Okteto CLI.
+2. `okteto context use https://cloud.okteto.com -n <namespace> -t <token>` to configure CLI.
+3. `okteto build . -f Dockerfile.web -t okteto.dev/marketplace-web-backend:latest` to build and push web_backend image to Okteto registry.
