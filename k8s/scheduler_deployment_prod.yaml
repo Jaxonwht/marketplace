@@ -20,6 +20,10 @@ spec:
       containers:
         - name: scheduler-prod
           image: registry.cloud.okteto.net/zhoujc999/marketplace-scheduler:latest
+          volumeMounts:
+            # name must match the volume name below
+            - name: sqlalchemy-database-uri-secret
+              mountPath: /var
           resources:
             limits:
               cpu: "1"
@@ -34,3 +38,8 @@ spec:
               value: production
             - name: CONFIG_ENV
               value: prod.py
+      # The secret data is exposed to Containers in the Pod through a Volume.
+      volumes:
+        - name: sqlalchemy-database-uri-secret
+          secret:
+            secretName: sqlalchemy-database-uri-secret
