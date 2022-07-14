@@ -1,7 +1,7 @@
 version: "3.8"
 
 services:
-  client:
+  client-prod:
     build:
       context: .
       dockerfile: Dockerfile.client.prod
@@ -10,9 +10,9 @@ services:
     networks:
       - frontend
     depends_on:
-      - web_backend
-      - scheduler
-  web_backend:
+      - web-backend-prod
+      - scheduler-prod
+  web-backend-prod:
     build:
       context: .
       dockerfile: Dockerfile.web_backend.prod
@@ -20,6 +20,7 @@ services:
       - "5000:5000"
     environment:
       SQLALCHEMY_DATABASE_URI: "postgresql://local_user:dev_password@db:5432/local_db"
+      FLASK_CONFIG: StagingConfig
     volumes:
       - ./web_backend:/web_backend
     networks:
@@ -27,7 +28,7 @@ services:
       - frontend
     depends_on:
       - db
-  scheduler:
+  scheduler-prod:
     build:
       context: .
       dockerfile: Dockerfile.scheduler.prod
@@ -37,12 +38,13 @@ services:
       - ./scheduler:/scheduler
     environment:
       SQLALCHEMY_DATABASE_URI: "postgresql://local_user:dev_password@db:5432/local_db"
+      FLASK_CONFIG: StagingConfig
     networks:
       - backend
       - frontend
     depends_on:
       - db
-      - web_backend
+      - web-backend
   db:
     image: postgres:14.3
     environment:
