@@ -74,7 +74,38 @@ Always double-check the auto-generated migration file before commiting to the up
 ### Okteto cluster deployment
 1. `curl https://get.okteto.com -sSfL | sh` to install the Okteto CLI.
 2. `okteto context use https://cloud.okteto.com -n <namespace> -t <token>` to configure CLI.
-3. `okteto build . -f Dockerfile.web -t okteto.dev/marketplace-web-backend:latest` to build and push web_backend image to Okteto registry.
+3. `okteto build . -f Dockerfile.web_backend.prod -t okteto.dev/marketplace-web-backend:latest` to build and push web_backend image to Okteto registry.
+4. `okteto kubeconfig`
+5. `kubectl apply -f k8s/`
+
+### How to deploy and use secret?
+1. `kubectl create secret generic <secret-name> --from-literal='<key>=<secret>'`.
+2. Create a Pod that has access to the secret data through a Volume.
+```
+apiVersion: v1
+kind: Pod
+metadata:
+  name: <pod-name>
+spec:
+  containers:
+    - name: <container-name>
+      image: nginx
+      volumeMounts:
+        # name must match the volume name below
+        - name: <secret-volume>
+          mountPath: <mount-path>
+  # The secret data is exposed to Containers in the Pod through a Volume.
+  volumes:
+    - name: <secret-volume>
+      secret:
+        secretName: <secret-name>
+```
+3. Use the secret in code.
+```
+from pathlib import Path
+
+secret = (Path("<mount-path>") / "<key>").read_text()
+```
 
 ### Stage
 
