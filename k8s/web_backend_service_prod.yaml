@@ -6,4 +6,4 @@ spec:
   ports:
     - port: 5000
   selector:
-    app: web-backend-deployment-prod
+    app: web-backend-prod
