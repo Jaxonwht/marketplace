@@ -1,7 +1,7 @@
 version: "3.8"
 
 services:
-  client-prod:
+  client-service-prod:
     build:
       context: .
       dockerfile: Dockerfile.client.prod
@@ -12,7 +12,7 @@ services:
     depends_on:
       - web-backend-prod
       - scheduler-prod
-  web-backend-prod:
+  web-backend-service-prod:
     build:
       context: .
       dockerfile: Dockerfile.web_backend.prod
@@ -28,7 +28,7 @@ services:
       - frontend
     depends_on:
       - db
-  scheduler-prod:
+  scheduler-service-prod:
     build:
       context: .
       dockerfile: Dockerfile.scheduler.prod
