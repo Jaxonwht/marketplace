@@ -1,6 +1,7 @@
 """Create the flask instance."""
 from logging import INFO
 from flask import Flask
+from werkzeug.utils import import_string
 
 
 def create_app() -> Flask:
@@ -10,7 +11,7 @@ def create_app() -> Flask:
 
     # Default to configs.Config which is the base configuration shared by all environments.
     flask_config = app.config.get("CONFIG", "Config")
-    app.config.from_object(f"configs.{flask_config}")
+    app.config.from_object(import_string(f"configs.{flask_config}")())
 
     app.logger.setLevel(app.config.get("MAIN_LOGGING_LEVEL", INFO))  # pylint: disable=no-member
 
