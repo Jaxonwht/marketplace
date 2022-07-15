@@ -1,6 +1,7 @@
 """Development config."""
 from pathlib import Path
 from logging import INFO
+from typing import Dict
 from configs.base import Config
 
 
