@@ -4,6 +4,6 @@ metadata:
   name: scheduler-service-prod
 spec:
   ports:
-    - port: 5000
+    - port: 4000
   selector:
     app: scheduler-prod
