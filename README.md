@@ -9,6 +9,11 @@ Some set up instructions for local development.
 In web backend, print statements will not appear in the console. Instead, you can import the `app` instance,
 and use `app.logger.info()` or `app.logger.error()` etc.
 
+### Client Setup
+
+The client uses React and Node 16. You can start the frontend via `docker compose up client`. The website will
+run at `localhost:3000`.
+
 ### Web Backend Setup
 
 This project uses Python 3.10. Please create a virtual environment and upgrade your pip.
@@ -114,4 +119,5 @@ docker compose. You can start the staging environment with `docker compose -f do
 that the stage environment tries to mimic the production envrionment as much as possible. Therefore, the web_backend
 and scheduler in staging mode exposes uwsgi sockets instead of http sockets and the client does implement reverse proxy.
 If you want to send a request to the `web_backend`, you should not use `localhost:5000` as the endpoint. Rather, use
-`localhost/api`. Similarly, `scheduler`'s endpoint is no longer `localhost:4000`, but `localhost/scheduler`.
+`localhost/api`. Similarly, `scheduler`'s endpoint is no longer `localhost:4000`, but `localhost/scheduler`. The client
+website will simply be located at `localhost`.

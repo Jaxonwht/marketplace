@@ -1,6 +1,19 @@
 version: "3.8"
 
 services:
+  client:
+    build:
+      context: .
+      dockerfile: Dockerfile.client.dev
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./client:/client
+    networks:
+      - frontend
+    depends_on:
+      - web_backend
+      - scheduler
   web_backend:
     build:
       context: .
@@ -15,6 +28,7 @@ services:
       - ./web_backend:/web_backend
     networks:
       - backend
+      - frontend
     depends_on:
       - db
   scheduler:
@@ -31,6 +45,7 @@ services:
       FLASK_CONFIG: DockerDevelopmentConfig
     networks:
       - backend
+      - frontend
     depends_on:
       - db
       - web_backend
@@ -50,3 +65,4 @@ services:
 
 networks:
   backend:
+  frontend:
