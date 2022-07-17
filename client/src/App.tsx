@@ -3,6 +3,7 @@ import logo from "./logo.svg";
 import "./App.scss";
 import axios from "axios";
 import { SCHEDULER_ENDPOINT, WEB_BACKEND_ENDPOINT } from "./endpoints";
+import Ethereum from "./Ethereum";
 import classNames from "classnames";
 
 const connectionStatusClassName = (connected: boolean) =>
@@ -44,6 +45,7 @@ const App = () => {
           target="_blank"
           rel="noopener noreferrer"
         >
+          <Ethereum />
           Learn React
         </a>
       </header>
