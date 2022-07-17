@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
         - name: client-prod
-          image: registry.cloud.okteto.net/zhoujc999/marketplace-client:latest
+          image: registry.cloud.okteto.net/marketplace-zhoujc999/marketplace-client:latest
           resources:
             limits:
               cpu: "1"

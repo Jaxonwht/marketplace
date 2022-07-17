@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
         - name: scheduler-prod
-          image: registry.cloud.okteto.net/zhoujc999/marketplace-scheduler:latest
+          image: registry.cloud.okteto.net/marketplace-zhoujc999/marketplace-scheduler:latest
           volumeMounts:
             # name must match the volume name below
             - name: sqlalchemy-database-uri-secret
