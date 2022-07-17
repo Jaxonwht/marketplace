@@ -10,8 +10,8 @@ services:
     networks:
       - frontend
     depends_on:
-      - web-backend-prod
-      - scheduler-prod
+      - web-backend-service-prod
+      - scheduler-service-prod
   web-backend-service-prod:
     build:
       context: .
@@ -44,7 +44,7 @@ services:
       - frontend
     depends_on:
       - db
-      - web-backend
+      - web-backend-service-prod
   db:
     image: postgres:14.3
     environment:
