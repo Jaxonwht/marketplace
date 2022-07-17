@@ -1,6 +1,7 @@
 """Create the flask instance."""
 from logging import INFO
 from flask import Flask
+from flask_cors import CORS
 from werkzeug.utils import import_string
 
 
@@ -34,5 +35,5 @@ def create_app() -> Flask:
     app.register_blueprint(buyer_bp)
     app.register_blueprint(transaction_bp)
     app.register_blueprint(ownership_bp)
-
+    CORS(app)
     return app

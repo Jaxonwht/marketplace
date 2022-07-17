@@ -4,11 +4,11 @@
 #
 #    pip-compile dev-requirements.in
 #
-alembic==1.8.0
+alembic==1.8.1
     # via
     #   -r requirements.txt
     #   flask-migrate
-astroid==2.11.6
+astroid==2.11.7
     # via pylint
 black==22.6.0
     # via -r dev-requirements.in
@@ -24,8 +24,11 @@ flake8==4.0.1
 flask==2.1.2
     # via
     #   -r requirements.txt
+    #   flask-cors
     #   flask-migrate
     #   flask-sqlalchemy
+flask-cors==3.0.10
+    # via -r requirements.txt
 flask-migrate==3.1.0
     # via -r requirements.txt
 flask-sqlalchemy==2.5.1
@@ -93,6 +96,7 @@ python-dateutil==2.8.2
 six==1.16.0
     # via
     #   -r requirements.txt
+    #   flask-cors
     #   python-dateutil
 sqlalchemy==1.4.37
     # via
@@ -104,7 +108,7 @@ tomli==2.0.1
     #   black
     #   mypy
     #   pylint
-tomlkit==0.11.0
+tomlkit==0.11.1
     # via pylint
 types-python-dateutil==2.8.18
     # via -r dev-requirements.in
