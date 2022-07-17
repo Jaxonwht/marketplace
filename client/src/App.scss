@@ -36,3 +36,11 @@
     transform: rotate(360deg);
   }
 }
+
+.connection-status {
+  color: red;
+
+  &--connected {
+    color: green;
+  }
+}
