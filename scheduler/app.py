@@ -3,6 +3,7 @@
 from logging import INFO
 from flask import Flask
 from flask_apscheduler import APScheduler
+from flask_cors import CORS
 from werkzeug.utils import import_string
 
 
@@ -23,5 +24,5 @@ def create_app() -> Flask:
     scheduler.init_app(app)
     scheduler.start()
     app.register_blueprint(jobs_bp)
-
+    CORS(app)
     return app

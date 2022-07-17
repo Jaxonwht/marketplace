@@ -16,7 +16,10 @@ flask==2.1.2
     # via
     #   -r requirements.in
     #   flask-apscheduler
+    #   flask-cors
 flask-apscheduler==1.12.4
+    # via -r requirements.in
+flask-cors==3.0.10
     # via -r requirements.in
 greenlet==1.1.2
     # via sqlalchemy
@@ -43,6 +46,7 @@ requests==2.27.1
 six==1.16.0
     # via
     #   apscheduler
+    #   flask-cors
     #   python-dateutil
 sqlalchemy==1.4.37
     # via -r requirements.in
