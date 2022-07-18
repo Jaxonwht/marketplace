@@ -1,6 +1,13 @@
 from flask import Blueprint, abort, current_app, jsonify, request
+from werkzeug.exceptions import HTTPException
 
-from dal.deal_dal import create_deal, current_open_deals, patch_deal_open_asset_price
+from dal.deal_dal import (
+    close_deal,
+    create_deal,
+    current_open_deals,
+    find_closeable_deal_serial_ids,
+    patch_deal_open_asset_price,
+)
 from utils.datetime_utils import format_datetime_str_or_raise
 from utils.json_utils import get_not_none
 
@@ -85,3 +92,18 @@ def create_new_deal():
         dealer_name, nft_id, share_price, allowed_rates, initial_number_of_shares, start_time, end_time
     )
     return jsonify(created_deal.serial_id)
+
+
+@deal_bp.post("/close-all-eligible")
+def close_all_closeable_deals():
+    """
+    Scan for all the deals that should be closed but not yet closed. This method will find each
+    of them and attempt to close them. If one deal fails to close, we will still go on to close the
+    other deals.
+    """
+    closeable_ids = find_closeable_deal_serial_ids()
+    for closeable_id in closeable_ids:
+        try:
+            close_deal(closeable_id)
+        except HTTPException:
+            current_app.logger.error(f"Failed to close deal {closeable_id}", exc_info=True)
