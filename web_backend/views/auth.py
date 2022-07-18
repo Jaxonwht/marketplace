@@ -58,9 +58,9 @@ def login():  # pylint: disable=inconsistent-return-statements
         abort(401, "Password does not match")
 
 
-@auth_bp.get("/status")
+@auth_bp.get("/who-am-i")
 @jwt_required()
-def login_status():
+def identify_self():
     """
     Only a logged-in user will be able to access this route. This is a convenient route to check whether
     the request initiater has the appropriate JWT tokens.
