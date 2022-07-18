@@ -11,6 +11,7 @@ class AccountType(Enum):
 
     BUYER = "buyer"
     DEALER = "dealer"
+    ADMIN = "admin"
 
 
 @dataclass

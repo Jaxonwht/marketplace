@@ -56,6 +56,13 @@ def login():  # pylint: disable=inconsistent-return-statements
             access_token = create_access_token(user_identity, expires_delta=timedelta(days=1))
             return jsonify(access_token=access_token)
         abort(401, "Password does not match")
+    elif valid_account_type == AccountType.ADMIN:
+        if username != current_app.config["ADMIN_USERNAME"]:
+            abort(401, "Incorrect admin username")
+        if password != current_app.config["ADMIN_PASSWORD"]:
+            abort(401, "Incorrect admin password")
+        access_token = create_access_token(user_identity, expires_delta=timedelta(days=1))
+        return jsonify(access_token=access_token)
 
 
 @auth_bp.get("/who-am-i")
