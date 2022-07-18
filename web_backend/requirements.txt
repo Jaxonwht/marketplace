@@ -12,9 +12,12 @@ flask==2.1.2
     # via
     #   -r requirements.in
     #   flask-cors
+    #   flask-jwt-extended
     #   flask-migrate
     #   flask-sqlalchemy
 flask-cors==3.0.10
+    # via -r requirements.in
+flask-jwt-extended==4.4.2
     # via -r requirements.in
 flask-migrate==3.1.0
     # via -r requirements.in
@@ -36,6 +39,8 @@ markupsafe==2.1.1
     #   mako
 psycopg2-binary==2.9.3
     # via -r requirements.in
+pyjwt==2.4.0
+    # via flask-jwt-extended
 python-dateutil==2.8.2
     # via -r requirements.in
 six==1.16.0
@@ -50,4 +55,6 @@ sqlalchemy==1.4.37
 uwsgi==2.0.20
     # via -r requirements.in
 werkzeug==2.1.2
-    # via flask
+    # via
+    #   flask
+    #   flask-jwt-extended

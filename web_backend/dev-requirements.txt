@@ -25,9 +25,12 @@ flask==2.1.2
     # via
     #   -r requirements.txt
     #   flask-cors
+    #   flask-jwt-extended
     #   flask-migrate
     #   flask-sqlalchemy
 flask-cors==3.0.10
+    # via -r requirements.txt
+flask-jwt-extended==4.4.2
     # via -r requirements.txt
 flask-migrate==3.1.0
     # via -r requirements.txt
@@ -87,7 +90,11 @@ pycodestyle==2.8.0
     #   flake8
 pyflakes==2.4.0
     # via flake8
-pylint==2.14.4
+pyjwt==2.4.0
+    # via
+    #   -r requirements.txt
+    #   flask-jwt-extended
+pylint==2.14.5
     # via -r dev-requirements.in
 pynvim==0.4.3
     # via -r dev-requirements.in
@@ -120,6 +127,7 @@ werkzeug==2.1.2
     # via
     #   -r requirements.txt
     #   flask
+    #   flask-jwt-extended
 wrapt==1.14.1
     # via astroid
 

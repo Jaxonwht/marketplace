@@ -5,6 +5,7 @@ from flask import Flask
 from flask_apscheduler import APScheduler
 from flask_cors import CORS
 from werkzeug.utils import import_string
+from views.jobs import jobs_bp
 
 
 def create_app() -> Flask:
@@ -17,8 +18,6 @@ def create_app() -> Flask:
     app.config.from_object(import_string(f"configs.{flask_config}")())
 
     app.logger.setLevel(app.config.get("MAIN_LOGGING_LEVEL", INFO))  # pylint: disable=no-member
-
-    from views.jobs import jobs_bp  # pylint: disable=import-outside-toplevel
 
     scheduler = APScheduler()
     scheduler.init_app(app)
