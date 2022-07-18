@@ -2,7 +2,10 @@
 from logging import INFO
 from flask import Flask
 from flask_cors import CORS
+from werkzeug.exceptions import HTTPException
 from werkzeug.utils import import_string
+
+from exceptions.error_handlers import handle_http_exception
 
 
 def create_app() -> Flask:
@@ -23,6 +26,7 @@ def create_app() -> Flask:
     from views.buyer import buyer_bp  # pylint: disable=import-outside-toplevel
     from views.transaction import transaction_bp  # pylint: disable=import-outside-toplevel
     from views.ownership import ownership_bp  # pylint: disable=import-outside-toplevel
+    from views.auth import auth_bp  # pylint: disable=import-outside-toplevel
     from db import flask_db  # pylint: disable=import-outside-toplevel
     from migrate import flask_migrate  # pylint: disable=import-outside-toplevel
 
@@ -35,5 +39,9 @@ def create_app() -> Flask:
     app.register_blueprint(buyer_bp)
     app.register_blueprint(transaction_bp)
     app.register_blueprint(ownership_bp)
+    app.register_blueprint(auth_bp)
+
+    app.register_error_handler(HTTPException, handle_http_exception)
+
     CORS(app)
     return app
