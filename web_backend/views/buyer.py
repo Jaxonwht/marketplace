@@ -13,6 +13,7 @@ def create_new_buyer():
         buyer_name (str): Name of the buyer.
         starting_balance (Optional[float]): Starting balance of the dealer.
             If left unspecified, the dealer will have 0 as the starting balance.
+        password (str): Password for this buyer account.
 
     Returns:
         "OK" if successful.
@@ -21,10 +22,11 @@ def create_new_buyer():
     if request_body_json is None:
         abort(400, "Request body is not a valid JSON")
     buyer_name = get_not_none(request_body_json, "buyer_name")
+    password = get_not_none(request_body_json, "password")
     if get_buyer_by_name(buyer_name):
         abort(409, f"Buyer with name {buyer_name} already exists")
     starting_balance = request_body_json.get("starting_balance")
-    create_buyer(buyer_name, starting_balance)
+    create_buyer(buyer_name, password, starting_balance)
     return jsonify("OK")
 
 
