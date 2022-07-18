@@ -1,13 +1,16 @@
 from collections.abc import Iterable
 from typing import List, Optional
 
+from flask import current_app
 from sqlalchemy import select
 from models.dealer_model import Dealer
 from db import flask_session
+from utils.auth_utils import salted_hash
 
 
-def create_dealer(dealer_name: str, starting_balance: Optional[float]) -> Dealer:
-    dealer = Dealer(name=dealer_name, balance=starting_balance)
+def create_dealer(dealer_name: str, starting_balance: Optional[float], password: str) -> Dealer:
+    password_hash, salt = salted_hash(password, current_app.config["PASSWORD_HASH_ITERATIONS"])
+    dealer = Dealer(name=dealer_name, balance=starting_balance, password_hash=password_hash, salt=salt)
     flask_session.add(dealer)
     flask_session.commit()
     return dealer

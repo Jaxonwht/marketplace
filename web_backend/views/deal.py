@@ -24,7 +24,7 @@ def get_open_deal_ids():
 
 
 @deal_bp.route("/", methods=["POST"])
-def patch_deal_open_asset_price():
+def patch_open_asset_price():
     """
     Update an existing deal. If a deal with provided serial_id is not found,
     raise an appropriate error.
