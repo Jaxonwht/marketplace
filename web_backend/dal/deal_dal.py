@@ -24,8 +24,8 @@ def current_open_deals(max_share_price: Optional[float] = None) -> Iterable[Deal
         yield deal
 
 
-def get_deal_by_name(deal_name: str) -> Optional[Deal]:
-    return flask_session.get(Deal, deal_name)
+def get_deal_by_serial_id(serial_id: int) -> Optional[Deal]:
+    return flask_session.get(Deal, serial_id)
 
 
 def patch_deal_open_asset_price(serial_id: int, open_asset_price: float) -> Deal:
@@ -96,7 +96,7 @@ def close_deal(serial_id: int) -> None:
         abort(404, f"Deal {serial_id} does not exist")
     if deal.closed:
         abort(409, f"Deal {serial_id} is already closed")
-    if deal.end_time <= datetime.now():
+    if deal.end_time > datetime.now():
         abort(409, f"Deal {serial_id} has an end time {deal.end_time} which has not passed yet")
     if deal.start_time < datetime.now() and deal.open_asset_price is None:
         abort(500, f"Deal {serial_id} has started but does not have an open asset price, need attention")
@@ -116,6 +116,7 @@ def close_deal(serial_id: int) -> None:
             deal_serial_id=serial_id,
             shares=-typed_ownership.shares,
             rate=typed_ownership.rate,
+            asset_price=deal.closed_asset_price,
         )
         flask_session.add(transaction)
         profit = profit_for_buyer(

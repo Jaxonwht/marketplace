@@ -1,6 +1,6 @@
 from collections.abc import Iterable
 from datetime import datetime
-from typing import List, Optional
+from typing import Optional
 from flask import abort
 from sqlalchemy import select
 from sqlalchemy.dialects.postgresql import insert
@@ -76,7 +76,9 @@ def sell_shares(
     if ownership is None or ownership.shares < shares:
         abort(409, f"Buyer {buyer_name} does not have enough shares to sell {shares} shares")
     ownership.shares = Ownership.shares - shares
-    transaction = Transaction(buyer_name=buyer_name, deal_serial_id=deal_serial_id, shares=-shares, rate=rate)
+    transaction = Transaction(
+        buyer_name=buyer_name, deal_serial_id=deal_serial_id, shares=-shares, rate=rate, asset_price=current_asset_price
+    )
     flask_session.add(transaction)
     profit = profit_for_buyer(deal.open_asset_price, current_asset_price, deal.share_price, rate, shares)
     buyer.balance = Buyer.balance + shares * deal.share_price + profit

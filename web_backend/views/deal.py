@@ -1,3 +1,4 @@
+from typing import Any, Dict
 from flask import Blueprint, abort, current_app, jsonify, request
 from werkzeug.exceptions import HTTPException
 
@@ -6,6 +7,7 @@ from dal.deal_dal import (
     create_deal,
     current_open_deals,
     find_closeable_deal_serial_ids,
+    get_deal_by_serial_id,
     patch_deal_open_asset_price,
 )
 from utils.datetime_utils import format_datetime_str_or_raise
@@ -30,7 +32,19 @@ def get_open_deal_ids():
     return jsonify(tuple(deal.serial_id for deal in deals))
 
 
-@deal_bp.route("/", methods=["POST"])
+@deal_bp.get("/<int:serial_id>")
+def get_deal_info_by_id(serial_id: int) -> Dict[str, Any]:
+    """
+    Path Params:
+        serial_id (int): The id of the deal to fetch information from.
+    """
+    deal = get_deal_by_serial_id(serial_id)
+    if not deal:
+        abort(404, f"Deal {serial_id} not found")
+    return deal.info
+
+
+@deal_bp.route("/", methods=["PATCH"])
 def patch_open_asset_price():
     """
     Update an existing deal. If a deal with provided serial_id is not found,
@@ -102,8 +116,13 @@ def close_all_closeable_deals():
     other deals.
     """
     closeable_ids = find_closeable_deal_serial_ids()
+    closed_ids = []
+    failed_ids = []
     for closeable_id in closeable_ids:
         try:
             close_deal(closeable_id)
+            closed_ids.append(closeable_id)
         except HTTPException:
             current_app.logger.error(f"Failed to close deal {closeable_id}", exc_info=True)
+            failed_ids.append(closeable_id)
+    return jsonify(closed_deal_ids=closed_ids, failed_to_close_deal_ids=failed_ids)
