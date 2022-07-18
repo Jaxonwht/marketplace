@@ -24,6 +24,7 @@ services:
       FLASK_APP: app
       FLASK_ENV: development
       FLASK_CONFIG: DockerDevelopmentConfig
+      FLASK_SECRET_KEY: supersupersecret
     volumes:
       - ./web_backend:/web_backend
     networks:
