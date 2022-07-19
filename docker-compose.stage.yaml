@@ -21,6 +21,9 @@ services:
     environment:
       SQLALCHEMY_DATABASE_URI: "postgresql://local_user:dev_password@db:5432/local_db"
       FLASK_CONFIG: StagingConfig
+      FLASK_SECRET_KEY: supersupeersecret
+      FLASK_ADMIN_USERNAME: admin
+      FLASK_ADMIN_PASSWORD: admin-password
     volumes:
       - ./web_backend:/web_backend
     networks:

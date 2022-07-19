@@ -24,6 +24,9 @@ services:
       FLASK_APP: app
       FLASK_ENV: development
       FLASK_CONFIG: DockerDevelopmentConfig
+      FLASK_SECRET_KEY: supersupersecret
+      FLASK_ADMIN_USERNAME: admin
+      FLASK_ADMIN_PASSWORD: admin-password
     volumes:
       - ./web_backend:/web_backend
     networks:
