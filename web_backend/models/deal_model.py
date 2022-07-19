@@ -1,5 +1,5 @@
 """A deal is one game."""
-from typing import List
+from typing import Any, Dict, List
 from sqlalchemy import Boolean, CheckConstraint, Column, Float, ForeignKey, Integer, String
 from sqlalchemy.dialects.postgresql import ARRAY, TIMESTAMP
 from sqlalchemy.orm import backref, relationship
@@ -22,9 +22,27 @@ class Deal(flask_db.Model):
     start_time = Column(TIMESTAMP, nullable=False)
     end_time = Column(TIMESTAMP, nullable=False)
     closed = Column(Boolean, nullable=False)
+    lockup_balance = Column(Float, CheckConstraint("lockup_balance >= 0"), nullable=False)
     transactions: List[Transaction] = relationship(
         Transaction, backref=backref("deal"), cascade="all, delete", passive_deletes=True
     )
     ownerships: List[Ownership] = relationship(
         Ownership, backref=backref("deal"), cascade="all, delete", passive_deletes=True
     )
+
+    @property
+    def info(self) -> Dict[str, Any]:
+        return {
+            "serial_id": self.serial_id,
+            "dealer_name": self.dealer_name,
+            "nft_id": self.nft_id,
+            "share_price": self.share_price,
+            "allowed_rates": self.allowed_rates,
+            "shares_remaining": self.shares_remaining,
+            "open_asset_price": self.open_asset_price,
+            "closed_asset_price": self.closed_asset_price,
+            "start_time": str(self.start_time),
+            "end_time": str(self.end_time),
+            "closed": self.closed,
+            "lockup_balance": self.lockup_balance,
+        }

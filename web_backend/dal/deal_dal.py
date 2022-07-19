@@ -1,11 +1,15 @@
 from datetime import datetime
-from typing import Iterable, List, Optional
+from typing import Iterable, List, Optional, cast
 from flask import abort
 
 from sqlalchemy import select
 from db import flask_session
+from models.buyer_model import Buyer
 from models.deal_model import Deal
 from models.dealer_model import Dealer
+from models.ownership_model import Ownership
+from models.transaction_model import Transaction
+from utils.profits_utils import profit_for_buyer
 
 
 # Maximum allowed rate of profit or loss.
@@ -20,8 +24,8 @@ def current_open_deals(max_share_price: Optional[float] = None) -> Iterable[Deal
         yield deal
 
 
-def get_deal_by_name(deal_name: str) -> Optional[Deal]:
-    return flask_session.get(Deal, deal_name)
+def get_deal_by_serial_id(serial_id: int) -> Optional[Deal]:
+    return flask_session.get(Deal, serial_id)
 
 
 def patch_deal_open_asset_price(serial_id: int, open_asset_price: float) -> Deal:
@@ -71,8 +75,62 @@ def create_deal(
         shares_remaining=initial_number_of_shares,
         start_time=start_time,
         end_time=end_time,
+        lockup_balance=amount_needed,
         closed=False,
     )
     flask_session.add(new_deal)
     flask_session.commit()
     return new_deal
+
+
+def find_closeable_deal_serial_ids() -> List[int]:
+    """Find all the serial IDs of deals that ought to be closed but haven't."""
+    statement = select(Deal.serial_id).where(Deal.end_time < datetime.now(), ~Deal.closed)
+    return flask_session.scalars(statement).all()
+
+
+def close_deal(serial_id: int) -> None:
+    """Close a deal."""
+    deal: Deal = flask_session.get(Deal, serial_id, with_for_update={"key_share": True})
+    if deal is None:
+        abort(404, f"Deal {serial_id} does not exist")
+    if deal.closed:
+        abort(409, f"Deal {serial_id} is already closed")
+    if deal.end_time > datetime.now():
+        abort(409, f"Deal {serial_id} has an end time {deal.end_time} which has not passed yet")
+    if deal.start_time < datetime.now() and deal.open_asset_price is None:
+        abort(500, f"Deal {serial_id} has started but does not have an open asset price, need attention")
+    dealer: Dealer = flask_session.get(Dealer, deal.dealer_name, with_for_update={"key_share": True})
+    if not dealer:
+        abort(404, f"Dealer {deal.dealer_name} not found")
+    deal.closed_asset_price = 1.0  # TODO get the correct closed asset price
+    deal.closed = True
+    for ownership in flask_session.scalars(
+        select(Ownership)
+        .where(Ownership.deal_serial_id == serial_id, Ownership.shares != 0)
+        .with_for_update(key_share=True)
+    ):
+        typed_ownership = cast(Ownership, ownership)
+        transaction = Transaction(
+            buyer_name=typed_ownership.buyer_name,
+            deal_serial_id=serial_id,
+            shares=-typed_ownership.shares,
+            rate=typed_ownership.rate,
+            asset_price=deal.closed_asset_price,
+        )
+        flask_session.add(transaction)
+        profit = profit_for_buyer(
+            deal.open_asset_price,
+            deal.closed_asset_price,
+            deal.share_price,
+            typed_ownership.rate,
+            typed_ownership.shares,
+        )
+        buyer: Buyer = flask_session.get(Buyer, typed_ownership.buyer_name, with_for_update={"key_share": True})
+        if not buyer:
+            abort(404, f"Buyer {typed_ownership.buyer_name} not found")
+        buyer.balance = Buyer.balance + typed_ownership.shares * deal.share_price + profit
+        dealer.balance = Dealer.balance - profit
+        typed_ownership.shares = 0
+    dealer.lockup_balance = Dealer.lockup_balance - deal.lockup_balance
+    flask_session.commit()
