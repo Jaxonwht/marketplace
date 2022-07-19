@@ -9,3 +9,4 @@ class DockerDevelopmentConfig(Config):  # pylint: disable=too-few-public-methods
 
     SQLALCHEMY_DATABASE_URI = "postgresql://local_user:dev_password@db:5432/local_db"
     SCHEDULER_JOBSTORES = {"default": SQLAlchemyJobStore(url=SQLALCHEMY_DATABASE_URI)}
+    WEB_BACKEND_URL = "http://web_backend:5000"

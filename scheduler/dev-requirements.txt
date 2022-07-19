@@ -89,7 +89,7 @@ pycodestyle==2.8.0
     #   flake8
 pyflakes==2.4.0
     # via flake8
-pylint==2.14.4
+pylint==2.14.5
     # via -r dev-requirements.in
 pynvim==0.4.3
     # via -r dev-requirements.in
@@ -124,6 +124,10 @@ tomlkit==0.11.1
     # via pylint
 types-python-dateutil==2.8.18
     # via -r dev-requirements.in
+types-requests==2.28.2
+    # via -r dev-requirements.in
+types-urllib3==1.26.16
+    # via types-requests
 typing-extensions==4.3.0
     # via mypy
 tzdata==2022.1
