@@ -21,3 +21,4 @@ class ProductionConfig(Config):  # pylint: disable=too-few-public-methods
 
     SQLALCHEMY_ECHO = False
     MAIN_LOGGING_LEVEL = INFO
+    WEB_BACKEND_URL = "https://client-service-prod/api"

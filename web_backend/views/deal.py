@@ -1,3 +1,4 @@
+import requests
 from typing import Any, Dict
 from flask import Blueprint, abort, current_app, jsonify, request
 from werkzeug.exceptions import HTTPException
@@ -105,7 +106,23 @@ def create_new_deal():
     created_deal = create_deal(
         dealer_name, nft_id, share_price, allowed_rates, initial_number_of_shares, start_time, end_time
     )
+    response = requests.post(
+        f'{current_app.config["SCHEDULER_URL"]}/jobs/close-deal-in-future',
+        json={"deal_serial_id": created_deal.serial_id, "end_time": end_time_str},
+    )
+    response.raise_for_status()
     return jsonify(created_deal.serial_id)
+
+
+@deal_bp.patch("/<int:serial_id>/close")
+def close_deal_by_serial_id(serial_id: int):
+    """
+    Close a deal by its serial ID.
+
+    Path Params:
+        serial_id (int): Id of the deal to close.
+    """
+    close_deal(serial_id)
 
 
 @deal_bp.post("/close-all-eligible")

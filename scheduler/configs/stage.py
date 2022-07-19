@@ -1,5 +1,4 @@
 """Development config."""
-from pathlib import Path
 from logging import INFO
 from apscheduler.jobstores.sqlalchemy import SQLAlchemyJobStore
 from configs.base import Config
@@ -12,3 +11,4 @@ class StagingConfig(Config):  # pylint: disable=too-few-public-methods
     SCHEDULER_JOBSTORES = {"default": SQLAlchemyJobStore(url=SQLALCHEMY_DATABASE_URI)}
     SQLALCHEMY_ECHO = True
     MAIN_LOGGING_LEVEL = INFO
+    WEB_BACKEND_URL = "https://web-backend-service-prod:5000"

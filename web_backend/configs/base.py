@@ -11,3 +11,4 @@ class Config:  # pylint: disable=too-few-public-methods
     SQLALCHEMY_ECHO = True
     MAIN_LOGGING_LEVEL = DEBUG
     PASSWORD_HASH_ITERATIONS = 10000
+    SCHEDULER_URL = "http://localhost:4000"

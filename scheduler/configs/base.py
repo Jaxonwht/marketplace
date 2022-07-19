@@ -22,3 +22,4 @@ class Config:  # pylint: disable=too-few-public-methods
     }
     SCHEDULER_JOB_DEFAULTS = {"max_instances": 3}
     SCHEDULER_TIMEZONE = utc
+    WEB_BACKEND_URL = "http://localhost:5000"
