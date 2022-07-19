@@ -14,4 +14,4 @@ class ProductionConfig(Config):  # pylint: disable=too-few-public-methods
 
     SQLALCHEMY_ECHO = False
     MAIN_LOGGING_LEVEL = INFO
-    SCHEDULER_URL = "https://client-service-prod/scheduler"
+    SCHEDULER_URL = "http://client-service-prod/scheduler"
