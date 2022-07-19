@@ -1,7 +1,6 @@
 """Development config."""
 from pathlib import Path
 from logging import INFO
-from typing import Dict
 from configs.base import Config
 
 
@@ -15,3 +14,4 @@ class ProductionConfig(Config):  # pylint: disable=too-few-public-methods
 
     SQLALCHEMY_ECHO = False
     MAIN_LOGGING_LEVEL = INFO
+    SCHEDULER_URL = "http://client-service-prod/scheduler"
