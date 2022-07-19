@@ -1,5 +1,5 @@
 from flask import Blueprint, abort, jsonify, request
-from dal.transaction_dal import buy_shares, find_transactions
+from dal.transaction_dal import buy_shares, find_transactions, sell_shares
 
 from utils.json_utils import get_not_none
 
@@ -29,12 +29,13 @@ def post_transaction():
     shares = get_not_none(request_body_json, "shares")
     rate = get_not_none(request_body_json, "rate")
     if shares < 0:
-        abort(501, "Share selling is not yet implemented")
-    elif shares > 0:
+        current_asset_price = 0.5  # TODO how to fetch this
+        created_transaction = sell_shares(buyer_name, deal_serial_id, current_asset_price, -shares, rate)
+        return jsonify(sell_transaction_serial_id=created_transaction.serial_id)
+    if shares > 0:
         created_transaction = buy_shares(buyer_name, deal_serial_id, shares, rate)
-        return jsonify(created_transaction.serial_id)
-    else:
-        return jsonify("When shares is equal 0, nothing will happen"), 304
+        return jsonify(buy_transaction_serial_id=created_transaction.serial_id)
+    return jsonify("When shares is equal 0, nothing will happen"), 304
 
 
 @transaction_bp.get("/")
