@@ -120,7 +120,7 @@ const Login = ({ onLoggedIn, onLoggedOut }: LoginProps) => {
         <br />
         For the purpose of this demo, only MetaMask login is implemented.
       </p>
-      <button className="Login-button Login-mm" onClick={handleClick}>
+      <button onClick={handleClick}>
         {loading ? "Loading..." : "Login with MetaMask"}
       </button>
     </div>
