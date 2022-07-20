@@ -15,7 +15,10 @@ def jobs():
 
 
 def _request_close_deal(web_backend_url: str, serial_id: int) -> None:
-    response = requests.patch(f"{web_backend_url}/deal/{serial_id}/close")
+    jwt_token = current_app.config["PERPETUAL_SCHEDULER_TOKEN"]
+    response = requests.patch(
+        f"{web_backend_url}/deal/{serial_id}/close", headers={"Authorization": f"Bearer {jwt_token}"}
+    )
     response.raise_for_status()
 
 

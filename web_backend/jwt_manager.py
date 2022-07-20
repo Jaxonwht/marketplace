@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from enum import Enum
 from typing import Dict
-from flask_jwt_extended import JWTManager, jwt_required
+from flask_jwt_extended import JWTManager
 
 jwt = JWTManager()
 
