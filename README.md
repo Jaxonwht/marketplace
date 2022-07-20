@@ -77,6 +77,7 @@ tables, you do not need to run any migration either. You can simply invoke the `
 Always double-check the auto-generated migration file before commiting to the upgrade.
 
 ### Okteto cluster deployment
+
 1. `curl https://get.okteto.com -sSfL | sh` to install the Okteto CLI.
 2. `okteto context use https://cloud.okteto.com -n <namespace> -t <token>` to configure CLI.
 3. `okteto build . -f Dockerfile.web_backend.prod -t okteto.dev/marketplace-web-backend:latest` to build and push web_backend image to Okteto registry.
@@ -84,8 +85,10 @@ Always double-check the auto-generated migration file before commiting to the up
 5. `kubectl apply -f k8s/`
 
 ### How to deploy and use secret?
+
 1. `kubectl create secret generic <secret-name> --from-literal='<key>=<secret>'`.
 2. Create a Pod that has access to the secret data through a Volume.
+
 ```
 apiVersion: v1
 kind: Pod
@@ -105,7 +108,9 @@ spec:
       secret:
         secretName: <secret-name>
 ```
+
 3. Use the secret in code.
+
 ```
 from pathlib import Path
 
@@ -119,5 +124,4 @@ docker compose. You can start the staging environment with `docker compose -f do
 that the stage environment tries to mimic the production envrionment as much as possible. Therefore, the web_backend
 and scheduler in staging mode exposes uwsgi sockets instead of http sockets and the client does implement reverse proxy.
 If you want to send a request to the `web_backend`, you should not use `localhost:5000` as the endpoint. Rather, use
-`localhost/api`. Similarly, `scheduler`'s endpoint is no longer `localhost:4000`, but `localhost/scheduler`. The client
-website will simply be located at `localhost`.
+`localhost/api`. The client website will simply be located at `localhost`. The scheduler endpoint is still `localhost:4000`.
