@@ -66,6 +66,7 @@ const App = () => {
           Learn React
         </a>
       </header>
+      <div className={styles["login-area"]}></div>
       {token ? (
         <div>Hello</div>
       ) : (
