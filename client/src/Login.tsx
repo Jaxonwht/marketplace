@@ -1,10 +1,21 @@
 import React, { useState } from "react";
 import Web3 from "web3";
+import type { MetaMaskInpageProvider } from "@metamask/providers";
 
-let web3: Web3 | undefined = undefined; // Will hold the web3 instance
+declare global {
+  interface Window {
+    ethereum: MetaMaskInpageProvider;
+  }
+}
 
-const Login = ({ onLoggedIn }: any) => {
+interface LoginProps {
+  onLoggedIn: (token: string) => void;
+  onLoggedOut: () => void;
+}
+
+const Login = ({ onLoggedIn, onLoggedOut }: LoginProps) => {
   const [loading, setLoading] = useState(false); // Loading button state
+  const [web3, setWeb3] = useState<Web3 | null>(null);
 
   const handleAuthenticate = ({
     publicAddress,
@@ -56,20 +67,24 @@ const Login = ({ onLoggedIn }: any) => {
     }
 
     if (!web3) {
+      if (!window.ethereum) {
+        window.alert("You need to allow MetaMask.");
+        return;
+      }
       try {
         // Request account access if needed
-        await (window as any).ethereum.enable();
+        await window.ethereum.request({ method: "eth_requestAccounts" });
 
         // We don't know window.web3 version, so we use our own instance of Web3
         // with the injected provider given by MetaMask
-        web3 = new Web3((window as any).ethereum);
+        setWeb3(new Web3(window.ethereum as any));
       } catch (error) {
         window.alert("You need to allow MetaMask.");
         return;
       }
     }
 
-    const coinbase = await web3.eth.getCoinbase();
+    const coinbase = await web3?.eth?.getCoinbase();
     if (!coinbase) {
       window.alert("Please activate MetaMask first.");
       return;

@@ -26,7 +26,7 @@ const App = () => {
 
   useEffect(() => {
     // Access token is stored in localstorage
-    const ls = window.localStorage.getItem(LS_KEY);
+    const ls = localStorage.getItem(LS_KEY);
     const token = ls && JSON.parse(ls);
     setToken(token);
   }, []);
@@ -42,9 +42,8 @@ const App = () => {
   };
 
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
+    <div>
+      <header>
         <p>
           <div>
             Web Backend Status:{" "}
@@ -69,7 +68,11 @@ const App = () => {
         </a>
       </header>
       <div className="App-intro">
-        {token ? <div>Hello</div> : <Login onLoggedIn={handleLoggedIn} />}
+        {token ? (
+          <div>Hello</div>
+        ) : (
+          <Login onLoggedIn={handleLoggedIn} onLoggedOut={handleLoggedOut} />
+        )}
       </div>
     </div>
   );
