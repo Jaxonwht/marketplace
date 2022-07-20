@@ -15,6 +15,7 @@ from views.transaction import transaction_bp
 from views.ownership import ownership_bp
 from views.auth import auth_bp
 from views.admin import admin_bp
+from views.scheduler_status import scheduler_status_bp
 from db import flask_db
 from migrate import flask_migrate
 from jwt_manager import jwt
@@ -42,6 +43,7 @@ def create_app() -> Flask:
     app.register_blueprint(ownership_bp)
     app.register_blueprint(auth_bp)
     app.register_blueprint(admin_bp)
+    app.register_blueprint(scheduler_status_bp)
 
     jwt.init_app(app)
 
