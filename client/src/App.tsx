@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import logo from "./logo.svg";
 import "./App.scss";
 import axios from "axios";
-import { SCHEDULER_ENDPOINT, WEB_BACKEND_ENDPOINT } from "./endpoints";
+import { WEB_BACKEND_ENDPOINT } from "./endpoints";
 import classNames from "classnames";
 import Login from "./Login";
 
@@ -21,7 +21,9 @@ const App = () => {
     axios
       .get(`${WEB_BACKEND_ENDPOINT}/hello-world`)
       .then(() => setBackendReady(true));
-    axios.get(`${SCHEDULER_ENDPOINT}/jobs`).then(() => setSchedulerReady(true));
+    axios
+      .get(`${WEB_BACKEND_ENDPOINT}/scheduler-status`)
+      .then(() => setSchedulerReady(true));
   });
 
   useEffect(() => {
