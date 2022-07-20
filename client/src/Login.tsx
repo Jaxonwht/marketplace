@@ -37,8 +37,11 @@ const Login = ({ onLoggedIn, onLoggedOut }: LoginProps) => {
     publicAddress: string;
     nonce: string;
   }) => {
+    if (web3 === null) {
+      throw new Error("You need to allow MetaMask.");
+    }
     try {
-      const signature = await web3!.eth.personal.sign(
+      const signature = await web3.eth.personal.sign(
         `I am signing my one-time nonce: ${nonce}`,
         publicAddress,
         "" // MetaMask will ignore the password argument here
@@ -61,16 +64,12 @@ const Login = ({ onLoggedIn, onLoggedOut }: LoginProps) => {
 
   const handleClick = async () => {
     // Check if MetaMask is installed
-    if (!(window as any).ethereum) {
+    if (!window.ethereum) {
       window.alert("Please install MetaMask first.");
       return;
     }
 
     if (!web3) {
-      if (!window.ethereum) {
-        window.alert("You need to allow MetaMask.");
-        return;
-      }
       try {
         // Request account access if needed
         await window.ethereum.request({ method: "eth_requestAccounts" });
