@@ -11,4 +11,4 @@ class StagingConfig(Config):  # pylint: disable=too-few-public-methods
     SCHEDULER_JOBSTORES = {"default": SQLAlchemyJobStore(url=SQLALCHEMY_DATABASE_URI)}
     SQLALCHEMY_ECHO = True
     MAIN_LOGGING_LEVEL = INFO
-    WEB_BACKEND_URL = "http://web-backend-service-prod:5000"
+    WEB_BACKEND_URL = "http://client-service-prod/api"
