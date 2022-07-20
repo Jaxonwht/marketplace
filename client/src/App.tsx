@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
-import logo from "./logo.svg";
-import "./App.scss";
 import axios from "axios";
+import styles from "./App.module.scss";
 import { WEB_BACKEND_ENDPOINT } from "./endpoints";
 import classNames from "classnames";
 import Login from "./Login";
@@ -9,8 +8,8 @@ import Login from "./Login";
 const LS_KEY = "login-with-metamask:authToken";
 
 const connectionStatusClassName = (connected: boolean) =>
-  classNames("connection-status", {
-    "connection-status--connected": connected,
+  classNames(styles["connection-status"], {
+    [styles["connection-status--connected"]]: connected,
   });
 
 const App = () => {
@@ -44,22 +43,20 @@ const App = () => {
   };
 
   return (
-    <div>
+    <React.Fragment>
       <header>
-        <p>
-          <div>
-            Web Backend Status:{" "}
-            <span className={connectionStatusClassName(backendReady)}>
-              {backendReady ? "connected" : "disconnected"}
-            </span>
-          </div>
-          <div>
-            Scheduler Status:{" "}
-            <span className={connectionStatusClassName(schedulerReady)}>
-              {schedulerReady ? "connected" : "disconnected"}
-            </span>
-          </div>
-        </p>
+        <div>
+          Web Backend Status:{" "}
+          <span className={connectionStatusClassName(backendReady)}>
+            {backendReady ? "connected" : "disconnected"}
+          </span>
+        </div>
+        <div>
+          Scheduler Status:{" "}
+          <span className={connectionStatusClassName(schedulerReady)}>
+            {schedulerReady ? "connected" : "disconnected"}
+          </span>
+        </div>
         <a
           className="App-link"
           href="https://reactjs.org"
@@ -69,14 +66,12 @@ const App = () => {
           Learn React
         </a>
       </header>
-      <div className="App-intro">
-        {token ? (
-          <div>Hello</div>
-        ) : (
-          <Login onLoggedIn={handleLoggedIn} onLoggedOut={handleLoggedOut} />
-        )}
-      </div>
-    </div>
+      {token ? (
+        <div>Hello</div>
+      ) : (
+        <Login onLoggedIn={handleLoggedIn} onLoggedOut={handleLoggedOut} />
+      )}
+    </React.Fragment>
   );
 };
 
