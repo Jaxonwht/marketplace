@@ -3,8 +3,10 @@ import logo from "./logo.svg";
 import "./App.scss";
 import axios from "axios";
 import { SCHEDULER_ENDPOINT, WEB_BACKEND_ENDPOINT } from "./endpoints";
-import Ethereum from "./Ethereum";
 import classNames from "classnames";
+import Login from "./Login";
+
+const LS_KEY = "login-with-metamask:authToken";
 
 const connectionStatusClassName = (connected: boolean) =>
   classNames("connection-status", {
@@ -14,12 +16,30 @@ const connectionStatusClassName = (connected: boolean) =>
 const App = () => {
   const [backendReady, setBackendReady] = useState(false);
   const [schedulerReady, setSchedulerReady] = useState(false);
+  const [token, setToken] = useState<null | string>(null);
   useEffect(() => {
     axios
       .get(`${WEB_BACKEND_ENDPOINT}/hello-world`)
       .then(() => setBackendReady(true));
     axios.get(`${SCHEDULER_ENDPOINT}/jobs`).then(() => setSchedulerReady(true));
   });
+
+  useEffect(() => {
+    // Access token is stored in localstorage
+    const ls = window.localStorage.getItem(LS_KEY);
+    const token = ls && JSON.parse(ls);
+    setToken(token);
+  }, []);
+
+  const handleLoggedIn = (token: string) => {
+    localStorage.setItem(LS_KEY, JSON.stringify(token));
+    setToken(token);
+  };
+
+  const handleLoggedOut = () => {
+    localStorage.removeItem(LS_KEY);
+    setToken(null);
+  };
 
   return (
     <div className="App">
@@ -45,10 +65,12 @@ const App = () => {
           target="_blank"
           rel="noopener noreferrer"
         >
-          <Ethereum />
           Learn React
         </a>
       </header>
+      <div className="App-intro">
+        {token ? <div>Hello</div> : <Login onLoggedIn={handleLoggedIn} />}
+      </div>
     </div>
   );
 };
