@@ -7,14 +7,11 @@ from flask import abort
 from sqlalchemy import select
 from db import flask_session
 from models.buyer_model import Buyer
-from models.dealer_model import Dealer
 
 
 def create_buyer(buyer_name: str, balance: Optional[float]) -> Buyer:
-    if flask_session.get(Buyer, buyer_name):
+    if get_buyer_by_name(buyer_name):
         abort(409, f"Buyer with name {buyer_name} already exists")
-    if flask_session.get(Dealer, buyer_name):
-        abort(409, f"{buyer_name} already exists as a dealer")
     nonce = urandom(32).hex()
     nonce_expiration = datetime.now() + timedelta(minutes=10)
     buyer_model = Buyer(name=buyer_name, balance=balance, nonce=nonce, nonce_expiration_timestamp=nonce_expiration)

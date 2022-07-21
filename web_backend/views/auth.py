@@ -42,6 +42,9 @@ def sign_in():  # pylint: disable=inconsistent-return-statements
     """
     Sign in with username and signature.
 
+    Request Params:
+        as_dealer (Optional[bool]): Whether you want to log in as a dealer.
+
     Body Params:
         username (str): Public address of the user.
         signature (str): Signature from nonce.
@@ -53,18 +56,23 @@ def sign_in():  # pylint: disable=inconsistent-return-statements
     username = get_not_none(request_body_json, "username")
     signature = get_not_none(request_body_json, "signature")
     message_prefix = get_not_none(request_body_json, "message_prefix")
+    sign_in_as_dealer = request.args.get("as_dealer", False, bool)
 
-    account_type = AccountType.BUYER
-    buyer = get_buyer_by_name(username)
-    if buyer is None:
+    if sign_in_as_dealer:
         dealer = get_dealer_by_name(username)
         if dealer is None:
-            abort(404, f"User {username} is not found")
+            abort(404, f"Dealer {username} is not found")
         else:
             nonce = dealer.nonce
             account_type = AccountType.DEALER
     else:
-        nonce = buyer.nonce
+        account_type = AccountType.BUYER
+        buyer = get_buyer_by_name(username)
+        if buyer is None:
+            abort(404, f"Buyer {username} is not found")
+        else:
+            nonce = buyer.nonce
+            account_type = AccountType.BUYER
     unverified_buyer_name: str = w3.eth.account.recover_message(
         encode_defunct(text=f"{message_prefix}{nonce}"), signature=signature
     )

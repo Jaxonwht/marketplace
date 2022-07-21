@@ -5,15 +5,12 @@ from typing import List, Optional
 
 from flask import abort
 from sqlalchemy import select
-from models.buyer_model import Buyer
 from models.dealer_model import Dealer
 from db import flask_session
 
 
 def create_dealer(dealer_name: str, starting_balance: Optional[float]) -> Dealer:
-    if flask_session.get(Buyer, dealer_name):
-        abort(409, f"Buyer with name {dealer_name} already exists")
-    if flask_session.get(Dealer, dealer_name):
+    if get_dealer_by_name(dealer_name):
         abort(409, f"{dealer_name} already exists as a dealer")
     nonce = os.urandom(32).hex()
     nonce_expiration = datetime.now() + timedelta(minutes=10)
