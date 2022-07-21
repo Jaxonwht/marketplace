@@ -1,16 +1,25 @@
+from datetime import datetime, timedelta
+import os
 from collections.abc import Iterable
 from typing import List, Optional
 
-from flask import current_app
+from flask import abort
 from sqlalchemy import select
+from models.buyer_model import Buyer
 from models.dealer_model import Dealer
 from db import flask_session
-from utils.auth_utils import salted_hash
 
 
-def create_dealer(dealer_name: str, starting_balance: Optional[float], password: str) -> Dealer:
-    password_hash, salt = salted_hash(password, current_app.config["PASSWORD_HASH_ITERATIONS"])
-    dealer = Dealer(name=dealer_name, balance=starting_balance, password_hash=password_hash, salt=salt)
+def create_dealer(dealer_name: str, starting_balance: Optional[float]) -> Dealer:
+    if flask_session.get(Buyer, dealer_name):
+        abort(409, f"Buyer with name {dealer_name} already exists")
+    if flask_session.get(Dealer, dealer_name):
+        abort(409, f"{dealer_name} already exists as a dealer")
+    nonce = os.urandom(32).hex()
+    nonce_expiration = datetime.now() + timedelta(minutes=10)
+    dealer = Dealer(
+        name=dealer_name, balance=starting_balance, nonce=nonce, nonce_expiration_timestamp=nonce_expiration
+    )
     flask_session.add(dealer)
     flask_session.commit()
     return dealer

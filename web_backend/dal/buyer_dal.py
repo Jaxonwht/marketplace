@@ -2,13 +2,19 @@ from collections.abc import Iterable
 from typing import List, Optional
 from os import urandom
 from datetime import datetime, timedelta
+from flask import abort
 
 from sqlalchemy import select
 from db import flask_session
 from models.buyer_model import Buyer
+from models.dealer_model import Dealer
 
 
 def create_buyer(buyer_name: str, balance: Optional[float]) -> Buyer:
+    if flask_session.get(Buyer, buyer_name):
+        abort(409, f"Buyer with name {buyer_name} already exists")
+    if flask_session.get(Dealer, buyer_name):
+        abort(409, f"{buyer_name} already exists as a dealer")
     nonce = urandom(32).hex()
     nonce_expiration = datetime.now() + timedelta(minutes=10)
     buyer_model = Buyer(name=buyer_name, balance=balance, nonce=nonce, nonce_expiration_timestamp=nonce_expiration)
@@ -39,20 +45,3 @@ def get_buyers_by_names(names: List[str]) -> Iterable[Buyer]:
     else:
         for buyer in flask_session.scalars(select(Buyer)):
             yield buyer
-
-
-def get_nonce_or_create_buyer(buyer_name: str) -> Buyer:
-    buyer = flask_session.get(Buyer, buyer_name, with_for_update={"key_share": True})
-    if buyer is None:
-        nonce = urandom(32).hex()
-        nonce_expiration = datetime.now() + timedelta(minutes=10)
-        buyer = Buyer(name=buyer_name, balance=0, nonce=nonce, nonce_expiration_timestamp=nonce_expiration)
-        flask_session.add(buyer)
-        flask_session.commit()
-    elif (buyer.nonce_expiration_timestamp - datetime.now()).total_seconds() < 60:
-        nonce = urandom(32).hex()
-        nonce_expiration = datetime.now() + timedelta(minutes=10)
-        buyer.nonce = nonce
-        buyer.nonce_expiration_timestamp = nonce_expiration
-        flask_session.commit()
-    return buyer

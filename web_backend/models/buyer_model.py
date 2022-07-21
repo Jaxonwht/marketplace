@@ -1,6 +1,6 @@
 """Contains the buyer information"""
 from typing import Dict, List
-from sqlalchemy import CheckConstraint, Column, Float, String, BigInteger
+from sqlalchemy import CheckConstraint, Column, Float, String
 from sqlalchemy.orm import backref, relationship
 from sqlalchemy.dialects.postgresql import TIMESTAMP
 from db import flask_db

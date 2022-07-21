@@ -3,45 +3,14 @@ from flask import Blueprint, abort, current_app, jsonify, request
 from flask_jwt_extended import create_access_token, get_current_user, jwt_required
 from web3.auto import w3
 from eth_account.messages import encode_defunct
+from dal.auth_dal import get_nonce_or_create_buyer
 
 from dal.buyer_dal import get_buyer_by_name
 from dal.dealer_dal import get_dealer_by_name
 from jwt_manager import AccountType, MarketplaceIdentity
-from utils.auth_utils import verify_password
 from utils.json_utils import get_not_none
 
 auth_bp = Blueprint("auth", __name__, url_prefix="/auth")
-
-
-@auth_bp.post("/sign-in-as-dealer")
-def sign_in_as_dealer():  # pylint: disable=inconsistent-return-statements
-    """
-    Sign in as a dealer given that the user is already a buyer. This login uses the Authorization
-    Basic header.
-
-    Request Params:
-        account_type (str): Must be either "buyer" or "dealer".
-    """
-    auth_header = request.authorization
-    if auth_header is None:
-        abort(400, "Authorization header missing")
-    username = auth_header.username
-    if username is None:
-        abort(400, "username is missing in Auth header")
-    password = auth_header.password
-    if password is None:
-        abort(400, "password is missing in Auth header")
-    user_identity = MarketplaceIdentity(AccountType.DEALER, username)
-    dealer = get_dealer_by_name(username)
-    if dealer is None:
-        abort(404, f"Dealer {username} is not found")
-    password_match = verify_password(
-        password, dealer.password_hash, dealer.salt, current_app.config["PASSWORD_HASH_ITERATIONS"]
-    )
-    if password_match:
-        access_token = create_access_token(user_identity, expires_delta=timedelta(days=1))
-        return jsonify(access_token=access_token)
-    abort(401, "Password does not match")
 
 
 @auth_bp.post("/sign-in-as-admin")
@@ -68,33 +37,41 @@ def sign_in_as_admin():  # pylint: disable=inconsistent-return-statements
     return jsonify(access_token=access_token)
 
 
-@auth_bp.post("/sign-in-as-buyer")
-def sign_in_as_buyer():  # pylint: disable=inconsistent-return-statements
+@auth_bp.post("/sign-in")
+def sign_in():  # pylint: disable=inconsistent-return-statements
     """
-    Sign in with buyer_name and signature.
+    Sign in with username and signature.
 
     Body Params:
-        buyer_name (str): Public address of buyer.
+        username (str): Public address of the user.
         signature (str): Signature from nonce.
         message_prefix (str): Prefix to form the original message with a nonce.
     """
     request_body_json = request.json
     if request_body_json is None:
         abort(400, "Request body is not a valid JSON")
-    buyer_name = get_not_none(request_body_json, "buyer_name")
+    username = get_not_none(request_body_json, "username")
     signature = get_not_none(request_body_json, "signature")
     message_prefix = get_not_none(request_body_json, "message_prefix")
 
-    buyer = get_buyer_by_name(buyer_name)
+    account_type = AccountType.BUYER
+    buyer = get_buyer_by_name(username)
     if buyer is None:
-        abort(404, f"Buyer {buyer_name} is not found")
+        dealer = get_dealer_by_name(username)
+        if dealer is None:
+            abort(404, f"User {username} is not found")
+        else:
+            nonce = dealer.nonce
+            account_type = AccountType.DEALER
+    else:
+        nonce = buyer.nonce
     unverified_buyer_name: str = w3.eth.account.recover_message(
-        encode_defunct(text=f"{message_prefix}{buyer.nonce}"), signature=signature
+        encode_defunct(text=f"{message_prefix}{nonce}"), signature=signature
     )
-    if unverified_buyer_name.lower() != buyer_name.lower():
+    if unverified_buyer_name.lower() != username.lower():
         abort(401, "Signature verification failed")
 
-    user_identity = MarketplaceIdentity(AccountType.BUYER, buyer_name)
+    user_identity = MarketplaceIdentity(account_type, username)
     access_token = create_access_token(user_identity, expires_delta=timedelta(days=1))
     return jsonify(access_token=access_token)
 
@@ -108,3 +85,17 @@ def identify_self():
     """
     identity: MarketplaceIdentity = get_current_user()
     return jsonify(identity.as_dict())
+
+
+@auth_bp.get("/<username>/nonce")
+def get_nonce(username: str):
+    """
+    Get nonce for a user. If username doesn't exist, or nonce is expiring in 1 min,
+    or nonce has expired, generate a new nounce and expiration of 10 mins. If username
+    is not in our record, then the user will become a buyer.
+
+    Path Params:
+        username (str): Public address of a user.
+    """
+    nonce = get_nonce_or_create_buyer(username)
+    return jsonify(nonce)

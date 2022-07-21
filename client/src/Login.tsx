@@ -22,18 +22,15 @@ const Login = ({ onLoggedIn, onLoggedOut }: LoginProps) => {
   const [web3, setWeb3] = useState<Web3 | null>(null);
 
   const getNonce = async (publicAddress: string) =>
-    (await axios.get(`${WEB_BACKEND_ENDPOINT}/buyer/${publicAddress}/nonce`))
+    (await axios.get(`${WEB_BACKEND_ENDPOINT}/auth/${publicAddress}/nonce`))
       .data as string;
 
   const authenticate = async (publicAddress: string, signature: string) => {
-    const response = await axios.post(
-      `${WEB_BACKEND_ENDPOINT}/auth/sign-in-as-buyer`,
-      {
-        buyer_name: publicAddress,
-        signature: signature,
-        message_prefix: MESSAGE_PREFIX,
-      }
-    );
+    const response = await axios.post(`${WEB_BACKEND_ENDPOINT}/auth/sign-in`, {
+      username: publicAddress,
+      signature: signature,
+      message_prefix: MESSAGE_PREFIX,
+    });
     return response.data.access_token;
   };
 
