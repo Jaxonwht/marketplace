@@ -1,0 +1,11 @@
+.connection-status {
+  color: red;
+
+  &--connected {
+    color: green;
+  }
+}
+
+* ~ .login-area {
+  margin-top: 10px;
+}

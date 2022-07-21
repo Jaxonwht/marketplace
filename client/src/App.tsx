@@ -1,18 +1,21 @@
 import React, { useEffect, useState } from "react";
-import logo from "./logo.svg";
-import "./App.scss";
 import axios from "axios";
+import styles from "./App.module.scss";
 import { WEB_BACKEND_ENDPOINT } from "./endpoints";
 import classNames from "classnames";
+import Login from "./Login";
+
+const LS_KEY = "login-with-metamask:authToken";
 
 const connectionStatusClassName = (connected: boolean) =>
-  classNames("connection-status", {
-    "connection-status--connected": connected,
+  classNames(styles["connection-status"], {
+    [styles["connection-status--connected"]]: connected,
   });
 
 const App = () => {
   const [backendReady, setBackendReady] = useState(false);
   const [schedulerReady, setSchedulerReady] = useState(false);
+  const [token, setToken] = useState<null | string>(null);
   useEffect(() => {
     axios
       .get(`${WEB_BACKEND_ENDPOINT}/hello-world`)
@@ -22,24 +25,38 @@ const App = () => {
       .then(() => setSchedulerReady(true));
   });
 
+  useEffect(() => {
+    // Access token is stored in localstorage
+    const ls = localStorage.getItem(LS_KEY);
+    const token = ls && JSON.parse(ls);
+    setToken(token);
+  }, []);
+
+  const handleLoggedIn = (token: string) => {
+    localStorage.setItem(LS_KEY, JSON.stringify(token));
+    setToken(token);
+  };
+
+  const handleLoggedOut = () => {
+    localStorage.removeItem(LS_KEY);
+    setToken(null);
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          <div>
-            Web Backend Status:{" "}
-            <span className={connectionStatusClassName(backendReady)}>
-              {backendReady ? "connected" : "disconnected"}
-            </span>
-          </div>
-          <div>
-            Scheduler Status:{" "}
-            <span className={connectionStatusClassName(schedulerReady)}>
-              {schedulerReady ? "connected" : "disconnected"}
-            </span>
-          </div>
-        </p>
+    <React.Fragment>
+      <header>
+        <div>
+          Web Backend Status:{" "}
+          <span className={connectionStatusClassName(backendReady)}>
+            {backendReady ? "connected" : "disconnected"}
+          </span>
+        </div>
+        <div>
+          Scheduler Status:{" "}
+          <span className={connectionStatusClassName(schedulerReady)}>
+            {schedulerReady ? "connected" : "disconnected"}
+          </span>
+        </div>
         <a
           className="App-link"
           href="https://reactjs.org"
@@ -49,7 +66,13 @@ const App = () => {
           Learn React
         </a>
       </header>
-    </div>
+      <div className={styles["login-area"]}></div>
+      {token ? (
+        <div>Hello</div>
+      ) : (
+        <Login onLoggedIn={handleLoggedIn} onLoggedOut={handleLoggedOut} />
+      )}
+    </React.Fragment>
   );
 };
 
