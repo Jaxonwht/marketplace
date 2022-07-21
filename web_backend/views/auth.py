@@ -13,10 +13,10 @@ from utils.json_utils import get_not_none
 auth_bp = Blueprint("auth", __name__, url_prefix="/auth")
 
 
-@auth_bp.post("/login")
-def login():  # pylint: disable=inconsistent-return-statements
+@auth_bp.post("/sign-in-as-dealer")
+def sign_in_as_dealer():  # pylint: disable=inconsistent-return-statements
     """
-    Log in with a set of user name and password. This login uses the Authorization
+    Sign in as a dealer given that the user is already a buyer. This login uses the Authorization
     Basic header.
 
     Request Params:
@@ -31,41 +31,41 @@ def login():  # pylint: disable=inconsistent-return-statements
     password = auth_header.password
     if password is None:
         abort(400, "password is missing in Auth header")
-    account_type = request.args.get("account_type")
-    try:
-        valid_account_type = AccountType(account_type)
-    except ValueError:
-        abort(400, "Account type must be either 'dealer' or 'buyer'")
-    user_identity = MarketplaceIdentity(valid_account_type, username)
-    if valid_account_type == AccountType.BUYER:
-        buyer = get_buyer_by_name(username)
-        if buyer is None:
-            abort(404, f"Buyer {username} is not found")
-        password_match = verify_password(
-            password, buyer.password_hash, buyer.salt, current_app.config["PASSWORD_HASH_ITERATIONS"]
-        )
-        if password_match:
-            access_token = create_access_token(user_identity, expires_delta=timedelta(days=1))
-            return jsonify(access_token=access_token)
-        abort(401, "Password does not match")
-    elif valid_account_type == AccountType.DEALER:
-        dealer = get_dealer_by_name(username)
-        if dealer is None:
-            abort(404, f"Dealer {username} is not found")
-        password_match = verify_password(
-            password, dealer.password_hash, dealer.salt, current_app.config["PASSWORD_HASH_ITERATIONS"]
-        )
-        if password_match:
-            access_token = create_access_token(user_identity, expires_delta=timedelta(days=1))
-            return jsonify(access_token=access_token)
-        abort(401, "Password does not match")
-    elif valid_account_type == AccountType.ADMIN:
-        if username != current_app.config["ADMIN_USERNAME"]:
-            abort(401, "Incorrect admin username")
-        if password != current_app.config["ADMIN_PASSWORD"]:
-            abort(401, "Incorrect admin password")
+    user_identity = MarketplaceIdentity(AccountType.DEALER, username)
+    dealer = get_dealer_by_name(username)
+    if dealer is None:
+        abort(404, f"Dealer {username} is not found")
+    password_match = verify_password(
+        password, dealer.password_hash, dealer.salt, current_app.config["PASSWORD_HASH_ITERATIONS"]
+    )
+    if password_match:
         access_token = create_access_token(user_identity, expires_delta=timedelta(days=1))
         return jsonify(access_token=access_token)
+    abort(401, "Password does not match")
+
+
+@auth_bp.post("/sign-in-as-admin")
+def sign_in_as_admin():  # pylint: disable=inconsistent-return-statements
+    """
+    Sign in with the admin credentials. This login uses the Authorization
+    Basic header.
+    """
+    auth_header = request.authorization
+    if auth_header is None:
+        abort(400, "Authorization header missing")
+    username = auth_header.username
+    if username is None:
+        abort(400, "username is missing in Auth header")
+    password = auth_header.password
+    if password is None:
+        abort(400, "password is missing in Auth header")
+    user_identity = MarketplaceIdentity(AccountType.ADMIN, username)
+    if username != current_app.config["ADMIN_USERNAME"]:
+        abort(401, "Incorrect admin username")
+    if password != current_app.config["ADMIN_PASSWORD"]:
+        abort(401, "Incorrect admin password")
+    access_token = create_access_token(user_identity, expires_delta=timedelta(days=1))
+    return jsonify(access_token=access_token)
 
 
 @auth_bp.post("/sign-in-as-buyer")

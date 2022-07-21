@@ -110,6 +110,10 @@ def create_new_deal():
         f'{current_app.config["SCHEDULER_URL"]}/jobs/close-deal-in-future',
         json={"deal_serial_id": created_deal.serial_id, "end_time": end_time_str},
     )
+    response = requests.post(
+        f'{current_app.config["SCHEDULER_URL"]}/jobs/patch-open-asset-price-in-future',
+        json={"deal_serial_id": created_deal.serial_id, "start_time": start_time_str},
+    )
     response.raise_for_status()
     return jsonify(created_deal.serial_id)
 
