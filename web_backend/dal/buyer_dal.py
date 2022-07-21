@@ -4,15 +4,14 @@ from os import urandom
 from datetime import datetime, timedelta
 
 from sqlalchemy import select
-from flask import current_app
 from db import flask_session
 from models.buyer_model import Buyer
-from utils.auth_utils import salted_hash
 
 
-def create_buyer(buyer_name: str, password: str, balance: Optional[float]) -> Buyer:
-    password_hash, salt = salted_hash(password, current_app.config["PASSWORD_HASH_ITERATIONS"])
-    buyer_model = Buyer(name=buyer_name, balance=balance, password_hash=password_hash, salt=salt)
+def create_buyer(buyer_name: str, balance: Optional[float]) -> Buyer:
+    nonce = urandom(32).hex()
+    nonce_expiration = datetime.now() + timedelta(minutes=10)
+    buyer_model = Buyer(name=buyer_name, balance=balance, nonce=nonce, nonce_expiration_timestamp=nonce_expiration)
     flask_session.add(buyer_model)
     flask_session.commit()
     return buyer_model

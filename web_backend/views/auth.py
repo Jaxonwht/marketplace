@@ -4,7 +4,7 @@ from flask_jwt_extended import create_access_token, get_current_user, jwt_requir
 from web3.auto import w3
 from eth_account.messages import encode_defunct
 
-from dal.buyer_dal import get_buyer_by_name, get_nonce_or_create_buyer
+from dal.buyer_dal import get_buyer_by_name
 from dal.dealer_dal import get_dealer_by_name
 from jwt_manager import AccountType, MarketplaceIdentity
 from utils.auth_utils import verify_password
@@ -68,8 +68,8 @@ def login():  # pylint: disable=inconsistent-return-statements
         return jsonify(access_token=access_token)
 
 
-@auth_bp.post("/sign-in")
-def sign_in():  # pylint: disable=inconsistent-return-statements
+@auth_bp.post("/sign-in-as-buyer")
+def sign_in_as_buyer():  # pylint: disable=inconsistent-return-statements
     """
     Sign in with buyer_name and signature.
 
@@ -108,16 +108,3 @@ def identify_self():
     """
     identity: MarketplaceIdentity = get_current_user()
     return jsonify(identity.as_dict())
-
-
-@auth_bp.get("/get-nonce/<buyer_name>")
-def get_nonce(buyer_name: str):
-    """
-    Get nonce for buyer_name. If buyer_name doesn't exist, or nonce is expiring in 1 min,
-    or nonce has expired, generate a new nounce and expiration of 10 mins.
-
-    PathParams:
-    buyer_name (str): Public address of buyer.
-    """
-    buyer = get_nonce_or_create_buyer(buyer_name)
-    return jsonify(str(buyer.nonce))
