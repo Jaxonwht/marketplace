@@ -88,10 +88,10 @@ def sign_in():  # pylint: disable=inconsistent-return-statements
     buyer = get_buyer_by_name(buyer_name)
     if buyer is None:
         abort(404, f"Buyer {buyer_name} is not found")
-    unverified_buyer_name = w3.eth.account.recover_message(
+    unverified_buyer_name: str = w3.eth.account.recover_message(
         encode_defunct(text=f"{message_prefix}{buyer.nonce}"), signature=signature
     )
-    if unverified_buyer_name != buyer_name:
+    if unverified_buyer_name.lower() != buyer_name.lower():
         abort(401, "Signature verification failed")
 
     user_identity = MarketplaceIdentity(AccountType.BUYER, buyer_name)

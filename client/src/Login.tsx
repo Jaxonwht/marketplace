@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import Web3 from "web3";
 import type { MetaMaskInpageProvider } from "@metamask/providers";
+import axios from "axios";
+import { WEB_BACKEND_ENDPOINT } from "./endpoints";
 
 declare global {
   interface Window {
@@ -13,54 +15,41 @@ interface LoginProps {
   onLoggedOut: () => void;
 }
 
+const MESSAGE_PREFIX = "I am signing my one-time nonce: ";
+
 const Login = ({ onLoggedIn, onLoggedOut }: LoginProps) => {
   const [loading, setLoading] = useState(false); // Loading button state
   const [web3, setWeb3] = useState<Web3 | null>(null);
 
-  const handleAuthenticate = ({
-    publicAddress,
-    signature,
-  }: {
-    publicAddress: string;
-    signature: string;
-  }) =>
-    Promise
-      .resolve // TODO: use axios to POST publicAddress, signature to backend.
-      // Backend verify signature and return jwt token.
-      ()
-      .then((response) => JSON.parse('{"token":"test_token"}'));
+  const getNonce = async (publicAddress: string) =>
+    (await axios.get(`${WEB_BACKEND_ENDPOINT}/auth/get-nonce/${publicAddress}`))
+      .data as string;
 
-  const handleSignMessage = async ({
-    publicAddress,
-    nonce,
-  }: {
-    publicAddress: string;
-    nonce: string;
-  }) => {
+  const authenticate = async (publicAddress: string, signature: string) => {
+    const response = await axios.post(`${WEB_BACKEND_ENDPOINT}/auth/sign-in`, {
+      buyer_name: publicAddress,
+      signature: signature,
+      message_prefix: MESSAGE_PREFIX,
+    });
+    return response.data.access_token;
+  };
+
+  const signMessage = async (publicAddress: string, nonce: string) => {
     if (web3 === null) {
       throw new Error("You need to allow MetaMask.");
     }
     try {
       const signature = await web3.eth.personal.sign(
-        `I am signing my one-time nonce: ${nonce}`,
+        `${MESSAGE_PREFIX}${nonce}`,
         publicAddress,
         "" // MetaMask will ignore the password argument here
       );
 
-      return { publicAddress, signature };
+      return signature;
     } catch (err) {
       throw new Error("You need to sign the message to be able to log in.");
     }
   };
-
-  const handleSignup = (publicAddress: string) =>
-    Promise
-      .resolve // TODO: use axios to POST publicAddress to backend.
-      // Backend add to user database and return address and nonce.
-      ()
-      .then((response) =>
-        JSON.parse('{"publicAddress":"' + publicAddress + '", "nonce":42}')
-      );
 
   const handleClick = async () => {
     // Check if MetaMask is installed
@@ -91,26 +80,15 @@ const Login = ({ onLoggedIn, onLoggedOut }: LoginProps) => {
 
     const publicAddress = coinbase.toLowerCase();
     setLoading(true);
-
-    // TODO: Look if user with current publicAddress is already present on backend
-    // Use axios GET on publicAddress. The backend return a single
-    // {publicAddress, nonce} object.
-    Promise.resolve()
-      .then((response) =>
-        JSON.parse('{"publicAddress":"' + publicAddress + '", "nonce":42}')
-      )
-      // If yes, retrieve it. If no, create it.
-      .then((users) => (users ? users : handleSignup(publicAddress)))
-      // Popup MetaMask confirmation modal to sign message
-      .then(handleSignMessage)
-      // Send signature to backend on the /auth route
-      .then(handleAuthenticate)
-      // Pass accessToken back to parent component (to save it in localStorage)
-      .then(onLoggedIn)
-      .catch((err) => {
-        window.alert(err);
-        setLoading(false);
-      });
+    try {
+      const nonce = await getNonce(publicAddress);
+      const signature = await signMessage(publicAddress, nonce);
+      const access_token = await authenticate(publicAddress, signature);
+      onLoggedIn(access_token);
+    } catch (error) {
+      window.alert(error);
+      setLoading(false);
+    }
   };
 
   return (

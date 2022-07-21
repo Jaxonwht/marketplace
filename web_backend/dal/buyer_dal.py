@@ -47,13 +47,13 @@ def get_nonce_or_create_buyer(buyer_name: str) -> Buyer:
     if buyer is None:
         nonce = urandom(32).hex()
         nonce_expiration = datetime.now() + timedelta(minutes=10)
-        buyer_model = Buyer(name=buyer_name, balance=0, nonce=nonce, nonce_expiration_timestamp=nonce_expiration)
-        flask_session.add(buyer_model)
+        buyer = Buyer(name=buyer_name, balance=0, nonce=nonce, nonce_expiration_timestamp=nonce_expiration)
+        flask_session.add(buyer)
         flask_session.commit()
-    elif (datetime.now() - buyer.nonce_expiration_timestamp).total_seconds() < 60:
+    elif (buyer.nonce_expiration_timestamp - datetime.now()).total_seconds() < 60:
         nonce = urandom(32).hex()
         nonce_expiration = datetime.now() + timedelta(minutes=10)
         buyer.nonce = nonce
         buyer.nonce_expiration_timestamp = nonce_expiration
         flask_session.commit()
-    return buyer_model
+    return buyer
