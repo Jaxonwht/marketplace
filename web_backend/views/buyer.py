@@ -1,5 +1,5 @@
 from flask import Blueprint, abort, jsonify, request
-from dal.buyer_dal import create_buyer, get_buyer_by_name, get_byers_by_names
+from dal.buyer_dal import create_buyer, get_buyer_by_name, get_buyers_by_names
 
 from utils.json_utils import get_not_none
 
@@ -46,7 +46,7 @@ def get_buyers():
         ]
     """
     names = request.args.getlist("names")
-    buyers = get_byers_by_names(names)
+    buyers = get_buyers_by_names(names)
     return jsonify(tuple(buyer.info for buyer in buyers))
 
 
