@@ -115,7 +115,7 @@ def create_new_deal():
         json={"deal_serial_id": created_deal.serial_id, "start_time": start_time_str},
     )
     response.raise_for_status()
-    return jsonify(created_deal.serial_id)
+    return jsonify(created_deal_serial_id=created_deal.serial_id)
 
 
 @deal_bp.patch("/<int:serial_id>/close")
@@ -127,6 +127,7 @@ def close_deal_by_serial_id(serial_id: int):
         serial_id (int): Id of the deal to close.
     """
     close_deal(serial_id)
+    return jsonify(closed_deal_serial_id=serial_id)
 
 
 @deal_bp.post("/close-all-eligible")
