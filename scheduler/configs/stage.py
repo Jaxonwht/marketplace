@@ -1,4 +1,4 @@
-"""Development config."""
+"""Stage config."""
 from logging import INFO
 from apscheduler.jobstores.sqlalchemy import SQLAlchemyJobStore
 from configs.base import Config

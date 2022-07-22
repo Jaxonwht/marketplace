@@ -24,7 +24,7 @@ services:
       FLASK_APP: app
       FLASK_ENV: development
       FLASK_CONFIG: DockerDevelopmentConfig
-      FLASK_SECRET_KEY: supersupersecret
+      FLASK_JWT_SECRET_KEY: supersupersecret
       FLASK_ADMIN_USERNAME: admin
       FLASK_ADMIN_PASSWORD: admin-password
       FLASK_SCHEDULER_USERNAME: scheduler
@@ -47,6 +47,7 @@ services:
       FLASK_APP: app
       FLASK_ENV: development
       FLASK_CONFIG: DockerDevelopmentConfig
+      FLASK_PERPETUAL_SCHEDULER_TOKEN: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTY1ODM0NTM5NiwianRpIjoiNjExN2Q0NTUtM2JlMy00ODJjLTkwMjUtNzI5MWM4YjE0YzExIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6eyJhY2NvdW50X3R5cGUiOiJhZG1pbiIsInVzZXJuYW1lIjoic2NoZWR1bGVyIn0sIm5iZiI6MTY1ODM0NTM5Nn0.QTHZk3I-X7AU04fkkFX9xKzqvwXoCyCUwj9RG6y08EA"
     networks:
       - backend
       - frontend
