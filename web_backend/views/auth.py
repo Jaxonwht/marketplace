@@ -2,6 +2,7 @@ from datetime import timedelta
 from flask import Blueprint, abort, current_app, jsonify, request
 from flask_jwt_extended import create_access_token, get_current_user, jwt_required
 from web3.auto import w3
+from web3 import Web3
 from eth_account.messages import encode_defunct
 from dal.auth_dal import get_nonce_or_create_buyer
 
@@ -58,6 +59,9 @@ def sign_in():  # pylint: disable=inconsistent-return-statements
     message_prefix = get_not_none(request_body_json, "message_prefix")
     sign_in_as_dealer = request.args.get("as_dealer", False, bool)
 
+    web3_instance = Web3()
+    if not web3_instance.isAddress(username):
+        abort(400, "Invalid username format")
     if sign_in_as_dealer:
         dealer = get_dealer_by_name(username)
         if dealer is None:
@@ -105,5 +109,9 @@ def get_nonce(username: str):
     Path Params:
         username (str): Public address of a user.
     """
+    web3_instance = Web3()
+    if not web3_instance.isAddress(username):
+        abort(400, "Invalid username format")
+
     nonce = get_nonce_or_create_buyer(username)
     return jsonify(nonce)
