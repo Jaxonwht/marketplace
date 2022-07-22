@@ -1,4 +1,4 @@
-"""Development config."""
+"""Stage config."""
 from logging import INFO
 from configs.base import Config
 
