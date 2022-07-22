@@ -14,12 +14,12 @@ def create_dealer(dealer_name: str, starting_balance: Optional[float]) -> Dealer
         abort(409, f"{dealer_name} already exists as a dealer")
     nonce = os.urandom(32).hex()
     nonce_expiration = datetime.now() + timedelta(minutes=10)
-    dealer = Dealer(
+    dealer_model = Dealer(
         name=dealer_name, balance=starting_balance, nonce=nonce, nonce_expiration_timestamp=nonce_expiration
     )
-    flask_session.add(dealer)
+    flask_session.add(dealer_model)
     flask_session.commit()
-    return dealer
+    return dealer_model
 
 
 def get_dealer_by_name(dealer_name: str) -> Optional[Dealer]:

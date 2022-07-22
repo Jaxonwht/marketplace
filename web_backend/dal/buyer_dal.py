@@ -24,9 +24,9 @@ def get_balance_by_buyer_name(buyer_name: str) -> Optional[float]:
     """
     If user exists, return the balance. Otherwise, return None.
     """
-    buyer_model = get_buyer_by_name(buyer_name)
-    if buyer_model:
-        return buyer_model.balance
+    buyer = get_buyer_by_name(buyer_name)
+    if buyer:
+        return buyer.balance
     return None
 
 
