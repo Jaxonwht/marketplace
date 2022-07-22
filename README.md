@@ -89,7 +89,7 @@ Always double-check the auto-generated migration file before commiting to the up
 1. `kubectl create secret generic <secret-name> --from-literal='<key>=<secret>'`.
 2. Create a Pod that has access to the secret data through a Volume.
 
-```
+```yaml
 apiVersion: v1
 kind: Pod
 metadata:
@@ -111,11 +111,18 @@ spec:
 
 3. Use the secret in code.
 
-```
+```python3
 from pathlib import Path
 
 secret = (Path("<mount-path>") / "<key>").read_text()
 ```
+
+### What secrets need to be deployed?
+
+1. SQLALCHEMY_DATABASE_URI
+2. ADMIN_PASSWORD
+3. JWT_SECRET_KEY
+4. PERPETUAL_SCHEDULER_TOKEN
 
 ### Stage
 
