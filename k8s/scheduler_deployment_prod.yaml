@@ -46,3 +46,5 @@ spec:
             sources:
               - secret:
                   name: sqlalchemy-database-uri-secret
+              - secret:
+                  name: perpetual-scheduler-token-secret
