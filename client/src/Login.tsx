@@ -19,32 +19,33 @@ const MESSAGE_PREFIX = "I am signing my one-time nonce: ";
 
 const Login = ({ onLoggedIn, onLoggedOut }: LoginProps) => {
   const [loading, setLoading] = useState(false); // Loading button state
-  const [web3, setWeb3] = useState<Web3 | null>(null);
 
-  const getNonce = async (publicAddress: string) =>
-    (await axios.get(`${WEB_BACKEND_ENDPOINT}/auth/${publicAddress}/nonce`))
+  const getNonce = async (walletAccount: string) =>
+    (await axios.get(`${WEB_BACKEND_ENDPOINT}/auth/${walletAccount}/nonce`))
       .data as string;
 
-  const authenticate = async (publicAddress: string, signature: string) => {
+  const authenticate = async (walletAccount: string, signature: string) => {
     const response = await axios.post(`${WEB_BACKEND_ENDPOINT}/auth/sign-in`, {
-      username: publicAddress,
+      username: walletAccount,
       signature: signature,
       message_prefix: MESSAGE_PREFIX,
     });
     return response.data.access_token;
   };
 
-  const signMessage = async (publicAddress: string, nonce: string) => {
-    if (web3 === null) {
+  const signMessage = async (walletAccount: string, nonce: string) => {
+    let web3: Web3;
+    try {
+      web3 = new Web3(window.ethereum as any);
+    } catch (err) {
       throw new Error("You need to allow MetaMask.");
     }
     try {
       const signature = await web3.eth.personal.sign(
         `${MESSAGE_PREFIX}${nonce}`,
-        publicAddress,
+        walletAccount,
         "" // MetaMask will ignore the password argument here
       );
-
       return signature;
     } catch (err) {
       throw new Error("You need to sign the message to be able to log in.");
@@ -58,32 +59,29 @@ const Login = ({ onLoggedIn, onLoggedOut }: LoginProps) => {
       return;
     }
 
-    if (!web3) {
-      try {
-        // Request account access if needed
-        await window.ethereum.request({ method: "eth_requestAccounts" });
+    await window.ethereum.request({
+      method: "wallet_requestPermissions",
+      params: [
+        {
+          eth_accounts: {},
+        },
+      ],
+    });
+    const accounts = await window.ethereum.request({
+      method: "eth_requestAccounts",
+    });
 
-        // We don't know window.web3 version, so we use our own instance of Web3
-        // with the injected provider given by MetaMask
-        setWeb3(new Web3(window.ethereum as any));
-      } catch (error) {
-        window.alert("You need to allow MetaMask.");
-        return;
-      }
-    }
-
-    const coinbase = await web3?.eth?.getCoinbase();
-    if (!coinbase) {
-      window.alert("Please activate MetaMask first.");
+    if (!accounts || !Array.isArray(accounts)) {
+      window.alert("Accounts not found.");
       return;
     }
+    const walletAccount = accounts[0];
 
-    const publicAddress = coinbase.toLowerCase();
     setLoading(true);
     try {
-      const nonce = await getNonce(publicAddress);
-      const signature = await signMessage(publicAddress, nonce);
-      const access_token = await authenticate(publicAddress, signature);
+      const nonce = await getNonce(walletAccount);
+      const signature = await signMessage(walletAccount, nonce);
+      const access_token = await authenticate(walletAccount, signature);
       onLoggedIn(access_token);
     } catch (error) {
       window.alert(error);

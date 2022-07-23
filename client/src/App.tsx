@@ -32,6 +32,17 @@ const App = () => {
     setToken(token);
   }, []);
 
+  useEffect(() => {
+    if (typeof window.ethereum !== "undefined") {
+      window.ethereum.on("accountsChanged", handleLoggedOut);
+    } else {
+      alert("Please install MetaMask to use this service!");
+    }
+    return () => {
+      window.ethereum.removeListener("accountsChanged", handleLoggedOut);
+    };
+  }, [window.ethereum]);
+
   const handleLoggedIn = (token: string) => {
     localStorage.setItem(LS_KEY, JSON.stringify(token));
     setToken(token);
