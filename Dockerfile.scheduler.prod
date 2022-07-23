@@ -13,5 +13,4 @@ WORKDIR /scheduler
 
 COPY scheduler .
 
-ENV FLASK_CONFIG ProductionConfig
 CMD ["uwsgi", "uwsgi.ini"]
