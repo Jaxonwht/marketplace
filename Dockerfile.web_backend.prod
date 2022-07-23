@@ -13,5 +13,4 @@ WORKDIR /web_backend
 
 COPY web_backend .
 
-ENV FLASK_CONFIG ProductionConfig
 CMD ["bash", "-c", "flask db upgrade && uwsgi uwsgi.ini"]

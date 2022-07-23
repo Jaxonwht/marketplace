@@ -22,7 +22,7 @@ spec:
           image: registry.cloud.okteto.net/marketplace-zhoujc999/marketplace-scheduler:latest
           volumeMounts:
             # name must match the volume name below
-            - name: sqlalchemy-database-uri-secret
+            - name: secrets
               mountPath: /var
               readOnly: true
           resources:
@@ -37,10 +37,12 @@ spec:
           env:
             - name: FLASK_ENV
               value: production
-            - name: CONFIG_ENV
-              value: prod.py
+            - name: FLASK_CONFIG
+              value: ProductionConfig
       # The secret data is exposed to Containers in the Pod through a Volume.
       volumes:
-        - name: sqlalchemy-database-uri-secret
-          secret:
-            secretName: sqlalchemy-database-uri-secret
+        - name: secrets
+          projected:
+            sources:
+              - secret:
+                  name: sqlalchemy-database-uri-secret
