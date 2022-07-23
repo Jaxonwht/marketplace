@@ -25,6 +25,12 @@ spec:
             - name: sqlalchemy-database-uri-secret
               mountPath: /var
               readOnly: true
+            - name: admin-password-secret
+              mountPath: /var
+              readOnly: true
+            - name: jwt-secret-key-secret
+              mountPath: /var
+              readOnly: true
           resources:
             limits:
               cpu: "1"
@@ -44,3 +50,9 @@ spec:
         - name: sqlalchemy-database-uri-secret
           secret:
             secretName: sqlalchemy-database-uri-secret
+        - name: admin-password-secret
+          secret:
+            secretName: admin-password-secret
+        - name: jwt-secret-key-secret
+          secret:
+            secretName: jwt-secret-key-secret
