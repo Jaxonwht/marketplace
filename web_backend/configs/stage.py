@@ -10,3 +10,6 @@ class StagingConfig(Config):  # pylint: disable=too-few-public-methods
     SQLALCHEMY_ECHO = True
     MAIN_LOGGING_LEVEL = INFO
     SCHEDULER_URL = "http://scheduler-service-prod:4000"
+    JWT_TOKEN_LOCATION = ["headers", "cookies"]
+    # Locally do not enable https check for cookies
+    JWT_COOKIE_SECURE = False

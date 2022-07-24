@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import Web3 from "web3";
 import type { MetaMaskInpageProvider } from "@metamask/providers";
-import axios from "axios";
-import { WEB_BACKEND_ENDPOINT } from "./endpoints";
+import { axiosInstance } from "./utils";
 
 declare global {
   interface Window {
@@ -11,21 +10,19 @@ declare global {
 }
 
 interface LoginProps {
-  onLoggedIn: (token: string) => void;
-  onLoggedOut: () => void;
+  onLoggedIn: (token: string) => Promise<void>;
 }
 
 const MESSAGE_PREFIX = "I am signing my one-time nonce: ";
 
-const Login = ({ onLoggedIn, onLoggedOut }: LoginProps) => {
+const Login = ({ onLoggedIn }: LoginProps) => {
   const [loading, setLoading] = useState(false); // Loading button state
 
   const getNonce = async (walletAccount: string) =>
-    (await axios.get(`${WEB_BACKEND_ENDPOINT}/auth/${walletAccount}/nonce`))
-      .data as string;
+    (await axiosInstance.get(`/auth/${walletAccount}/nonce`)).data as string;
 
   const authenticate = async (walletAccount: string, signature: string) => {
-    const response = await axios.post(`${WEB_BACKEND_ENDPOINT}/auth/sign-in`, {
+    const response = await axiosInstance.post("/auth/sign-in", {
       username: walletAccount,
       signature: signature,
       message_prefix: MESSAGE_PREFIX,
@@ -85,6 +82,7 @@ const Login = ({ onLoggedIn, onLoggedOut }: LoginProps) => {
       onLoggedIn(access_token);
     } catch (error) {
       window.alert(error);
+    } finally {
       setLoading(false);
     }
   };
