@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styles from "./App.module.scss";
 import classNames from "classnames";
-import Login from "./Login";
+import SignIn from "./SignIn";
 import type { MarketplaceIdentity } from "./responseTypes";
 import {
   authenticatedAxiosInstance,
@@ -15,7 +15,7 @@ const connectionStatusClassName = (connected: boolean) =>
     [styles["connection-status--connected"]]: connected,
   });
 
-const LS_KEY = "login-with-metamask:authToken";
+const LS_KEY = "sign-in-with-metamask:authToken";
 
 const App = () => {
   const [backendReady, setBackendReady] = useState(false);
@@ -23,15 +23,15 @@ const App = () => {
   const [username, setUsername] = useState<string | null>(null);
   const [accountType, setAccountType] = useState<string | null>(null);
 
-  const nullifyLoginStatus = () => {
+  const nullifySignInStatus = () => {
     setAccountType(null);
     setUsername(null);
   };
 
-  const refreshLoginStatus = async () => {
+  const refreshSignInStatus = async () => {
     const token = localStorage.getItem(LS_KEY);
     if (DEV_MODE && token === null) {
-      nullifyLoginStatus();
+      nullifySignInStatus();
       return;
     }
     try {
@@ -44,15 +44,15 @@ const App = () => {
       setUsername(identity.username);
       setAccountType(identity.account_type);
     } catch (error) {
-      nullifyLoginStatus();
+      nullifySignInStatus();
     }
   };
 
-  const handleLogin = async (token: string) => {
+  const handleSignIn = async (token: string) => {
     if (DEV_MODE) {
       localStorage.setItem(LS_KEY, token);
     }
-    await refreshLoginStatus();
+    await refreshSignInStatus();
   };
 
   useEffect(() => {
@@ -70,31 +70,31 @@ const App = () => {
         console.error(e);
         setSchedulerReady(false);
       });
-    refreshLoginStatus();
+    refreshSignInStatus();
   });
 
-  const handleLogout = async () => {
+  const handleSignOut = async () => {
     if (DEV_MODE) {
       localStorage.removeItem(LS_KEY);
-      await refreshLoginStatus();
+      await refreshSignInStatus();
       return;
     }
     try {
       await authenticatedAxiosInstance.post("/auth/sign-out");
-      await refreshLoginStatus();
+      await refreshSignInStatus();
     } catch (e: any) {
       console.error(e);
     }
   };
 
   useEffect(() => {
-    if (window.ethereum !== undefined) {
-      window.ethereum.on("accountsChanged", handleLogout);
+    if (typeof window.ethereum !== "undefined") {
+      window.ethereum.on("accountsChanged", handleSignOut);
     } else {
       alert("Please install MetaMask to use this service!");
     }
     return () => {
-      window.ethereum.removeListener("accountsChanged", handleLogout);
+      window.ethereum.removeListener("accountsChanged", handleSignOut);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -123,18 +123,20 @@ const App = () => {
           Learn React
         </a>
       </header>
-      <div className={styles["login-area"]}></div>
+      <div className={styles["sign-in-area"]}></div>
       {username && accountType ? (
-        <div>
-          username: {username}, account type: {accountType}
-        </div>
+        <React.Fragment>
+          <div>
+            username: {username}, account type: {accountType}
+          </div>
+          <button onClick={handleSignOut}>Sign out</button>
+        </React.Fragment>
       ) : (
         <React.Fragment>
-          <Login onLoggedIn={handleLogin} />
-          <Login onLoggedIn={handleLogin} asDealer />
+          <SignIn onSignedIn={handleSignIn} />
+          <SignIn onSignedIn={handleSignIn} asDealer />
         </React.Fragment>
       )}
-      <button onClick={handleLogout}>Log out</button>
     </React.Fragment>
   );
 };
