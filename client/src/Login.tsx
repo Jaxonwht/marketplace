@@ -11,22 +11,37 @@ declare global {
 
 interface LoginProps {
   onLoggedIn: (token: string) => Promise<void>;
+  asDealer?: boolean;
 }
 
 const MESSAGE_PREFIX = "I am signing my one-time nonce: ";
 
-const Login = ({ onLoggedIn }: LoginProps) => {
+const Login = ({ onLoggedIn, asDealer }: LoginProps) => {
   const [loading, setLoading] = useState(false); // Loading button state
 
   const getNonce = async (walletAccount: string) =>
-    (await axiosInstance.get(`/auth/${walletAccount}/nonce`)).data as string;
+    (
+      await axiosInstance.get(`/auth/${walletAccount}/nonce`, {
+        params: {
+          as_dealer: asDealer,
+        },
+      })
+    ).data as string;
 
   const authenticate = async (walletAccount: string, signature: string) => {
-    const response = await axiosInstance.post("/auth/sign-in", {
-      username: walletAccount,
-      signature: signature,
-      message_prefix: MESSAGE_PREFIX,
-    });
+    const response = await axiosInstance.post(
+      "/auth/sign-in",
+      {
+        username: walletAccount,
+        signature: signature,
+        message_prefix: MESSAGE_PREFIX,
+      },
+      {
+        params: {
+          as_dealer: asDealer,
+        },
+      }
+    );
     return response.data.access_token;
   };
 
@@ -89,6 +104,7 @@ const Login = ({ onLoggedIn }: LoginProps) => {
 
   return (
     <div>
+      {asDealer && <p>Login as a dealer</p>}
       <p>
         Please select your login method.
         <br />

@@ -129,7 +129,10 @@ const App = () => {
           username: {username}, account type: {accountType}
         </div>
       ) : (
-        <Login onLoggedIn={handleLogin} />
+        <React.Fragment>
+          <Login onLoggedIn={handleLogin} />
+          <Login onLoggedIn={handleLogin} asDealer />
+        </React.Fragment>
       )}
       <button onClick={handleLogout}>Log out</button>
     </React.Fragment>
