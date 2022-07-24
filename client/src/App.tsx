@@ -7,8 +7,12 @@ import {
   authenticatedAxiosInstance,
   axiosInstance,
   DEV_MODE,
+  ERC_20_ABI,
   generateBearerTokenHeader,
+  GOERLI_USDC,
+  PLATFORM_ADDRESS,
 } from "./utils";
+import TokenSender from "./TokenSender";
 
 const connectionStatusClassName = (connected: boolean) =>
   classNames(styles["connection-status"], {
@@ -114,14 +118,6 @@ const App = () => {
             {schedulerReady ? "connected" : "disconnected"}
           </span>
         </div>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
       </header>
       <div className={styles["sign-in-area"]}></div>
       {username && accountType ? (
@@ -130,6 +126,11 @@ const App = () => {
             username: {username}, account type: {accountType}
           </div>
           <button onClick={handleSignOut}>Sign out</button>
+          <TokenSender
+            tokenContractAddress={GOERLI_USDC}
+            tokenContractABI={ERC_20_ABI}
+            recipientAddress={PLATFORM_ADDRESS}
+          />
         </React.Fragment>
       ) : (
         <React.Fragment>
