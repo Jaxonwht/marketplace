@@ -19,9 +19,9 @@ class Deal(flask_db.Model):
     shares_remaining = Column(Integer, CheckConstraint("shares_remaining >= 0"), nullable=False)
     open_asset_price = Column(Float, CheckConstraint("open_asset_price > 0"))
     closed_asset_price = Column(Float, CheckConstraint("closed_asset_price > 0"))
-    start_time = Column(TIMESTAMP, nullable=False)
-    end_time = Column(TIMESTAMP, nullable=False)
-    closed = Column(Boolean, nullable=False)
+    start_time = Column(TIMESTAMP, nullable=False, index=True)
+    end_time = Column(TIMESTAMP, nullable=False, index=True)
+    closed = Column(Boolean, nullable=False, index=True)
     lockup_balance = Column(Float, CheckConstraint("lockup_balance >= 0"), nullable=False)
     transactions: List[Transaction] = relationship(
         Transaction, backref=backref("deal"), cascade="all, delete", passive_deletes=True
