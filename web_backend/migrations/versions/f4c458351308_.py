@@ -54,14 +54,14 @@ def upgrade():
     )
     op.create_table(
         "platform_transaction",
-        sa.Column("id", sa.Integer(), nullable=False),
+        sa.Column("transaction_hash", sa.String(), nullable=False),
         sa.Column("amount", sa.Float(), nullable=False),
         sa.Column("timestamp", postgresql.TIMESTAMP(), nullable=False),
         sa.Column("buyer_name", sa.String(), nullable=True),
         sa.Column("dealer_name", sa.String(), nullable=True),
         sa.ForeignKeyConstraint(["buyer_name"], ["buyer.name"], ondelete="CASCADE"),
         sa.ForeignKeyConstraint(["dealer_name"], ["dealer.name"], ondelete="CASCADE"),
-        sa.PrimaryKeyConstraint("id"),
+        sa.PrimaryKeyConstraint("transaction_hash"),
     )
     op.create_table(
         "transaction",
