@@ -9,14 +9,14 @@ declare global {
   }
 }
 
-interface LoginProps {
-  onLoggedIn: (token: string) => Promise<void>;
+interface SignInProps {
+  onSignedIn: (token: string) => Promise<void>;
   asDealer?: boolean;
 }
 
-const MESSAGE_PREFIX = "I am signing my one-time nonce: ";
+const MESSAGE_PREFIX = "I am signing in with my one-time nonce: ";
 
-const Login = ({ onLoggedIn, asDealer }: LoginProps) => {
+const SignIn = ({ onSignedIn, asDealer }: SignInProps) => {
   const [loading, setLoading] = useState(false); // Loading button state
 
   const getNonce = async (walletAccount: string) =>
@@ -60,7 +60,7 @@ const Login = ({ onLoggedIn, asDealer }: LoginProps) => {
       );
       return signature;
     } catch (err) {
-      throw new Error("You need to sign the message to be able to log in.");
+      throw new Error("You need to sign the message to be able to sign in.");
     }
   };
 
@@ -94,7 +94,7 @@ const Login = ({ onLoggedIn, asDealer }: LoginProps) => {
       const nonce = await getNonce(walletAccount);
       const signature = await signMessage(walletAccount, nonce);
       const access_token = await authenticate(walletAccount, signature);
-      onLoggedIn(access_token);
+      onSignedIn(access_token);
     } catch (error) {
       window.alert(error);
     } finally {
@@ -104,17 +104,17 @@ const Login = ({ onLoggedIn, asDealer }: LoginProps) => {
 
   return (
     <div>
-      {asDealer && <p>Login as a dealer</p>}
+      {asDealer && <p>Sign in as a dealer</p>}
       <p>
-        Please select your login method.
+        Please select your sign-in method.
         <br />
-        For the purpose of this demo, only MetaMask login is implemented.
+        For the purpose of this demo, only MetaMask sign-in is implemented.
       </p>
       <button onClick={handleClick}>
-        {loading ? "Loading..." : "Login with MetaMask"}
+        {loading ? "Loading..." : "Sign in with MetaMask"}
       </button>
     </div>
   );
 };
 
-export default Login;
+export default SignIn;
