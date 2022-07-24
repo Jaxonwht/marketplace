@@ -1,10 +1,16 @@
 from datetime import timedelta
 from flask import Blueprint, abort, current_app, jsonify, request
-from flask_jwt_extended import create_access_token, get_current_user, jwt_required
+from flask_jwt_extended import (
+    create_access_token,
+    get_current_user,
+    jwt_required,
+    set_access_cookies,
+    unset_access_cookies,
+)
 from web3.auto import w3
 from web3 import Web3
 from eth_account.messages import encode_defunct
-from dal.auth_dal import get_nonce_or_create_buyer
+from dal.auth_dal import get_nonce_for_dealer, get_nonce_or_create_buyer
 
 from dal.buyer_dal import get_buyer_by_name
 from dal.dealer_dal import get_dealer_by_name
@@ -85,7 +91,23 @@ def sign_in():  # pylint: disable=inconsistent-return-statements
 
     user_identity = MarketplaceIdentity(account_type, username)
     access_token = create_access_token(user_identity, expires_delta=timedelta(days=1))
-    return jsonify(access_token=access_token)
+    response = jsonify(access_token=access_token)
+    set_access_cookies(response, access_token)
+    return response
+
+
+@auth_bp.post("/sign-out")
+@jwt_required()
+def sign_out():
+    """
+    Sign out the user by clearing the user's cookies. However if the user is not logged in
+    through cookies. For example, the user might send a bearer token. Then the this route
+    practically does not do anything for the requester.
+    """
+    identity: MarketplaceIdentity = get_current_user()
+    response = jsonify(user_signed_out=identity.as_dict())
+    unset_access_cookies(response=response)
+    return response
 
 
 @auth_bp.get("/who-am-i")
@@ -108,10 +130,17 @@ def get_nonce(username: str):
 
     Path Params:
         username (str): Public address of a user.
+
+    Request Params:
+        as_dealer (Optional[bool]): Whether you get the nonce as a dealer.
     """
     web3_instance = Web3()
     if not web3_instance.isAddress(username):
         abort(400, "Invalid username format")
+    as_dealer = request.args.get("as_dealer", default=False, type=bool)
 
-    nonce = get_nonce_or_create_buyer(username)
+    if as_dealer:
+        nonce = get_nonce_for_dealer(username)
+    else:
+        nonce = get_nonce_or_create_buyer(username)
     return jsonify(nonce)

@@ -25,3 +25,5 @@ class ProductionConfig(Config):  # pylint: disable=too-few-public-methods
     SQLALCHEMY_ECHO = False
     MAIN_LOGGING_LEVEL = INFO
     SCHEDULER_URL = "http://scheduler-service-prod:4000"
+    JWT_COOKIE_SECURE = True
+    JWT_TOKEN_LOCATION = ["headers", "cookies"]
