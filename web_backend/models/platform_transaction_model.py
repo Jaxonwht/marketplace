@@ -14,3 +14,4 @@ class PlatformTransaction(flask_db.Model):
     timestamp = Column(TIMESTAMP, nullable=False, default=datetime.now)
     buyer_name = Column(String, ForeignKey("buyer.name", ondelete="CASCADE"))
     dealer_name = Column(String, ForeignKey("dealer.name", ondelete="CASCADE"))
+    status = Column(String, nullable=False, index=True)
