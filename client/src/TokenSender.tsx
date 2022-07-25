@@ -68,7 +68,7 @@ const TokenSender = ({
       });
       console.log(result);
     } catch (error) {
-      console.error(error);
+      window.alert("The transaction did not complete successfully.");
     }
   };
 
