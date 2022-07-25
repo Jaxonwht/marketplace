@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useState } from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import Web3 from "web3";
 import type { AbiItem } from "web3-utils";
 import { toWei, toBN } from "web3-utils";
@@ -22,10 +22,23 @@ const TokenSender = ({
     event.preventDefault();
     setAmount(event.target.value);
   };
-  const handleUserInputChanged = (event: ChangeEvent<HTMLInputElement>) => {
-    event.preventDefault();
-    setFromUser(event.target.value);
-  };
+
+  useEffect(() => {
+    if (typeof window.ethereum === "undefined") {
+      return;
+    }
+    window.ethereum
+      .request({
+        method: "eth_requestAccounts",
+      })
+      .then((accounts) => {
+        if (!accounts || !Array.isArray(accounts)) {
+          return;
+        }
+        const walletAccount: string = accounts[0];
+        setFromUser(walletAccount);
+      });
+  });
 
   const handleSendTransaction = async (username: string) => {
     let web3: Web3;
@@ -66,19 +79,23 @@ const TokenSender = ({
         onChange={handleAmountInputChanged}
         type="number"
         placeholder="Amount of tokens to send"
-      ></input>
-      <input
-        value={fromUser}
-        onChange={handleUserInputChanged}
-        placeholder={"Address to send from"}
-      ></input>
+      />
       <button
         disabled={!readyToSend}
         onClick={() => handleSendTransaction(fromUser)}
       >
-        Send {amount || "unknown"} USD Coin to Platform address
-        <code>{recipientAddress}</code>
+        Send {amount || "unknown"} USD Coin
       </button>
+      {readyToSend && (
+        <React.Fragment>
+          <div>
+            From address: <code>{fromUser}</code>
+          </div>
+          <div>
+            To address: <code>{recipientAddress}</code>
+          </div>
+        </React.Fragment>
+      )}
     </div>
   );
 };
