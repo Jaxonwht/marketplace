@@ -5,7 +5,6 @@ from flask import abort, current_app
 from sqlalchemy import select
 from web3.contract import Contract
 from web3.exceptions import TransactionNotFound
-from web3.types import TxReceipt
 from db import flask_session
 from web3 import Web3
 from models.buyer_model import Buyer
@@ -17,8 +16,9 @@ _MAXIMUM_MINT_TIME = timedelta(hours=12)
 
 def add_platform_transaction_if_not_exists(transaction_hash: str, as_dealer: bool) -> None:
     platform_transaction = flask_session.get(PlatformTransaction, transaction_hash)
-    if not platform_transaction:
-        abort(304, f"Platform transaction with hash {transaction_hash} already exists")
+    if platform_transaction:
+        current_app.logger.warn(f"Platform transaction with hash {transaction_hash} already exists")
+        return
     flask_session.add(
         PlatformTransaction(
             transaction_hash=transaction_hash, status=PlatformTransactionStatus.PENDING, as_dealer=as_dealer
@@ -40,9 +40,8 @@ def check_pending_transactions() -> List[str]:
     for pending_transaction in flask_session.scalars(
         select(PlatformTransaction).filter_by(status=PlatformTransactionStatus.PENDING)
     ):
-        typed_pending_transaction = cast(
-            PlatformTransaction, flask_session.refresh(pending_transaction, with_for_update={"key_share": True})
-        )
+        flask_session.refresh(pending_transaction, with_for_update={"key_share": True})
+        typed_pending_transaction = cast(PlatformTransaction, pending_transaction)
         transaction_hash: HexStr = typed_pending_transaction.transaction_hash
         try:
             receipt = w3.eth.get_transaction_receipt(transaction_hash)
