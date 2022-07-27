@@ -1,3 +1,4 @@
+from flask_jwt_extended import jwt_required
 import requests
 from typing import Any, Dict
 from flask import Blueprint, abort, current_app, jsonify, request
@@ -12,6 +13,7 @@ from dal.deal_dal import (
     patch_deal_open_asset_price,
 )
 from utils.datetime_utils import format_datetime_str_or_raise
+from utils.decorators import admin_jwt_required
 from utils.json_utils import get_not_none
 
 
@@ -45,27 +47,19 @@ def get_deal_info_by_id(serial_id: int) -> Dict[str, Any]:
     return deal.info
 
 
-@deal_bp.route("/", methods=["PATCH"])
-def patch_open_asset_price():
+@deal_bp.route("/<int:serial_id>/open", methods=["PATCH"])
+def patch_open_asset_price(serial_id: int):
     """
     Update an existing deal. If a deal with provided serial_id is not found,
     raise an appropriate error.
 
-    Request Headers:
-        Content-Type must be application/json.
-
-    Body Params:
+    Path Params:
         serial_id (int): Id of the deal
-        open_asset_price (float): Asset price at starting time of the deal.
 
     Returns:
         The deal if the deal is updated. Otherwise, an error will be raised.
     """
-    request_body_json = request.json
-    if request_body_json is None:
-        abort(400, "Request body is not a valid JSON")
-    serial_id = get_not_none(request_body_json, "serial_id")
-    open_asset_price = get_not_none(request_body_json, "open_asset_price")
+    open_asset_price = 0.1  # TODO ZIYI
     updated_deal = patch_deal_open_asset_price(serial_id, open_asset_price)
     return jsonify({"serial_id": updated_deal.serial_id, "open_asset_price": updated_deal.open_asset_price})
 

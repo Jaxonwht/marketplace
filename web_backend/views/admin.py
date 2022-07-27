@@ -1,12 +1,10 @@
 """The routes in this view are restricted to admins."""
-from flask import Blueprint, abort, current_app, jsonify, request
+from flask import Blueprint, current_app, jsonify
 from flask_jwt_extended import create_access_token, jwt_required
-from dal.buyer_dal import get_buyer_by_name
 from jwt_manager import AccountType, MarketplaceIdentity
 
 from utils.decorators import admin_jwt_required
 from db import flask_session
-from utils.json_utils import get_not_none
 
 admin_bp = Blueprint("admin", __name__, url_prefix="/admin")
 

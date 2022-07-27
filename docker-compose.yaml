@@ -21,13 +21,14 @@ services:
     ports:
       - "5000:5000"
     environment:
-      FLASK_APP: app
-      FLASK_ENV: development
-      FLASK_CONFIG: DockerDevelopmentConfig
-      FLASK_JWT_SECRET_KEY: supersupersecret
-      FLASK_ADMIN_USERNAME: admin
-      FLASK_ADMIN_PASSWORD: admin-password
-      FLASK_SCHEDULER_USERNAME: scheduler
+      - FLASK_APP=app
+      - FLASK_ENV=development
+      - FLASK_CONFIG=DockerDevelopmentConfig
+      - FLASK_JWT_SECRET_KEY=supersupersecret
+      - FLASK_ADMIN_USERNAME=admin
+      - FLASK_ADMIN_PASSWORD=admin-password
+      - FLASK_SCHEDULER_USERNAME=scheduler
+      - INFURA_PROVIDER_KEY
     volumes:
       - ./web_backend:/web_backend
     networks:
