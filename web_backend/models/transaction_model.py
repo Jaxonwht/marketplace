@@ -15,6 +15,7 @@ class Transaction(flask_db.Model):
     buyer_name = Column(String, ForeignKey("buyer.name", ondelete="CASCADE"), nullable=False)
     asset_price = Column(Float, CheckConstraint("asset_price > 0"))
     deal_serial_id = Column(Integer, ForeignKey("deal.serial_id", ondelete="CASCADE"), nullable=False)
+    # Positive means buyer buying. Negative means buyer selling.
     shares = Column(Integer, nullable=False)
     timestamp = Column(TIMESTAMP, nullable=False, default=datetime.now)
     rate = Column(Float, nullable=False)

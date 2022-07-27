@@ -19,12 +19,13 @@ services:
     ports:
       - "5000:5000"
     environment:
-      SQLALCHEMY_DATABASE_URI: "postgresql://local_user:dev_password@db:5432/local_db"
-      FLASK_CONFIG: StagingConfig
-      FLASK_JWT_SECRET_KEY: supersupersecret
-      FLASK_ADMIN_USERNAME: admin
-      FLASK_ADMIN_PASSWORD: admin-password
-      FLASK_SCHEDULER_USERNAME: scheduler
+      - SQLALCHEMY_DATABASE_URI=postgresql://local_user:dev_password@db:5432/local_db
+      - FLASK_CONFIG=StagingConfig
+      - FLASK_JWT_SECRET_KEY=supersupersecret
+      - FLASK_ADMIN_USERNAME=admin
+      - FLASK_ADMIN_PASSWORD=admin-password
+      - FLASK_SCHEDULER_USERNAME=scheduler
+      - INFURA_PROVIDER_KEY
     volumes:
       - ./web_backend:/web_backend
     networks:

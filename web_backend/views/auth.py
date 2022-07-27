@@ -60,7 +60,7 @@ def sign_in():  # pylint: disable=inconsistent-return-statements
     request_body_json = request.json
     if request_body_json is None:
         abort(400, "Request body is not a valid JSON")
-    username = get_not_none(request_body_json, "username")
+    username = get_not_none(request_body_json, "username").lower()
     signature = get_not_none(request_body_json, "signature")
     message_prefix = get_not_none(request_body_json, "message_prefix")
     sign_in_as_dealer = request.args.get("as_dealer", False, bool)
@@ -86,7 +86,7 @@ def sign_in():  # pylint: disable=inconsistent-return-statements
     unverified_buyer_name: str = w3.eth.account.recover_message(
         encode_defunct(text=f"{message_prefix}{nonce}"), signature=signature
     )
-    if unverified_buyer_name.lower() != username.lower():
+    if unverified_buyer_name.lower() != username:
         abort(401, "Signature verification failed")
 
     user_identity = MarketplaceIdentity(account_type, username)
@@ -140,7 +140,7 @@ def get_nonce(username: str):
     as_dealer = request.args.get("as_dealer", default=False, type=bool)
 
     if as_dealer:
-        nonce = get_nonce_for_dealer(username)
+        nonce = get_nonce_for_dealer(username.lower())
     else:
-        nonce = get_nonce_or_create_buyer(username)
+        nonce = get_nonce_or_create_buyer(username.lower())
     return jsonify(nonce)

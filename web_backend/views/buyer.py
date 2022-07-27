@@ -33,7 +33,7 @@ def get_buyer(name: str):
     Path Params:
         name: Name of the buyer to fetch.
     """
-    buyer = get_buyer_by_name(name)
+    buyer = get_buyer_by_name(name.lower())
     if buyer is None:
         abort(404, f"Buyer with name {name} is not found")
     return jsonify(buyer.info)
@@ -57,5 +57,5 @@ def create_new_buyer():
         abort(400, "Request body is not a valid JSON")
     buyer_name = get_not_none(request_body_json, "buyer_name")
     starting_balance = request_body_json.get("starting_balance")
-    create_buyer(buyer_name, starting_balance)
+    create_buyer(buyer_name.lower(), starting_balance)
     return jsonify("OK")

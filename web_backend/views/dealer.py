@@ -26,7 +26,7 @@ def create_new_dealer():
         abort(400, "Request body is not a valid JSON")
     dealer_name = get_not_none(request_body_json, "dealer_name")
     starting_balance = request_body_json.get("starting_balance")
-    create_dealer(dealer_name, starting_balance)
+    create_dealer(dealer_name.lower(), starting_balance)
     return jsonify("OK")
 
 
@@ -47,7 +47,7 @@ def get_dealers():
         ]
     """
     names = request.args.getlist("names")
-    dealers = get_dealers_by_names(names)
+    dealers = get_dealers_by_names([name.lower() for name in names])
     return jsonify(tuple(dealer.info for dealer in dealers))
 
 
@@ -57,7 +57,7 @@ def get_dealer(name: str):
     Path Params:
         name: Name of the dealer to fetch.
     """
-    dealer = get_dealer_by_name(name)
+    dealer = get_dealer_by_name(name.lower())
     if dealer is None:
         abort(404, f"Dealer with name {name} is not found")
     return jsonify(dealer.info)

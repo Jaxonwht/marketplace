@@ -30,7 +30,9 @@ itsdangerous==2.1.2
 jinja2==3.1.2
     # via flask
 markupsafe==2.1.1
-    # via jinja2
+    # via
+    #   jinja2
+    #   werkzeug
 psycopg2-binary==2.9.3
     # via -r requirements.in
 python-dateutil==2.8.2
@@ -54,11 +56,11 @@ tzdata==2022.1
     # via pytz-deprecation-shim
 tzlocal==4.2
     # via apscheduler
-urllib3==1.26.10
+urllib3==1.26.11
     # via requests
 uwsgi==2.0.20
     # via -r requirements.in
-werkzeug==2.1.2
+werkzeug==2.2.0
     # via flask
 
 # The following packages are considered to be unsafe in a requirements file:
