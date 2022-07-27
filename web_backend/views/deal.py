@@ -48,6 +48,8 @@ def get_deal_info_by_id(serial_id: int) -> Dict[str, Any]:
 
 
 @deal_bp.route("/<int:serial_id>/open", methods=["PATCH"])
+@jwt_required()
+@admin_jwt_required
 def patch_open_asset_price(serial_id: int):
     """
     Update an existing deal. If a deal with provided serial_id is not found,
@@ -64,6 +66,7 @@ def patch_open_asset_price(serial_id: int):
     return jsonify({"serial_id": updated_deal.serial_id, "open_asset_price": updated_deal.open_asset_price})
 
 
+# TODO: Secure this route
 @deal_bp.route("/", methods=["POST"])
 def create_new_deal():
     """
@@ -113,6 +116,8 @@ def create_new_deal():
 
 
 @deal_bp.patch("/<int:serial_id>/close")
+@jwt_required()
+@admin_jwt_required
 def close_deal_by_serial_id(serial_id: int):
     """
     Close a deal by its serial ID.
@@ -125,6 +130,8 @@ def close_deal_by_serial_id(serial_id: int):
 
 
 @deal_bp.post("/close-all-eligible")
+@jwt_required()
+@admin_jwt_required
 def close_all_closeable_deals():
     """
     Scan for all the deals that should be closed but not yet closed. This method will find each

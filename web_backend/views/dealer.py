@@ -30,6 +30,7 @@ def create_new_dealer():
     return jsonify("OK")
 
 
+# TODO: Secure this route
 @dealer_bp.route("/", methods=["GET"])
 def get_dealers():
     """

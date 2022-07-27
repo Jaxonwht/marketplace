@@ -4,6 +4,7 @@ from dal.ownership_dal import find_ownerships
 ownership_bp = Blueprint("ownership", __name__, url_prefix="/ownership")
 
 
+# TODO: Secure this route
 @ownership_bp.get("/")
 def query_ownerships():
     """
