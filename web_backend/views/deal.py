@@ -135,6 +135,8 @@ def close_deal_by_serial_id(serial_id: int):
 
 
 @deal_bp.post("/close-all-eligible")
+@jwt_required()
+@admin_jwt_required
 def close_all_closeable_deals():
     """
     Scan for all the deals that should be closed but not yet closed. This method will find each
