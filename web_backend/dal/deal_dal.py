@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 from typing import Iterable, List, Optional, cast
-from flask import abort
+from flask import abort, current_app
 
 from sqlalchemy import select
 from db import flask_session
@@ -10,16 +10,6 @@ from models.dealer_model import Dealer
 from models.ownership_model import Ownership
 from models.transaction_model import Transaction
 from utils.profits_utils import profit_for_buyer
-
-
-# Maximum allowed rate of profit or loss.
-_MAXIMUM_ALLOWED_RATE = 0.2
-
-# Minimum delay of start_time from now of a deal
-_MIN_START_TIME_DELAY = timedelta(days=1)
-
-# Minimum delay of end_time from start_time of a deal
-_MIN_END_TIME_DELAY_FROM_START_TIME = timedelta(weeks=1)
 
 
 def current_open_deals(max_share_price: Optional[float] = None) -> Iterable[Deal]:
@@ -56,17 +46,20 @@ def create_deal(
 ) -> Deal:
     if not allowed_rates:
         abort(400, "You must specify non-empty list of allowed rates")
+    maximum_allowed_rate: float = current_app.config["MAXIMUM_ALLOWED_RATE"]
     for rate in allowed_rates:
-        if rate <= 0 or rate > _MAXIMUM_ALLOWED_RATE:
-            abort(400, f"The rate {rate} does not fall within the range of (0, {_MAXIMUM_ALLOWED_RATE}]")
+        if rate <= 0 or rate > maximum_allowed_rate:
+            abort(400, f"The rate {rate} does not fall within the range of (0, {maximum_allowed_rate}]")
     if share_price <= 0:
         abort(400, "Share price must be positive")
     if initial_number_of_shares <= 0:
         abort(400, "Initial number of shares must be positive")
-    if start_time < datetime.now() + _MIN_START_TIME_DELAY:
-        abort(400, f"start_time should be at least {datetime.now() + _MIN_START_TIME_DELAY}")
-    if end_time < start_time + _MIN_END_TIME_DELAY_FROM_START_TIME:
-        abort(400, f"end_time should be at least {start_time + _MIN_END_TIME_DELAY_FROM_START_TIME}")
+    min_start_time_delay: timedelta = current_app.config["MIN_START_TIME_DELAY"]
+    if start_time < datetime.now() + min_start_time_delay:
+        abort(400, f"start_time should be at least {datetime.now() + min_start_time_delay}")
+    min_end_time_delay_from_start_time: timedelta = current_app.config["MIN_END_TIME_DELAY_FROM_START_TIME"]
+    if end_time < start_time + min_end_time_delay_from_start_time:
+        abort(400, f"end_time should be at least {start_time + min_end_time_delay_from_start_time}")
     dealer = flask_session.get(Dealer, dealer_name, with_for_update={"key_share": True})
     if not dealer:
         abort(404, f"Dealer {dealer_name} not found")

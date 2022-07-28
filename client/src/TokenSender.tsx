@@ -3,6 +3,7 @@ import Web3 from "web3";
 import type { AbiItem } from "web3-utils";
 import { toWei, toBN } from "web3-utils";
 import styles from "./TokenSender.module.scss";
+import { axiosInstance } from "./utils";
 
 interface TokenSenderProps {
   tokenContractAddress: string;
@@ -17,7 +18,7 @@ const TokenSender = ({
 }: TokenSenderProps) => {
   const [amount, setAmount] = useState("");
   const [fromUser, setFromUser] = useState("");
-  const readyToSend = !!amount && !!fromUser;
+  const readyToSend = !!amount && !!fromUser && amount !== "0";
   const handleAmountInputChanged = (event: ChangeEvent<HTMLInputElement>) => {
     event.preventDefault();
     setAmount(event.target.value);
@@ -54,7 +55,7 @@ const TokenSender = ({
     );
 
     try {
-      const result = await window.ethereum.request({
+      const txnHash = (await window.ethereum.request({
         method: "eth_sendTransaction",
         params: [
           {
@@ -65,9 +66,12 @@ const TokenSender = ({
               .encodeABI(),
           },
         ],
+      })) as string;
+      await axiosInstance.post(`/platform-transaction/${txnHash}`, {
+        as_dealer: true,
       });
-      console.log(result);
     } catch (error) {
+      console.error(error);
       window.alert("The transaction did not complete successfully.");
     }
   };

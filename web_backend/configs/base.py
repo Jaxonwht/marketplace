@@ -1,10 +1,11 @@
 """Base config."""
+from datetime import timedelta
 import os
 import json
+from logging import DEBUG
 from eth_typing.evm import ChecksumAddress, HexAddress
 from eth_typing.encoding import HexStr
 from web3 import Web3
-from logging import DEBUG
 
 from web3.contract import Contract
 
@@ -32,6 +33,15 @@ class Config:  # pylint: disable=too-few-public-methods
         return self.WEB3.eth.contract(
             address=ChecksumAddress(HexAddress(HexStr(Config.USDC_CONTRACT_ADDRESS))), abi=Config.ERC20_ABI
         )
+
+    # Maximum allowed rate of profit or loss.
+    MAXIMUM_ALLOWED_RATE = 0.2
+
+    # Minimum delay of start_time from now of a deal
+    MIN_START_TIME_DELAY = timedelta(days=1)
+
+    # Minimum delay of end_time from start_time of a deal
+    MIN_END_TIME_DELAY_FROM_START_TIME = timedelta(weeks=1)
 
     # Goerli only
     USDC_CONTRACT_ADDRESS = "0x07865c6E87B9F70255377e024ace6630C1Eaa37F"
