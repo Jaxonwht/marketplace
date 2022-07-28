@@ -68,7 +68,7 @@ const TokenSender = ({
         ],
       })) as string;
       await axiosInstance.post(`/platform-transaction/${txnHash}`, {
-        as_dealer: true,
+        as_dealer: false,
       });
     } catch (error) {
       console.error(error);
