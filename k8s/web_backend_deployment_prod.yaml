@@ -54,3 +54,5 @@ spec:
                   name: admin-password-secret
               - secret:
                   name: jwt-secret-key-secret
+              - secret:
+                  name: infura-provider-key-secret
