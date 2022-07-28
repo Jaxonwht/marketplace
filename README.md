@@ -123,6 +123,8 @@ secret = (Path("<mount-path>") / "<key>").read_text()
 2. ADMIN_PASSWORD
 3. JWT_SECRET_KEY
 4. PERPETUAL_SCHEDULER_TOKEN
+5. INFURA_PROVIDER_KEY
+6. PLATFORM_PRIVATE_KEY
 
 ### Stage
 
