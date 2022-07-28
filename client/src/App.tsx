@@ -8,8 +8,8 @@ import {
   axiosInstance,
   DEV_MODE,
   ERC_20_ABI,
-  generateBearerTokenHeader,
   GOERLI_USDC,
+  LS_KEY,
   PLATFORM_ADDRESS,
 } from "./utils";
 import TokenSender from "./TokenSender";
@@ -18,8 +18,6 @@ const connectionStatusClassName = (connected: boolean) =>
   classNames(styles["connection-status"], {
     [styles["connection-status--connected"]]: connected,
   });
-
-const LS_KEY = "sign-in-with-metamask:authToken";
 
 const App = () => {
   const [backendReady, setBackendReady] = useState(false);
@@ -39,11 +37,7 @@ const App = () => {
       return;
     }
     try {
-      const extraHeaders =
-        DEV_MODE && token ? generateBearerTokenHeader(token) : undefined;
-      const response = await authenticatedAxiosInstance.get("/auth/who-am-i", {
-        headers: extraHeaders,
-      });
+      const response = await authenticatedAxiosInstance().get("/auth/who-am-i");
       const identity = response.data as MarketplaceIdentity;
       setUsername(identity.username);
       setAccountType(identity.account_type);
@@ -84,7 +78,7 @@ const App = () => {
       return;
     }
     try {
-      await authenticatedAxiosInstance.post("/auth/sign-out");
+      await authenticatedAxiosInstance().post("/auth/sign-out");
       await refreshSignInStatus();
     } catch (e: any) {
       console.error(e);

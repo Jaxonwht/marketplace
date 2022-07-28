@@ -4,7 +4,6 @@ from dal.platform_transaction_dal import (
     check_pending_transactions,
     get_platform_transaction,
 )
-from utils.json_utils import get_not_none
 
 
 platform_transaction_bp = Blueprint("platform_transaction", __name__, url_prefix="/platform-transaction")
@@ -20,7 +19,7 @@ def post_platform_transaction(transaction_hash: str):
         transaction_hash (str): Transaction hash on chain.
 
     Body Params:
-        as_dealer (bool): Whether this transaction is meant to add to the dealer balance.
+        as_dealer (Optional[bool]): Whether this transaction is meant to add to the dealer balance.
 
     Returns:
         The transaction_hash back to the caller if successful.
@@ -28,7 +27,7 @@ def post_platform_transaction(transaction_hash: str):
     request_body_json = request.json
     if request_body_json is None:
         abort(400, "Request body is not a valid JSON")
-    as_dealer: bool = get_not_none(request_body_json, "as_dealer")
+    as_dealer: bool = request_body_json.get("as_dealer", False)
     add_platform_transaction_if_not_exists(transaction_hash, as_dealer)
     return jsonify(transaction_hash=transaction_hash)
 

@@ -12,16 +12,29 @@ const csrfConfig: AxiosRequestConfig = {
   xsrfCookieName: "csrf_access_token",
 };
 
+export const LS_KEY = "sign-in-with-metamask:authToken";
+
 export const axiosInstance = axios.create({
   baseURL: WEB_BACKEND_ENDPOINT,
 });
 
-export const authenticatedAxiosInstance = DEV_MODE
-  ? axiosInstance
-  : axios.create({
-      ...csrfConfig,
-      baseURL: WEB_BACKEND_ENDPOINT,
-    });
+const extraHeaders = () => {
+  const token = localStorage.getItem(LS_KEY);
+  return token ? generateBearerTokenHeader(token) : undefined;
+};
+
+const prodAuthenticatedAxiosInstance = axios.create({
+  ...csrfConfig,
+  baseURL: WEB_BACKEND_ENDPOINT,
+});
+
+export const authenticatedAxiosInstance = () =>
+  DEV_MODE
+    ? axios.create({
+        baseURL: WEB_BACKEND_ENDPOINT,
+        headers: extraHeaders(),
+      })
+    : prodAuthenticatedAxiosInstance;
 
 export const generateBearerTokenHeader = (bearerToken: string) => ({
   Authorization: `Bearer ${bearerToken}`,
