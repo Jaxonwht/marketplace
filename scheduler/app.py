@@ -8,7 +8,7 @@ from werkzeug.utils import import_string
 from exceptions.error_handlers import handle_http_exception
 from views.jobs import jobs_bp
 from scheduler import scheduler
-from fixed_jobs.web_backend_common_tasks import close_all_eligible_deals  # noqa: F401, pylint: disable=unused-import
+import fixed_jobs.web_backend_common_tasks  # noqa: F401
 
 
 def create_app() -> Flask:
