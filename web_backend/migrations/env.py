@@ -27,7 +27,6 @@ from models.dealer_model import Dealer  # noqa: E402
 from models.platform_transaction_model import PlatformTransaction  # noqa: E402
 from models.transaction_model import Transaction  # noqa: E402
 from models.ownership_model import Ownership  # noqa: E402
-from models.apscheduler_jobs_model import ApschedulerJobs  # noqa: E402
 
 config.set_main_option("sqlalchemy.url", str(current_app.extensions["migrate"].db.get_engine().url).replace("%", "%%"))
 target_metadata = current_app.extensions["migrate"].db.metadata
