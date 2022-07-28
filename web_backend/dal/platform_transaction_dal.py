@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta
-from typing import Any, List, cast
+from typing import Any, Dict, List, cast
 from eth_typing.encoding import HexStr
 from flask import abort, current_app
 from sqlalchemy import select
@@ -71,7 +71,7 @@ def _process_confirmed_transaction(
         transaction = web3.eth.get_transaction(transaction_hash)
         token_contract: Contract = current_app.config["USDC_CONTRACT"]
         transfer_function: ContractFunction
-        abi_with_data: Any
+        abi_with_data: Dict
         try:
             transfer_function, abi_with_data = token_contract.decode_function_input(transaction["input"])
         except ValueError:
@@ -79,6 +79,17 @@ def _process_confirmed_transaction(
             typed_pending_transaction.verification_info = "Transaction is not an accepted token transfer"
             flask_session.commit()
             return
+        if "_to" not in abi_with_data:
+            typed_pending_transaction.status = PlatformTransactionStatus.REJECTED
+            typed_pending_transaction.verification_info = f'Function input {abi_with_data} does not have "_to" key'
+            flask_session.commit()
+            return
+        if "_value" not in abi_with_data:
+            typed_pending_transaction.status = PlatformTransactionStatus.REJECTED
+            typed_pending_transaction.verification_info = f'Function input {abi_with_data} does not have "_value" key'
+            flask_session.commit()
+            return
+
         to_address = abi_with_data["_to"]
         if transfer_function.fn_name != token_contract.functions.transfer.fn_name:
             typed_pending_transaction.status = PlatformTransactionStatus.ATTENTION_NEEDED
