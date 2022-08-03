@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+from math import ceil
 from typing import Any, Dict, List, cast
 from eth_typing.encoding import HexStr
 from flask import abort, current_app
@@ -12,7 +13,59 @@ from models.buyer_model import Buyer
 from models.dealer_model import Dealer
 from models.platform_transaction_model import PlatformTransaction, PlatformTransactionStatus
 
+
 _MAXIMUM_MINT_TIME = timedelta(hours=12)
+
+
+def withdraw_platform_transaction(username: str, transfer_value: int, as_dealer: bool):
+    deducted_value: int = int(ceil(transfer_value * (1 + current_app.config["TRANSACTION_FEE_PERCENTAGE"])))
+    if as_dealer:
+        dealer: Dealer = flask_session.get(Dealer, username, with_for_update={"key_share": True})
+        if not dealer:
+            abort(404, f"Dealer {username} doesn't exist.")
+        else:
+            # TODO: flask_session.commit()?
+            dealer.balance = Dealer.balance - deducted_value
+            if dealer.balance < 0:
+                abort(
+                    409,
+                    f"Withdrawing {transfer_value} require a balance of {deducted_value}, but the dealer only has {Dealer.balance}",
+                )
+    else:
+        buyer: Buyer = flask_session.get(Buyer, username, with_for_update={"key_share": True})
+        if not buyer:
+            abort(404, f"Buyer {username} doesn't exist.")
+        else:
+            # TODO: flask_session.commit()?
+            buyer.balance = Buyer.balance - deducted_value
+            if buyer.balance < 0:
+                abort(
+                    409,
+                    f"Withdrawing {transfer_value} require a balance of {deducted_value}, but the buyer only has {Buyer.balance}",
+                )
+
+    web3: Web3 = current_app.config["WEB3"]
+    token_contract: Contract = current_app.config["USDC_CONTRACT"]
+    transaction_data = token_contract.encodeABI(fn_name="transfer", args=[username, transfer_value])
+
+    transaction = {
+        "type": current_app.config["TRANSACTION_TYPE"],
+        "nonce": w3.eth.getTransactionCount(current_app.config["PLATFORM_ADDRESS"]),
+        "from": current_app.config["PLATFORM_ADDRESS"],
+        "to": current_app.config["USDC_CONTRACT"],
+        "data": transaction_data,
+        # Need to modify for mainnet.
+        "maxFeePerGas": w3.toWei("250", "gwei"),
+        # Need to modify for mainnet.
+        "maxPriorityFeePerGas": w3.toWei("3", "gwei"),
+        "chainId": current_app.config["CHAIN_ID"],
+    }
+    gas = web3.eth.estimateGas(transaction)
+    transaction["gas"] = gas
+    signed_transaction = web3.eth.account.sign_transaction(transaction, current_app.config["PLATFORM_PRIVATE_KEY"])
+    # transaction_hash in HexBytes
+    transaction_hash = web3.eth.send_raw_transaction(signed_transaction.rawTransaction)
+    return transaction_hash
 
 
 def add_platform_transaction_if_not_exists(transaction_hash: str, as_dealer: bool) -> None:
