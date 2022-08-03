@@ -9,6 +9,9 @@ from web3 import Web3
 
 from web3.contract import Contract
 
+# TODO: Only for goeli testnet
+from web3.middleware import geth_poa_middleware
+
 
 class Config:  # pylint: disable=too-few-public-methods
     """Base configuration shared by all configs."""
@@ -23,9 +26,17 @@ class Config:  # pylint: disable=too-few-public-methods
     PLATFORM_ADDRESS = "0x49d0739eb001ff73b394a5a2054694a650dc9cec"
 
     @property
+    def PLATFORM_PRIVATE_KEY(self) -> str:
+        """Lazily evaluate platform private key."""
+        return os.getenv("PLATFORM_PRIVATE_KEY")
+
+    @property
     def WEB3(self) -> Web3:  # pylint: disable=invalid-name
         """Lazily evaluate w3 instance."""
-        return Web3(Web3.HTTPProvider(f'https://goerli.infura.io/v3/{os.getenv("INFURA_PROVIDER_KEY")}'))
+        web3 = Web3(Web3.HTTPProvider(f'https://goerli.infura.io/v3/{os.getenv("INFURA_PROVIDER_KEY")}'))
+        # TODO: Only for goeli testnet since it's proof-of-authority network.
+        web3.middleware_onion.inject(geth_poa_middleware, layer=0)
+        return web3
 
     @property
     def USDC_CONTRACT(self) -> Contract:  # pylint: disable=invalid-name
@@ -45,6 +56,13 @@ class Config:  # pylint: disable=too-few-public-methods
 
     # Goerli only
     USDC_CONTRACT_ADDRESS = "0x07865c6E87B9F70255377e024ace6630C1Eaa37F"
+
+    # Goerli only
+    CHAIN_ID = 5
+
+    TRANSACTION_TYPE = "0x2"
+
+    TRANSACTION_FEE_PERCENTAGE = 0.03
 
     ERC20_ABI = json.loads(
         '[{"constant":true,"inputs":[],"name":"name","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_spender","type":"address"},{"name":"_value","type":"uint256"}],"name":"approve","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"totalSupply","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_from","type":"address"},{"name":"_to","type":"address"},{"name":"_value","type":"uint256"}],"name":"transferFrom","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"decimals","outputs":[{"name":"","type":"uint8"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"_owner","type":"address"}],"name":"balanceOf","outputs":[{"name":"balance","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"symbol","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_to","type":"address"},{"name":"_value","type":"uint256"}],"name":"transfer","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"_owner","type":"address"},{"name":"_spender","type":"address"}],"name":"allowance","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"payable":true,"stateMutability":"payable","type":"fallback"},{"anonymous":false,"inputs":[{"indexed":true,"name":"owner","type":"address"},{"indexed":true,"name":"spender","type":"address"},{"indexed":false,"name":"value","type":"uint256"}],"name":"Approval","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"from","type":"address"},{"indexed":true,"name":"to","type":"address"},{"indexed":false,"name":"value","type":"uint256"}],"name":"Transfer","type":"event"}]'

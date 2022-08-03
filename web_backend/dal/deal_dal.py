@@ -67,7 +67,7 @@ def create_deal(
     if dealer.lockup_balance + amount_needed >= dealer.balance:
         abort(
             409,
-            f"Issuing these shares require a balance of {dealer.lockup_balance + amount_needed}, but the dealer only has {dealer.balacne}",
+            f"Issuing these shares require a balance of {dealer.lockup_balance + amount_needed}, but the dealer only has {dealer.balance}",
         )
     dealer.lockup_balance = Dealer.lockup_balance + amount_needed
     new_deal = Deal(

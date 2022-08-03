@@ -27,6 +27,12 @@ class ProductionConfig(Config):  # pylint: disable=too-few-public-methods
         return bytes.fromhex((Path("/var") / "JWT_SECRET_KEY").read_text())
 
     @property
+    def PLATFORM_PRIVATE_KEY(self) -> str:  # pylint: disable=invalid-name
+        """Lazily evaluate w3 instance."""
+        platform_private_key = (Path("/var") / "PLATFORM_PRIVATE_KEY").read_text()
+        return platform_private_key
+
+    @property
     def WEB3(self) -> Web3:  # pylint: disable=invalid-name
         """Lazily evaluate w3 instance."""
         infura_provider_key = (Path("/var") / "INFURA_PROVIDER_KEY").read_text()
