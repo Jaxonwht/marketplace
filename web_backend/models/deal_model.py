@@ -24,6 +24,7 @@ class Deal(flask_db.Model):
     end_time = Column(TIMESTAMP, nullable=False, index=True)
     closed = Column(Boolean, nullable=False, index=True)
     lockup_balance = Column(Float, CheckConstraint("lockup_balance >= 0"), nullable=False)
+    multiplier = Column(Float, nullable=False, default=1)
     transactions: List[Transaction] = relationship(
         Transaction, backref=backref("deal"), cascade="all, delete", passive_deletes=True
     )
@@ -47,4 +48,5 @@ class Deal(flask_db.Model):
             "end_time": str(self.end_time),
             "closed": self.closed,
             "lockup_balance": self.lockup_balance,
+            "multiplier": self.multiplier,
         }
