@@ -75,7 +75,9 @@ def create_new_deal():
 
     Body Params:
         dealer_name (str): Name of the deal to create.
-        nft_id (str): Id of the underlying asset.
+        collection_id (str): Id of the underlying collection.
+        asset_id (Optional[str]): Id of the underlying asset. If none, this deal is
+            aimed for the whole collection.
         share_price (float): Price of each share.
         allowed_rates (List[float]): Unordered list of rates for this deal.
         initial_number_of_shares (int): Starting number of shares to sell.
@@ -89,7 +91,8 @@ def create_new_deal():
     if request_body_json is None:
         abort(400, "Request body is not a valid JSON")
     dealer_name = get_not_none(request_body_json, "dealer_name")
-    nft_id = get_not_none(request_body_json, "nft_id")
+    collection_id = get_not_none(request_body_json, "collection_id")
+    asset_id = request_body_json.get("asset_id")
     share_price = get_not_none(request_body_json, "share_price")
     allowed_rates = get_not_none(request_body_json, "allowed_rates")
     initial_number_of_shares = get_not_none(request_body_json, "initial_number_of_shares")
@@ -98,7 +101,7 @@ def create_new_deal():
     end_time_str = get_not_none(request_body_json, "end_time")
     end_time = format_datetime_str_or_raise(end_time_str, current_app.logger)
     created_deal = create_deal(
-        dealer_name, nft_id, share_price, allowed_rates, initial_number_of_shares, start_time, end_time
+        dealer_name, collection_id, asset_id, share_price, allowed_rates, initial_number_of_shares, start_time, end_time
     )
     response = requests.post(
         f'{current_app.config["SCHEDULER_URL"]}/jobs/close-deal-in-future',
