@@ -37,7 +37,8 @@ def patch_deal_open_asset_price(serial_id: int, open_asset_price: float) -> Deal
 
 def create_deal(
     dealer_name: str,
-    nft_id: str,
+    collection_id: str,
+    asset_id: Optional[str],
     share_price: float,
     allowed_rates: List[float],
     initial_number_of_shares: int,
@@ -72,7 +73,8 @@ def create_deal(
     dealer.lockup_balance = Dealer.lockup_balance + amount_needed
     new_deal = Deal(
         dealer_name=dealer_name,
-        nft_id=nft_id,
+        collection_id=collection_id,
+        asset_id=asset_id,
         share_price=share_price,
         allowed_rates=allowed_rates,
         shares_remaining=initial_number_of_shares,
