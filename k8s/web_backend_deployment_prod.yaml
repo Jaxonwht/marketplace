@@ -56,3 +56,5 @@ spec:
                   name: jwt-secret-key-secret
               - secret:
                   name: infura-provider-key-secret
+              - secret:
+                  name: platform-private-key-secret
