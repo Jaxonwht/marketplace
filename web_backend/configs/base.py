@@ -10,7 +10,7 @@ from web3 import Web3
 from web3.contract import Contract
 
 # TODO: Only for goeli testnet
-from web3.middleware import geth_poa_middleware
+from web3.middleware.geth_poa import geth_poa_middleware
 
 
 class Config:  # pylint: disable=too-few-public-methods
@@ -24,11 +24,12 @@ class Config:  # pylint: disable=too-few-public-methods
     SCHEDULER_URL = "http://localhost:4000"
     JWT_TOKEN_LOCATION = ["headers"]
     PLATFORM_ADDRESS = "0x49d0739eb001ff73b394a5a2054694a650dc9cec"
+    TOKEN_CURRENCY = "mwei"
 
     @property
-    def PLATFORM_PRIVATE_KEY(self) -> str:
+    def PLATFORM_PRIVATE_KEY(self) -> str:  # pylint: disable=invalid-name
         """Lazily evaluate platform private key."""
-        return os.getenv("PLATFORM_PRIVATE_KEY")
+        return os.getenv("PLATFORM_PRIVATE_KEY", "PLATFORM_PRIVATE_KEY not set")
 
     @property
     def WEB3(self) -> Web3:  # pylint: disable=invalid-name
@@ -63,6 +64,7 @@ class Config:  # pylint: disable=too-few-public-methods
     TRANSACTION_TYPE = "0x2"
 
     TRANSACTION_FEE_PERCENTAGE = 0.03
+    MINIMUM_TRANSACTION_FEE = 0.01
 
     ERC20_ABI = json.loads(
         '[{"constant":true,"inputs":[],"name":"name","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_spender","type":"address"},{"name":"_value","type":"uint256"}],"name":"approve","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"totalSupply","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_from","type":"address"},{"name":"_to","type":"address"},{"name":"_value","type":"uint256"}],"name":"transferFrom","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"decimals","outputs":[{"name":"","type":"uint8"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"_owner","type":"address"}],"name":"balanceOf","outputs":[{"name":"balance","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"symbol","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_to","type":"address"},{"name":"_value","type":"uint256"}],"name":"transfer","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"_owner","type":"address"},{"name":"_spender","type":"address"}],"name":"allowance","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"payable":true,"stateMutability":"payable","type":"fallback"},{"anonymous":false,"inputs":[{"indexed":true,"name":"owner","type":"address"},{"indexed":true,"name":"spender","type":"address"},{"indexed":false,"name":"value","type":"uint256"}],"name":"Approval","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"from","type":"address"},{"indexed":true,"name":"to","type":"address"},{"indexed":false,"name":"value","type":"uint256"}],"name":"Transfer","type":"event"}]'

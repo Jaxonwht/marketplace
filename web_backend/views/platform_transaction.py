@@ -14,13 +14,14 @@ platform_transaction_bp = Blueprint("platform_transaction", __name__, url_prefix
 @platform_transaction_bp.post("/withdraw")
 def withdraw():
     """
-    Withdraw funds from platform transaction to the user wallet. This transaction represents an actual token
-    transaction between the platform wallet and the user.
+    Withdraw funds from platform transaction to the user wallet. This transaction represents an actual
+    token transaction between the platform wallet and the user.
 
     Body Params:
         username (str): User wallet to withdraw to.
-        transfer_value (float): Amount to be withdrawn in 10e-6 USD unit.
-        as_dealer (Optional[bool]): Whether this transaction is meant to withdraw from the dealer balance.
+        transfer_value (float): Amount to be withdrawn in USD unit.
+        as_dealer (Optional[bool]): Whether this transaction is meant to withdraw from the dealer
+            balance.
 
     Returns:
         The transaction_hash back to the caller if successful.
@@ -29,7 +30,7 @@ def withdraw():
     if request_body_json is None:
         abort(400, "Request body is not a valid JSON")
     username = get_not_none(request_body_json, "username").lower()
-    transfer_value = int(get_not_none(request_body_json, "transfer_value"))
+    transfer_value = get_not_none(request_body_json, "transfer_value")
     as_dealer = request_body_json.get("as_dealer", False)
     return withdraw_platform_transaction(username, transfer_value, as_dealer)
 
