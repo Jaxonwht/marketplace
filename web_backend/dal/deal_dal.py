@@ -37,12 +37,14 @@ def patch_deal_open_asset_price(serial_id: int, open_asset_price: float) -> Deal
 
 def create_deal(
     dealer_name: str,
-    nft_id: str,
+    collection_id: str,
+    asset_id: Optional[str],
     share_price: float,
     allowed_rates: List[float],
     initial_number_of_shares: int,
     start_time: datetime,
     end_time: datetime,
+    multiplier: float,
 ) -> Deal:
     if not allowed_rates:
         abort(400, "You must specify non-empty list of allowed rates")
@@ -60,6 +62,12 @@ def create_deal(
     min_end_time_delay_from_start_time: timedelta = current_app.config["MIN_END_TIME_DELAY_FROM_START_TIME"]
     if end_time < start_time + min_end_time_delay_from_start_time:
         abort(400, f"end_time should be at least {start_time + min_end_time_delay_from_start_time}")
+    min_deal_multiplier = current_app.config["MIN_DEAL_MULTIPLIER"]
+    max_deal_multiplier = current_app.config["MAX_DEAL_MULTIPLIER"]
+    if multiplier < min_deal_multiplier or multiplier > max_deal_multiplier:
+        abort(
+            400, f"multiplier should be between {min_deal_multiplier} (inclusive) and {max_deal_multiplier} (inclusive)"
+        )
     dealer = flask_session.get(Dealer, dealer_name, with_for_update={"key_share": True})
     if not dealer:
         abort(404, f"Dealer {dealer_name} not found")
@@ -72,7 +80,8 @@ def create_deal(
     dealer.lockup_balance = Dealer.lockup_balance + amount_needed
     new_deal = Deal(
         dealer_name=dealer_name,
-        nft_id=nft_id,
+        collection_id=collection_id,
+        asset_id=asset_id,
         share_price=share_price,
         allowed_rates=allowed_rates,
         shares_remaining=initial_number_of_shares,
@@ -80,6 +89,7 @@ def create_deal(
         end_time=end_time,
         lockup_balance=amount_needed,
         closed=False,
+        multiplier=multiplier,
     )
     flask_session.add(new_deal)
     flask_session.commit()
@@ -128,6 +138,7 @@ def close_deal(serial_id: int) -> None:
             deal.share_price,
             typed_ownership.rate,
             typed_ownership.shares,
+            deal.multiplier,
         )
         buyer: Buyer = flask_session.get(Buyer, typed_ownership.buyer_name, with_for_update={"key_share": True})
         if not buyer:

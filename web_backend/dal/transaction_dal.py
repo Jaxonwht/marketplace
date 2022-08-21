@@ -80,7 +80,9 @@ def sell_shares(
         buyer_name=buyer_name, deal_serial_id=deal_serial_id, shares=-shares, rate=rate, asset_price=current_asset_price
     )
     flask_session.add(transaction)
-    profit = profit_for_buyer(deal.open_asset_price, current_asset_price, deal.share_price, rate, shares)
+    profit = profit_for_buyer(
+        deal.open_asset_price, current_asset_price, deal.share_price, rate, shares, deal.multiplier
+    )
     buyer.balance = Buyer.balance + shares * deal.share_price + profit
     dealer: Dealer = flask_session.get(Dealer, deal.dealer_name, with_for_update={"key_share": True})
     if not dealer:
