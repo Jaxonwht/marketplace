@@ -1,0 +1,43 @@
+.home {
+  padding: 100px 20px;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.top {
+  display: flex;
+  padding: 10px 0px;
+  align-items: center;
+}
+.list {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+.topLeft {
+  width: 500px;
+}
+
+.topDesc {
+  width: 200px;
+}
+
+.homeTopCaption {
+  color: var(--theme-font-color);
+  font-size: 70px;
+  font-weight: bold;
+}
+
+.list img {
+  width: 120px;
+  height: 120px;
+}
+.listItem {
+  margin-right: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: var(--theme-font-color2);
+  font-size: 20px;
+}
