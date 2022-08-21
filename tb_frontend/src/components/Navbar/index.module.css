@@ -1,0 +1,192 @@
+.header {
+  padding: 10px 0px 10px 0px;
+  position: sticky;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  z-index: 10;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  background-color: var(--theme-scroll-navbar);
+  box-shadow: 5px 5px 5px #999;
+}
+.navBg {
+  background-color: var(--theme-scroll-navbar);
+}
+.searchInput {
+  background: transparent;
+  border: 1px solid var(--theme-font-color2);
+  margin: 0px 50px;
+  display: flex;
+  height: 40px;
+  border-radius: 10px;
+  flex: 1;
+  align-items: center;
+  padding: 0px 10px;
+}
+.searchInput input {
+  background: transparent;
+  outline: none;
+}
+.headerContent {
+  width: var(--main-content-width);
+  margin: auto;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  font-size: 15px;
+  z-index: 1000;
+  top: 0px;
+  align-items: center;
+}
+.logo {
+  height: 40px;
+}
+.right {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+  margin-right: 10px;
+}
+.caption {
+  display: flex;
+  align-items: center;
+  font-size: 20px;
+}
+.text1 {
+  color: #fff;
+  font-size: 20px;
+}
+.text2 {
+  margin-left: 10px;
+  color: #fff;
+  font-size: 13px;
+}
+.menus {
+  display: flex;
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  margin-right: 10px;
+}
+.menuItem {
+  margin-right: 20px;
+  margin-left: 10px;
+  cursor: pointer;
+  color: var(--theme-font-color);
+}
+.footer {
+  height: 70px;
+  background-color: #111827;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  color: #fff;
+  font-size: 15px;
+  align-items: center;
+  padding: 0px 20px;
+}
+.headimg {
+  width: 60px;
+  height: 60px;
+  border-radius: 30px;
+  margin-left: 10px;
+  cursor: pointer;
+}
+.signinBtn {
+  border: 1px solid #3279cc;
+  color: #3279cc;
+  padding: 12px 25px;
+  text-align: center;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 10px;
+  margin-right: 20px;
+  white-space: nowrap;
+}
+
+.language {
+  display: flex;
+  align-items: center;
+  margin-right: 40px;
+  cursor: pointer;
+  color: var(--theme-font-color);
+}
+.languageIcon {
+  filter: drop-shadow(#0000ff 0px 0);
+  width: 20px;
+  height: 20px;
+  margin-right: 5px;
+}
+.theme {
+  color: var(--theme-font-color);
+  margin-right: 30px;
+}
+
+.floatMenu {
+  position: absolute;
+  top: 60px;
+}
+.appName {
+  font-size: 20px;
+  margin-left: 10px;
+  color: #fff;
+  font-weight: bold;
+}
+.menuIcon {
+  display: none;
+}
+
+@media screen and (max-width: 500px) {
+  .menus {
+    display: none;
+  }
+  .connectBtn {
+    display: none;
+  }
+  .menuIcon {
+    display: block;
+    background-size: 100% 100%;
+    width: 27px;
+    height: 20px;
+    margin-left: 10px;
+  }
+  .mobileMenus {
+    position: absolute;
+    right: 10px;
+    top: 60px;
+  }
+  .theme {
+    display: none;
+  }
+  .language {
+    margin-right: 0px;
+  }
+  .header {
+    padding: 10px;
+  }
+  .headerContent {
+    flex: 1;
+  }
+  .language {
+    display: none;
+  }
+  .signinBtn {
+    margin-left: 10px;
+    border: 1px solid #3279cc;
+    color: #3279cc;
+    padding: 5px 10px;
+    text-align: center;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 10px;
+    margin-right: 20px;
+    white-space: nowrap;
+  }
+  .signupBtn {
+    display: none;
+  }
+}
