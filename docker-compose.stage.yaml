@@ -26,6 +26,7 @@ services:
       - FLASK_ADMIN_PASSWORD=admin-password
       - FLASK_SCHEDULER_USERNAME=scheduler
       - INFURA_PROVIDER_KEY
+      - PLATFORM_PRIVATE_KEY
     volumes:
       - ./web_backend:/web_backend
     networks:
