@@ -23,6 +23,7 @@ class PlatformTransaction(flask_db.Model):
     transaction_hash = Column(String, primary_key=True)
     # Positive represents going into the platform.
     amount = Column(Float)
+    amount_without_fees = Column(Float)
     timestamp = Column(TIMESTAMP, nullable=False, default=datetime.now)
     buyer_name = Column(String, ForeignKey("buyer.name", ondelete="CASCADE"))
     dealer_name = Column(String, ForeignKey("dealer.name", ondelete="CASCADE"))
