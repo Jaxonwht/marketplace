@@ -1,0 +1,37 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  width: 100%;
+  margin: 50px auto;
+}
+.siginWrapper {
+  border-radius: 20px;
+  background-color: #fff;
+  padding: 40px 40px !important;
+  min-width: 350px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  box-shadow: 2px 2px 0px 2px #00000011;
+  margin-bottom: 30px;
+}
+.caption {
+  margin: 20px 0px;
+  font-weight: bold;
+  font-size: 20px;
+  line-height: 90px;
+  color: var(--theme-font-light-color);
+}
+.siginButton {
+  width: 100%;
+}
+
+.tail {
+  width: 100%;
+  text-align: center;
+  color: #888;
+  line-height: 30px;
+}

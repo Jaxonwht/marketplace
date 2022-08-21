@@ -1,0 +1,108 @@
+.layout {
+  min-height: 100vh;
+  background-color: var(--theme-color);
+  display: flex;
+  flex-direction: column;
+}
+.content {
+  display: flex;
+  flex: 1;
+}
+
+.header {
+  height: 60px;
+  background-color: #fff;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  font-size: 15px;
+  z-index: 1000;
+  top: 0px;
+  align-items: center;
+  padding: 0px 0px 0px 20px;
+  position: sticky;
+  border-bottom: 1px solid #eee;
+}
+.right {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+  margin-right: 10px;
+}
+.caption {
+  display: flex;
+  align-items: center;
+}
+.text1 {
+  color: #fff;
+  font-size: 20px;
+}
+.text2 {
+  margin-left: 10px;
+  color: #fff;
+  font-size: 13px;
+}
+.menus {
+  display: flex;
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  margin-right: 10px;
+}
+.menuItem {
+  margin-right: 20px;
+  margin-left: 10px;
+  cursor: pointer;
+}
+.logo {
+  width: 50px;
+}
+.footer {
+  height: 70px;
+  background-color: #111827;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  color: #fff;
+  font-size: 15px;
+  align-items: center;
+  padding: 0px 20px;
+}
+.headimg {
+  width: 30px;
+  height: 30px;
+  border-radius: 30px;
+  margin-left: 10px;
+  cursor: pointer;
+}
+.loginBtn {
+  background-color: #fdd340;
+  height: 100%;
+  width: 176px;
+  text-align: center;
+  line-height: 60px;
+  color: #181919;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.floatMenu {
+  position: absolute;
+  top: 60px;
+}
+.appName {
+  font-size: 20px;
+  margin-left: 10px;
+  color: #000;
+  font-weight: bold;
+}
+.outletContent {
+  flex: 1;
+}
+@media screen and (max-width: 500px) {
+  .content {
+    padding-top: 0px;
+  }
+}

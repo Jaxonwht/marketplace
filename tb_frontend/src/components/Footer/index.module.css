@@ -1,0 +1,33 @@
+.footer {
+  width: 100%;
+  padding: 40px 0px;
+  text-align: center;
+  color: #fff;
+  background-color: rgb(66, 119, 124);
+  /* background-image: url("../../assets/images/tailbg.png"); */
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+.content {
+  width: var(--main-content-width);
+  margin: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.left {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: center;
+  margin-right: 173px;
+  font-size: 40px;
+  font-weight: bold;
+}
+
+.right {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  font-size: 20px;
+}
