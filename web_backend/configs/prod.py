@@ -28,7 +28,7 @@ class ProductionConfig(Config):  # pylint: disable=too-few-public-methods
 
     @property
     def PLATFORM_PRIVATE_KEY(self) -> str:  # pylint: disable=invalid-name
-        """Lazily evaluate w3 instance."""
+        """Lazily evaluate platform private key."""
         platform_private_key = (Path("/var") / "PLATFORM_PRIVATE_KEY").read_text()
         return platform_private_key
 

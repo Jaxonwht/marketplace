@@ -24,7 +24,7 @@ class Config:  # pylint: disable=too-few-public-methods
     SCHEDULER_URL = "http://localhost:4000"
     JWT_TOKEN_LOCATION = ["headers"]
     PLATFORM_ADDRESS = "0x49d0739eb001ff73b394a5a2054694a650dc9cec"
-    TOKEN_CURRENCY = "mwei"
+    TOKEN_CURRENCY = "mwei"  # 6 decimals
 
     @property
     def PLATFORM_PRIVATE_KEY(self) -> str:  # pylint: disable=invalid-name
@@ -34,7 +34,8 @@ class Config:  # pylint: disable=too-few-public-methods
     @property
     def WEB3(self) -> Web3:  # pylint: disable=invalid-name
         """Lazily evaluate w3 instance."""
-        web3 = Web3(Web3.HTTPProvider(f'https://goerli.infura.io/v3/{os.getenv("INFURA_PROVIDER_KEY")}'))
+        infura_provider_key = os.getenv("INFURA_PROVIDER_KEY", "INFURA_PROVIDER_KEY not set")
+        web3 = Web3(Web3.HTTPProvider(f"https://goerli.infura.io/v3/{infura_provider_key}"))
         # TODO: Only for goeli testnet since it's proof-of-authority network.
         web3.middleware_onion.inject(geth_poa_middleware, layer=0)
         return web3
