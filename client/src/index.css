@@ -1,13 +1,85 @@
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  min-width: 1400px;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
+}
+:root {
+  --main-content-width: calc(100% - 280px);
+  --theme-color: #fff;
+  --theme-font-color: #333;
+  --mobile-width: 800;
+}
+
+body,
+#root {
+  background-color: var(--theme-color) !important;
+}
+
+.button {
+  background-image: linear-gradient(rgb(91, 168, 232), rgb(68, 121, 206));
+  border: none;
+  padding: 12px 25px;
+  color: #fff !important;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.stoke-button {
+  border: 1px solid #3344ff;
+  color: rgb(91, 168, 232);
+  padding: 12px 25px;
+  text-align: center;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 10px;
+  margin-right: 20px;
+}
+.stoke-dashed-button {
+  border: 1px dashed #3344ff;
+  color: rgb(91, 168, 232);
+  padding: 12px 25px;
+  text-align: center;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 10px;
+  margin-right: 20px;
+}
+a {
+  color: #3279cc !important;
+}
+input {
+  line-height: 50px;
+  width: 100%;
+  height: 50px;
+  border: none;
+  background-color: #eee;
+  border-radius: 5px;
+  padding: 10px;
+}
+
+@media screen and (max-width: 500px) {
+  body {
+    min-width: auto;
+  }
+
+  :root {
+    --main-content-width: calc(100vw - 20px);
+  }
+  .stoke-dashed-button {
+    padding: 5px 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+  }
 }

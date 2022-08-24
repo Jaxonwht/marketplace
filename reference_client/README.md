@@ -44,20 +44,3 @@ You don’t have to ever use `eject`. The curated feature set is suitable for sm
 You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
 To learn React, check out the [React documentation](https://reactjs.org/).
-
-1606726041@qq.com
-Abc.123456
-457353
-
-pm2 start yarn --name "finx" -- start
-
-sudo scp -r ./src root@139.196.40.161:/root/taobao/finx
-sudo scp -r ./public root@139.196.40.161:/root/taobao/finx
-sudo scp -r ./package.json root@139.196.40.161:/root/taobao/finx
-sudo scp -r ./tsconfig.json root@139.196.40.161:/root/taobao/finx
-
-sudo scp -r ./build/\*\* root@139.196.40.161:/root/qingwah5
-
-https://exchange.shiftmarkets.com/trade
-jojivil845@falkyz.com
-@signX12901290

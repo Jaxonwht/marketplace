@@ -1,138 +1,112 @@
+import { HashRouter as Router, useRoutes } from "react-router-dom";
 import React, { useEffect, useState } from "react";
-import styles from "./App.module.scss";
-import classNames from "classnames";
-import SignIn from "./SignIn";
-import type { MarketplaceIdentity } from "./responseTypes";
-import {
-  authenticatedAxiosInstance,
-  axiosInstance,
-  DEV_MODE,
-  ERC_20_ABI,
-  GOERLI_USDC,
-  LS_KEY,
-  PLATFORM_ADDRESS,
-} from "./utils";
-import TokenSender from "./TokenSender";
 
-const connectionStatusClassName = (connected: boolean) =>
-  classNames(styles["connection-status"], {
-    [styles["connection-status--connected"]]: connected,
-  });
+import Home from "./pages/Home/Home";
+import NNF from "./pages/NNF/NNF";
+import NNFDetail from "./pages/NNFDetail/NNFDetail";
+import About from "./pages/About/About";
+import Signin from "./pages/Signin/Signin";
+import Signup from "./pages/Signup/Signup";
+
+import Layout from "./components/Layout/Layout";
+
+import intl from "react-intl-universal";
+import "antd/dist/antd.css";
+import Usercenter from "./pages/Usercenter/UserCenter";
+
+import themes from "./config/theme";
+
+import { useSelector, useDispatch } from "react-redux";
+import { isMobile } from "./utils/utils";
+import { useAppDispatch, useAppSelector } from "./store/hooks";
+import { setIsMobile } from "./reduxSlices/mobileSlice";
+
+require("intl/locale-data/jsonp/en.js");
+require("intl/locale-data/jsonp/zh.js"); // or 'antd/dist/antd.less'
+// app locale data
+const locales = {
+  "en-US": require("./locales/en-US.json"),
+  "zh-CN": require("./locales/zh-CN.json"),
+};
+const GetRoutes = () => {
+  const routes = useRoutes([
+    {
+      path: "/",
+      element: <Layout></Layout>,
+      children: [
+        {
+          path: "home",
+          element: <Home></Home>,
+        },
+        {
+          path: "nnf",
+          element: <NNF></NNF>,
+        },
+        {
+          path: "about",
+          element: <About></About>,
+        },
+        {
+          path: "nnfDetail",
+          element: <NNFDetail></NNFDetail>,
+        },
+        {
+          path: "signin",
+          element: <Signin></Signin>,
+        },
+        {
+          path: "signup",
+          element: <Signup></Signup>,
+        },
+        {
+          path: "usercenter",
+          element: <Usercenter></Usercenter>,
+        },
+      ],
+    },
+  ]);
+
+  return routes;
+};
 
 const App = () => {
-  const [backendReady, setBackendReady] = useState(false);
-  const [schedulerReady, setSchedulerReady] = useState(false);
-  const [username, setUsername] = useState<string | null>(null);
-  const [accountType, setAccountType] = useState<string | null>(null);
+  const [initDone, setInitDone] = useState(false);
+  const dispatch = useAppDispatch();
+  const theme = useAppSelector((state) => state.theme);
 
-  const nullifySignInStatus = () => {
-    setAccountType(null);
-    setUsername(null);
-  };
-
-  const refreshSignInStatus = async () => {
-    const token = localStorage.getItem(LS_KEY);
-    if (DEV_MODE && token === null) {
-      nullifySignInStatus();
-      return;
-    }
-    try {
-      const response = await authenticatedAxiosInstance().get("/auth/who-am-i");
-      const identity = response.data as MarketplaceIdentity;
-      setUsername(identity.username);
-      setAccountType(identity.account_type);
-    } catch (error) {
-      nullifySignInStatus();
-    }
-  };
-
-  const handleSignIn = async (token: string) => {
-    if (DEV_MODE) {
-      localStorage.setItem(LS_KEY, token);
-    }
-    await refreshSignInStatus();
-  };
-
-  useEffect(() => {
-    axiosInstance
-      .get("/hello-world")
-      .then(() => setBackendReady(true))
-      .catch((e) => {
-        console.error(e);
-        setBackendReady(false);
+  const loadLocales = () => {
+    // init method will load CLDR locale data according to currentLocale
+    // react-intl-universal is singleton, so you should init it only once in your app
+    intl
+      .init({
+        currentLocale: localStorage.getItem("language") || "en-US", // TODO: determine locale here
+        locales,
+      })
+      .then(() => {
+        // After loading CLDR locale data, start to render
+        setInitDone(true);
       });
-    axiosInstance
-      .get("/scheduler-status")
-      .then(() => setSchedulerReady(true))
-      .catch((e) => {
-        console.error(e);
-        setSchedulerReady(false);
-      });
-    refreshSignInStatus();
-  });
-
-  const handleSignOut = async () => {
-    if (DEV_MODE) {
-      localStorage.removeItem(LS_KEY);
-      await refreshSignInStatus();
-      return;
-    }
-    try {
-      await authenticatedAxiosInstance().post("/auth/sign-out");
-      await refreshSignInStatus();
-    } catch (e: any) {
-      console.error(e);
-    }
   };
-
   useEffect(() => {
-    if (typeof window.ethereum !== "undefined") {
-      window.ethereum.on("accountsChanged", handleSignOut);
-    } else {
-      alert("Please install MetaMask to use this service!");
-    }
-    return () => {
-      window.ethereum.removeListener("accountsChanged", handleSignOut);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const themeContents = themes[theme];
+    Object.entries(themeContents).forEach(([key, value]: [string, string]) =>
+      document.documentElement.style.setProperty(key, value)
+    );
+    console.log("init=====");
+
+    dispatch(setIsMobile(isMobile()));
+    loadLocales();
   }, []);
 
-  return (
-    <React.Fragment>
-      <header>
-        <div>
-          Web Backend Status:{" "}
-          <span className={connectionStatusClassName(backendReady)}>
-            {backendReady ? "connected" : "disconnected"}
-          </span>
-        </div>
-        <div>
-          Scheduler Status:{" "}
-          <span className={connectionStatusClassName(schedulerReady)}>
-            {schedulerReady ? "connected" : "disconnected"}
-          </span>
-        </div>
-      </header>
-      <div className={styles["sign-in-area"]}></div>
-      {username && accountType ? (
-        <React.Fragment>
-          <div>
-            username: {username}, account type: {accountType}
-          </div>
-          <button onClick={handleSignOut}>Sign out</button>
-          <TokenSender
-            tokenContractAddress={GOERLI_USDC}
-            tokenContractABI={ERC_20_ABI}
-            recipientAddress={PLATFORM_ADDRESS}
-          />
-        </React.Fragment>
-      ) : (
-        <React.Fragment>
-          <SignIn onSignedIn={handleSignIn} />
-          <SignIn onSignedIn={handleSignIn} asDealer />
-        </React.Fragment>
-      )}
-    </React.Fragment>
+  return initDone ? (
+    <Router>
+      {/* <Routes>
+        <Route path='/' element={Home} />
+      </Routes> */}
+      <GetRoutes />
+    </Router>
+  ) : (
+    <div></div>
   );
 };
 
