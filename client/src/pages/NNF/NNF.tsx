@@ -8,9 +8,12 @@ import styles from "./style.module.css";
 import * as echarts from "echarts";
 import { useSelector, useDispatch } from "react-redux";
 import Item from "antd/lib/list/Item";
+import CreateDealModal from "./CreateDealModal";
 
 export default function Home() {
   const navagate = useNavigate();
+  const [isCreateDealModalVisible, setIsCreateDealModalVisible] =
+    useState(false);
 
   const [list, setList] = useState([
     {
@@ -105,8 +108,12 @@ export default function Home() {
 
   return (
     <div className={styles.home}>
-      <button className="button" style={{ height: 60, width: 400 }}>
-        CONNECT YOUR GAME
+      <button
+        className="button"
+        style={{ height: 60, width: 400 }}
+        onClick={() => setIsCreateDealModalVisible(true)}
+      >
+        Create a deal
       </button>
       <div className={styles.font1}>Top Ongoing table</div>
       <table className={styles.table}>
@@ -166,6 +173,10 @@ export default function Home() {
           alt=""
         ></img>
       </div>
+      <CreateDealModal
+        isModalVisible={isCreateDealModalVisible}
+        setIsModalVisible={setIsCreateDealModalVisible}
+      />
     </div>
   );
 }
