@@ -27,7 +27,7 @@ const Navbar = () => {
 
   const signIn = async (accessToken: string) => {
     storeCredentials(accessToken);
-    await dispatch(refreshSignInStatus());
+    await dispatch(refreshSignInStatus);
   };
 
   const user = getUser();
@@ -48,7 +48,7 @@ const Navbar = () => {
   }, []);
 
   useEffect(() => {
-    dispatch(refreshSignInStatus());
+    dispatch(refreshSignInStatus);
   }, [dispatch]);
 
   const navigate = useNavigate();

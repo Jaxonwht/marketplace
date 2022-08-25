@@ -23,3 +23,11 @@ export interface CreateDealRequestBody {
 export interface CreateDealResponse {
   created_deal_serial_id: number;
 }
+
+export interface BackendConfig {
+  max_deal_multiplier: number;
+  maximum_allowed_rate: number;
+  min_deal_multiplier: number;
+  min_end_time_delay_from_start_time_days: number;
+  min_start_time_delay_days: number;
+}

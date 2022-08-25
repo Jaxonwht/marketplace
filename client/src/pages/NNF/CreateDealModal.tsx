@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Moment } from "moment";
 import { Form, DatePicker, Input, InputNumber, Modal } from "antd";
-import { useAppSelector } from "../../store/hooks";
+import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { AccountType } from "../../reduxSlices/identitySlice";
 import { authenticatedAxiosInstance } from "../../utils/network";
 import { CreateDealResponse, CreateDealRequestBody } from "../../backendTypes";
+import { fetchBackendConfig } from "../../reduxSlices/backendConfigSlice";
 
 interface CreateDealFormValues {
   collectionId: string;
@@ -28,6 +29,14 @@ const CreateDealModal = ({
 }: CreateDealModalProps) => {
   const [form] = Form.useForm<CreateDealFormValues>();
   const identity = useAppSelector((state) => state.identity);
+  const dispatch = useAppDispatch();
+  const backendConfig = useAppSelector((state) => state.backendConfig);
+
+  useEffect(() => {
+    if (isModalVisible) {
+      dispatch(fetchBackendConfig);
+    }
+  }, [dispatch, isModalVisible]);
 
   const handleCancel = () => {
     setIsModalVisible(false);
@@ -104,10 +113,10 @@ const CreateDealModal = ({
           <InputNumber
             placeholder="Cap on P/L"
             min={0}
-            max={100 as number}
+            max={100 * (backendConfig?.maximum_allowed_rate ?? 0.2)}
             formatter={(value) => `${value}%`}
             parser={(rawValue) =>
-              Number(rawValue?.replace("%", "") || "0") / 100
+              Number(rawValue?.replace("%", "") ?? "0") / 100
             }
           />
         </Form.Item>
@@ -133,12 +142,12 @@ const CreateDealModal = ({
                 "Ratio of share price percentage change in comparison to the underlying asset or collection percentage change",
             },
           ]}
+          initialValue={1}
         >
           <InputNumber
             placeholder="Multiplier"
-            min={-10}
-            max={10}
-            defaultValue={1}
+            min={backendConfig?.min_deal_multiplier ?? -10}
+            max={backendConfig?.max_deal_multiplier ?? 10}
           />
         </Form.Item>
         <Form.Item
