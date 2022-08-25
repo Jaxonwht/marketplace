@@ -11,7 +11,6 @@ class Ownership(flask_db.Model):
 
     buyer_name = Column(String, ForeignKey("buyer.name", ondelete="CASCADE"), nullable=False, primary_key=True)
     deal_serial_id = Column(Integer, ForeignKey("deal.serial_id", ondelete="CASCADE"), nullable=False, primary_key=True)
-    rate = Column(Float, nullable=False, primary_key=True)
     shares = Column(Integer, CheckConstraint("shares >= 0"), nullable=False)
 
     @property
@@ -19,6 +18,5 @@ class Ownership(flask_db.Model):
         return {
             "buyer_name": self.buyer_name,
             "deal_serial_id": self.deal_serial_id,
-            "rate": self.rate,
             "shares": self.shares,
         }

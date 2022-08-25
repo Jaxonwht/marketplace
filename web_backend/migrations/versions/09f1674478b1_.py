@@ -22,11 +22,10 @@ def upgrade():
         "ownership",
         sa.Column("buyer_name", sa.String(), nullable=False),
         sa.Column("deal_serial_id", sa.Integer(), nullable=False),
-        sa.Column("rate", sa.Float(), nullable=False),
         sa.Column("shares", sa.Integer(), sa.CheckConstraint("shares >= 0"), nullable=False),
         sa.ForeignKeyConstraint(["buyer_name"], ["buyer.name"], ondelete="CASCADE"),
         sa.ForeignKeyConstraint(["deal_serial_id"], ["deal.serial_id"], ondelete="CASCADE"),
-        sa.PrimaryKeyConstraint("buyer_name", "deal_serial_id", "rate"),
+        sa.PrimaryKeyConstraint("buyer_name", "deal_serial_id"),
     )
     # ### end Alembic commands ###
 

@@ -18,7 +18,6 @@ class Transaction(flask_db.Model):
     # Positive means buyer buying. Negative means buyer selling.
     shares = Column(Integer, nullable=False)
     timestamp = Column(TIMESTAMP, nullable=False, default=datetime.now)
-    rate = Column(Float, nullable=False)
 
     @property
     def info(self) -> Dict[str, str | int | float]:
@@ -29,5 +28,4 @@ class Transaction(flask_db.Model):
             "deal_serial_id": self.deal_serial_id,
             "shares": self.shares,
             "timestamp": str(self.timestamp),
-            "rate": self.rate,
         }

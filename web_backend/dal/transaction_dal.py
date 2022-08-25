@@ -18,7 +18,6 @@ def buy_shares(
     buyer_name: str,
     deal_serial_id: int,
     shares: int,
-    rate: float,
 ) -> Transaction:
     deal = flask_session.get(Deal, deal_serial_id, with_for_update={"key_share": True})
     if not deal:
@@ -27,8 +26,6 @@ def buy_shares(
         abort(409, f"Deal {deal_serial_id} is already closed")
     if datetime.now() > deal.start_time:
         abort(409, f"Deal {deal_serial_id} has started at {deal.start_time}")
-    if rate not in deal.allowed_rates:
-        abort(409, f"Deal {deal_serial_id} does have a rate of {rate}%")
     buyer = flask_session.get(Buyer, buyer_name, with_for_update={"key_share": True})
     if buyer is None:
         abort(404, f"Can't find buyer {buyer_name}")
@@ -40,10 +37,10 @@ def buy_shares(
     # Execute upsert for ownerships
     flask_session.execute(
         insert(Ownership)
-        .values(buyer_name=buyer_name, deal_serial_id=deal_serial_id, rate=rate, shares=shares)
+        .values(buyer_name=buyer_name, deal_serial_id=deal_serial_id, shares=shares)
         .on_conflict_do_update(constraint="ownership_pkey", set_={"shares": Ownership.shares + shares})
     )
-    transaction = Transaction(buyer_name=buyer_name, deal_serial_id=deal.serial_id, shares=shares, rate=rate)
+    transaction = Transaction(buyer_name=buyer_name, deal_serial_id=deal.serial_id, shares=shares)
     flask_session.add(transaction)
     buyer.balance = Buyer.balance - amount_needed
     deal.shares_remaining = Deal.shares_remaining - shares
@@ -52,9 +49,7 @@ def buy_shares(
     return transaction
 
 
-def sell_shares(
-    buyer_name: str, deal_serial_id: int, current_asset_price: float, shares: int, rate: float
-) -> Transaction:
+def sell_shares(buyer_name: str, deal_serial_id: int, current_asset_price: float, shares: int) -> Transaction:
     """Sell some shares from a buyer."""
     deal: Deal = flask_session.get(Deal, deal_serial_id, with_for_update={"key_share": True})
     if not deal:
@@ -63,25 +58,23 @@ def sell_shares(
         abort(409, f"Deal {deal_serial_id} is already closed")
     if datetime.now() > deal.end_time:
         abort(409, f"Deal {deal_serial_id} has ended at {deal.end_time}")
-    if rate not in deal.allowed_rates:
-        abort(409, f"Deal {deal_serial_id} does have a rate of {rate}%")
     if deal.open_asset_price is None:
         abort(500, f"Deal {deal_serial_id} missing open asset price")
     buyer = flask_session.get(Buyer, buyer_name, with_for_update={"key_share": True})
     if buyer is None:
         abort(404, f"Can't find buyer {buyer_name}")
     ownership: Ownership = flask_session.get(
-        Ownership, (buyer_name, deal_serial_id, rate), with_for_update={"key_share": True}
+        Ownership, (buyer_name, deal_serial_id), with_for_update={"key_share": True}
     )
     if ownership is None or ownership.shares < shares:
         abort(409, f"Buyer {buyer_name} does not have enough shares to sell {shares} shares")
     ownership.shares = Ownership.shares - shares
     transaction = Transaction(
-        buyer_name=buyer_name, deal_serial_id=deal_serial_id, shares=-shares, rate=rate, asset_price=current_asset_price
+        buyer_name=buyer_name, deal_serial_id=deal_serial_id, shares=-shares, asset_price=current_asset_price
     )
     flask_session.add(transaction)
     profit = profit_for_buyer(
-        deal.open_asset_price, current_asset_price, deal.share_price, rate, shares, deal.multiplier
+        deal.open_asset_price, current_asset_price, deal.share_price, deal.rate, shares, deal.multiplier
     )
     buyer.balance = Buyer.balance + shares * deal.share_price + profit
     dealer: Dealer = flask_session.get(Dealer, deal.dealer_name, with_for_update={"key_share": True})
