@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta
-from typing import Iterable, List, Optional, cast
+from typing import Any, Dict, Iterable, List, Optional, cast
 from flask import abort, current_app
 
 from sqlalchemy import select
@@ -40,18 +40,15 @@ def create_deal(
     collection_id: str,
     asset_id: Optional[str],
     share_price: float,
-    allowed_rates: List[float],
+    rate: float,
     initial_number_of_shares: int,
     start_time: datetime,
     end_time: datetime,
     multiplier: float,
 ) -> Deal:
-    if not allowed_rates:
-        abort(400, "You must specify non-empty list of allowed rates")
     maximum_allowed_rate: float = current_app.config["MAXIMUM_ALLOWED_RATE"]
-    for rate in allowed_rates:
-        if rate <= 0 or rate > maximum_allowed_rate:
-            abort(400, f"The rate {rate} does not fall within the range of (0, {maximum_allowed_rate}]")
+    if rate <= 0 or rate > maximum_allowed_rate:
+        abort(400, f"The rate {rate} does not fall within the range of (0, {maximum_allowed_rate}]")
     if share_price <= 0:
         abort(400, "Share price must be positive")
     if initial_number_of_shares <= 0:
@@ -71,25 +68,30 @@ def create_deal(
     dealer = flask_session.get(Dealer, dealer_name, with_for_update={"key_share": True})
     if not dealer:
         abort(404, f"Dealer {dealer_name} not found")
-    amount_needed = (1 + max(allowed_rates)) * share_price * initial_number_of_shares
+    amount_needed = (1 + rate) * share_price * initial_number_of_shares
     if dealer.lockup_balance + amount_needed >= dealer.balance:
         abort(
             409,
             f"Issuing these shares require a balance of {dealer.lockup_balance + amount_needed}, but the dealer only has {dealer.balance}",
         )
     dealer.lockup_balance = Dealer.lockup_balance + amount_needed
+    # TODO ziyi fetch these two shites
+    collection_name = "dummy_collection"
+    extra_info: Dict[str, Any] = {}
     new_deal = Deal(
         dealer_name=dealer_name,
         collection_id=collection_id,
         asset_id=asset_id,
         share_price=share_price,
-        allowed_rates=allowed_rates,
+        rate=rate,
         shares_remaining=initial_number_of_shares,
         start_time=start_time,
         end_time=end_time,
         lockup_balance=amount_needed,
         closed=False,
         multiplier=multiplier,
+        collection_name=collection_name,
+        extra_info=extra_info,
     )
     flask_session.add(new_deal)
     flask_session.commit()

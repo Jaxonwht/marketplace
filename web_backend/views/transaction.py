@@ -16,7 +16,6 @@ def post_transaction():
         buyer_name (str): Name of the buyer who buys or sells.
         deal_serial_id (int): ID of the deal to enter positions for.
         shares (int): Number of shares to buy or share.
-        rate (float): The chosen rate of the deal that the buyer wishes to participate in.
 
     Returns:
         Serial ID of the created transaction if successful.
@@ -27,13 +26,12 @@ def post_transaction():
     buyer_name = get_not_none(request_body_json, "buyer_name")
     deal_serial_id = get_not_none(request_body_json, "deal_serial_id")
     shares = get_not_none(request_body_json, "shares")
-    rate = get_not_none(request_body_json, "rate")
     if shares < 0:
         current_asset_price = 0.5  # TODO how to fetch this
-        created_transaction = sell_shares(buyer_name, deal_serial_id, current_asset_price, -shares, rate)
+        created_transaction = sell_shares(buyer_name, deal_serial_id, current_asset_price, -shares)
         return jsonify(sell_transaction_serial_id=created_transaction.serial_id)
     if shares > 0:
-        created_transaction = buy_shares(buyer_name, deal_serial_id, shares, rate)
+        created_transaction = buy_shares(buyer_name, deal_serial_id, shares)
         return jsonify(buy_transaction_serial_id=created_transaction.serial_id)
     return jsonify("When shares is equal 0, nothing will happen"), 304
 

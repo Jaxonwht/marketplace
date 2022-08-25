@@ -79,7 +79,7 @@ def create_new_deal():
         asset_id (Optional[str]): Id of the underlying asset. If none, this deal is
             aimed for the whole collection.
         share_price (float): Price of each share.
-        allowed_rates (List[float]): Unordered list of rates for this deal.
+        rate (float): Rate (profit/loss cap) for this deal.
         initial_number_of_shares (int): Starting number of shares to sell.
         start_time (str): Starting time of of the deal.
         end_time (str): Ending time of the deal.
@@ -96,7 +96,7 @@ def create_new_deal():
     collection_id = get_not_none(request_body_json, "collection_id")
     asset_id = request_body_json.get("asset_id")
     share_price = get_not_none(request_body_json, "share_price")
-    allowed_rates = get_not_none(request_body_json, "allowed_rates")
+    rate = get_not_none(request_body_json, "rate")
     initial_number_of_shares = get_not_none(request_body_json, "initial_number_of_shares")
     start_time_str = get_not_none(request_body_json, "start_time")
     start_time = format_datetime_str_or_raise(start_time_str, current_app.logger)
@@ -108,7 +108,7 @@ def create_new_deal():
         collection_id,
         asset_id,
         share_price,
-        allowed_rates,
+        rate,
         initial_number_of_shares,
         start_time,
         end_time,

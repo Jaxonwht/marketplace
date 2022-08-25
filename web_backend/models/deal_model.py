@@ -1,7 +1,7 @@
 """A deal is one game."""
 from typing import Any, Dict, List
 from sqlalchemy import Boolean, CheckConstraint, Column, Float, ForeignKey, Integer, String
-from sqlalchemy.dialects.postgresql import ARRAY, TIMESTAMP
+from sqlalchemy.dialects.postgresql import JSON, TIMESTAMP
 from sqlalchemy.orm import backref, relationship
 from db import flask_db
 from models.ownership_model import Ownership
@@ -16,7 +16,7 @@ class Deal(flask_db.Model):
     collection_id = Column(String, nullable=False)
     asset_id = Column(String)
     share_price = Column(Float, CheckConstraint("share_price > 0"), nullable=False)
-    allowed_rates = Column(ARRAY(Float))
+    rate = Column(Float, CheckConstraint("rate > 0"), nullable=False)
     shares_remaining = Column(Integer, CheckConstraint("shares_remaining >= 0"), nullable=False)
     open_asset_price = Column(Float, CheckConstraint("open_asset_price > 0"))
     closed_asset_price = Column(Float, CheckConstraint("closed_asset_price > 0"))
@@ -24,6 +24,8 @@ class Deal(flask_db.Model):
     end_time = Column(TIMESTAMP, nullable=False, index=True)
     closed = Column(Boolean, nullable=False, index=True)
     lockup_balance = Column(Float, CheckConstraint("lockup_balance >= 0"), nullable=False)
+    extra_info = Column(JSON)
+    collection_name = Column(String, index=True)
     multiplier = Column(Float, nullable=False, default=1)
     transactions: List[Transaction] = relationship(
         Transaction, backref=backref("deal"), cascade="all, delete", passive_deletes=True
@@ -40,7 +42,7 @@ class Deal(flask_db.Model):
             "collection_id": self.collection_id,
             "asset_id": self.asset_id,
             "share_price": self.share_price,
-            "allowed_rates": self.allowed_rates,
+            "rate": self.rate,
             "shares_remaining": self.shares_remaining,
             "open_asset_price": self.open_asset_price,
             "closed_asset_price": self.closed_asset_price,
@@ -49,4 +51,6 @@ class Deal(flask_db.Model):
             "closed": self.closed,
             "lockup_balance": self.lockup_balance,
             "multiplier": self.multiplier,
+            "collection_name": self.collection_name,
+            "extra_info": self.extra_info,
         }
