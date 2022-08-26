@@ -20,6 +20,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { isMobile } from "./utils/utils";
 import { useAppDispatch, useAppSelector } from "./store/hooks";
 import { setIsMobile } from "./reduxSlices/mobileSlice";
+import { fetchBackendConfig } from "./reduxSlices/backendConfigSlice";
 
 require("intl/locale-data/jsonp/en.js");
 require("intl/locale-data/jsonp/zh.js"); // or 'antd/dist/antd.less'
@@ -95,6 +96,7 @@ const App = () => {
     console.log("init=====");
 
     dispatch(setIsMobile(isMobile()));
+    dispatch(fetchBackendConfig);
     loadLocales();
   }, []);
 

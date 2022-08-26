@@ -3,6 +3,7 @@ import identityReducer from "../reduxSlices/identitySlice";
 import themeReducer from "../reduxSlices/themeSlice";
 import isMobileReducer from "../reduxSlices/mobileSlice";
 import balanceReducer from "../reduxSlices/balanceSlice";
+import bakcendConfigReducer from "../reduxSlices/backendConfigSlice";
 
 const store = configureStore({
   reducer: {
@@ -10,6 +11,7 @@ const store = configureStore({
     theme: themeReducer,
     isMobile: isMobileReducer,
     balance: balanceReducer,
+    backendConfig: bakcendConfigReducer,
   },
 });
 

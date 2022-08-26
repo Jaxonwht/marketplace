@@ -29,7 +29,7 @@ export const { setIdentity } = identitySlice.actions;
 
 export default identitySlice.reducer;
 
-export const refreshSignInStatus = () => async (dispatch: AppDispatch) => {
+export const refreshSignInStatus = async (dispatch: AppDispatch) => {
   const token = localStorage.getItem(LS_KEY);
   if (DEV_MODE && token === null) {
     dispatch(setIdentity(null));

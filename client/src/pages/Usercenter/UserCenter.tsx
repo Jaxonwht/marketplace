@@ -5,7 +5,6 @@ import PropTypes from "prop-types";
 import { Link, useNavigate } from "react-router-dom";
 import styles from "./style.module.scss";
 import * as echarts from "echarts";
-import { Modal } from "antd";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { fetchBalance } from "../../reduxSlices/balanceSlice";
 import { AccountType } from "../../reduxSlices/identitySlice";
