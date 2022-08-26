@@ -1,4 +1,4 @@
-from flask import Blueprint, abort, jsonify, request
+from flask import Blueprint, jsonify, request
 from dal.ownership_dal import find_ownerships
 
 ownership_bp = Blueprint("ownership", __name__, url_prefix="/ownership")
@@ -12,6 +12,9 @@ def query_ownerships():
     will be returned.
 
     Request Params:
+        closed (Optional[bool]): Whether to get ownerships that are already
+            closed or open. If left unspecified, both types of ownerships
+            will be returned.
         buyer_name (Optional[str]): Name of the buyer.
         deal_serial_id (Optional[int]): ID of the deal to query ownerships for.
 
@@ -21,5 +24,6 @@ def query_ownerships():
     """
     buyer_name = request.args.get("buyer_name")
     deal_serial_id = request.args.get("deal_serial_id", type=int)
-    queried_ownerships = find_ownerships(buyer_name, deal_serial_id)
+    closed = request.args.get("closed", type=bool)
+    queried_ownerships = find_ownerships(closed, buyer_name, deal_serial_id)
     return jsonify(tuple(ownership.info for ownership in queried_ownerships))

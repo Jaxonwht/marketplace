@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Moment } from "moment";
+import moment, { Moment } from "moment";
 import { Form, DatePicker, Input, InputNumber, Modal } from "antd";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { AccountType } from "../../reduxSlices/identitySlice";
@@ -157,6 +157,22 @@ const CreateDealModal = ({
             {
               required: true,
               message: "Start and end times of the deal in your timezone",
+            },
+            {
+              validator: async (_, [startTime, endTime]: [Moment, Moment]) => {
+                if (startTime < moment()) {
+                  throw new Error(
+                    "Start time must be later than the current time"
+                  );
+                }
+                const minEndTime = startTime.add(
+                  backendConfig?.min_end_time_delay_from_start_time_days ?? 7,
+                  "days"
+                );
+                if (endTime < minEndTime) {
+                  throw new Error(`End time must be later than ${minEndTime}`);
+                }
+              },
             },
           ]}
         >

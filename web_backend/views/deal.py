@@ -1,6 +1,6 @@
+from typing import Any, Dict
 from flask_jwt_extended import jwt_required
 import requests
-from typing import Any, Dict
 from flask import Blueprint, abort, current_app, jsonify, request
 from werkzeug.exceptions import HTTPException
 
@@ -10,7 +10,6 @@ from dal.deal_dal import (
     current_open_deals,
     find_closeable_deal_serial_ids,
     get_deal_by_serial_id,
-    patch_deal_open_asset_price,
 )
 from utils.datetime_utils import format_datetime_str_or_raise
 from utils.decorators import admin_jwt_required
@@ -45,23 +44,6 @@ def get_deal_info_by_id(serial_id: int) -> Dict[str, Any]:
     if not deal:
         abort(404, f"Deal {serial_id} not found")
     return deal.info
-
-
-@deal_bp.route("/<int:serial_id>/open", methods=["PATCH"])
-def patch_open_asset_price(serial_id: int):
-    """
-    Update an existing deal. If a deal with provided serial_id is not found,
-    raise an appropriate error.
-
-    Path Params:
-        serial_id (int): Id of the deal
-
-    Returns:
-        The deal if the deal is updated. Otherwise, an error will be raised.
-    """
-    open_asset_price = 0.1  # TODO ZIYI
-    updated_deal = patch_deal_open_asset_price(serial_id, open_asset_price)
-    return jsonify({"serial_id": updated_deal.serial_id, "open_asset_price": updated_deal.open_asset_price})
 
 
 @deal_bp.route("/", methods=["POST"])
@@ -118,15 +100,13 @@ def create_new_deal():
         f'{current_app.config["SCHEDULER_URL"]}/jobs/close-deal-in-future',
         json={"deal_serial_id": created_deal.serial_id, "end_time": end_time_str},
     )
-    response = requests.post(
-        f'{current_app.config["SCHEDULER_URL"]}/jobs/patch-open-asset-price-in-future',
-        json={"deal_serial_id": created_deal.serial_id, "start_time": start_time_str},
-    )
     response.raise_for_status()
     return jsonify(created_deal_serial_id=created_deal.serial_id)
 
 
 @deal_bp.patch("/<int:serial_id>/close")
+@jwt_required()
+@admin_jwt_required
 def close_deal_by_serial_id(serial_id: int):
     """
     Close a deal by its serial ID.
@@ -134,7 +114,7 @@ def close_deal_by_serial_id(serial_id: int):
     Path Params:
         serial_id (int): Id of the deal to close.
     """
-    close_deal(serial_id)
+    close_deal(serial_id, True)
     return jsonify(closed_deal_serial_id=serial_id)
 
 
