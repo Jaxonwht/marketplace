@@ -129,8 +129,8 @@ const CreateDealModal = ({
           <InputNumber
             placeholder="Cap on P/L"
             min={0}
-            max={100 * (backendConfig?.maximum_allowed_rate ?? 0.2)}
-            formatter={(value) => `${value}%`}
+            max={backendConfig?.maximum_allowed_rate ?? 0.2}
+            formatter={(value) => `${(value ?? 0) * 100}%`}
             parser={(rawValue) =>
               Number(rawValue?.replace("%", "") ?? "0") / 100
             }
