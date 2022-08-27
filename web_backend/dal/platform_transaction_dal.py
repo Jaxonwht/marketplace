@@ -246,7 +246,7 @@ def check_pending_transactions() -> List[str]:
                 flask_session.commit()
         except TransactionNotFound:
             current_app.logger.warn(f"Transaction {transaction_hash} is not minted")
-            if typed_pending_transaction.timestamp + _MAXIMUM_MINT_TIME < datetime.now():
+            if typed_pending_transaction.timestamp + _MAXIMUM_MINT_TIME < datetime.utcnow():
                 changed_hashes.append(transaction_hash)
                 typed_pending_transaction.status = PlatformTransactionStatus.ATTENTION_NEEDED
                 typed_pending_transaction.verification_info = "Maximum mint time exceeded"

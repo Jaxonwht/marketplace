@@ -19,18 +19,31 @@ from utils.json_utils import get_not_none
 deal_bp = Blueprint("deal", __name__, url_prefix="/deal")
 
 
-@deal_bp.route("/open", methods=["GET"])
+@deal_bp.route("/", methods=["GET"])
 def get_deal_ids():
     """
     Request Params:
         max_share_price (Optional[float]): Maximum share price to scan for.
+        start_time (Optional[str]): Deals with start_time later than this param.
+        end_time (Optional[str]): Deals with end_time earlier than this param.
 
     Returns:
         List of deal IDS that satisfy the constraints. Empty list if None matches.
         Will not return None.
     """
     max_share_price = request.args.get("max_share_price", type=float)
-    deals = get_deals(max_share_price)
+    start_time_str = request.args.get("start_time")
+    if start_time_str:
+        start_time = format_datetime_str_or_raise(start_time_str, current_app.logger)
+    else:
+        start_time = None
+    end_time_str = request.args.get("end_time")
+    if end_time_str:
+        end_time = format_datetime_str_or_raise(end_time_str, current_app.logger)
+    else:
+        end_time = None
+    max_share_price = request.args.get("max_share_price", type=float)
+    deals = get_deals(max_share_price, start_time, end_time)
     return jsonify(tuple(deal.serial_id for deal in deals))
 
 
@@ -83,7 +96,9 @@ def create_new_deal():
     start_time_str = get_not_none(request_body_json, "start_time")
     start_time = format_datetime_str_or_raise(start_time_str, current_app.logger)
     end_time_str = get_not_none(request_body_json, "end_time")
+    current_app.logger.info(f"\nFirst {end_time_str}\n")
     end_time = format_datetime_str_or_raise(end_time_str, current_app.logger)
+    current_app.logger.info(f"\nFirst {end_time}\n")
     multiplier = get_not_none(request_body_json, "multiplier")
     created_deal = create_deal(
         dealer_name,

@@ -1,5 +1,5 @@
 from typing import Any, Dict, Iterable, List, Optional
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta
 from flask import abort, current_app
 from sqlalchemy import select
 
@@ -13,10 +13,16 @@ from models.transaction_model import Transaction
 from utils.profits_utils import profit_for_buyer
 
 
-def get_deals(max_share_price: Optional[float] = None) -> Iterable[Deal]:
+def get_deals(
+    max_share_price: Optional[float] = None, start_time: Optional[datetime] = None, end_time: Optional[datetime] = None
+) -> Iterable[Deal]:
     filters = []
     if max_share_price is not None:
         filters.append(Deal.share_price <= max_share_price)
+    if start_time is not None:
+        filters.append(Deal.start_time >= start_time)
+    if end_time is not None:
+        filters.append(Deal.end_time <= end_time)
     for deal in flask_session.scalars(select(Deal).where(*filters)):
         yield deal
 
@@ -44,7 +50,7 @@ def create_deal(
     if initial_number_of_shares <= 0:
         abort(400, "Initial number of shares must be positive")
     min_end_time_delay_from_start_time: timedelta = current_app.config["MIN_END_TIME_DELAY_FROM_START_TIME"]
-    if end_time < start_time + min_end_time_delay_from_start_time or end_time < datetime.now(timezone.utc):
+    if end_time < start_time + min_end_time_delay_from_start_time or end_time < datetime.utcnow():
         abort(400, f"end_time should be at least {start_time + min_end_time_delay_from_start_time}")
     min_deal_multiplier = current_app.config["MIN_DEAL_MULTIPLIER"]
     max_deal_multiplier = current_app.config["MAX_DEAL_MULTIPLIER"]
@@ -87,7 +93,7 @@ def create_deal(
 
 def find_closeable_deal_serial_ids() -> List[int]:
     """Find all the serial IDs of deals that ought to be closed but haven't."""
-    statement = select(Deal.serial_id).where(Deal.end_time < datetime.now(), ~Deal.closed)
+    statement = select(Deal.serial_id).where(Deal.end_time < datetime.utcnow(), ~Deal.closed)
     return flask_session.scalars(statement).all()
 
 
@@ -98,7 +104,7 @@ def close_deal(serial_id: int, force: bool = False) -> None:
         abort(404, f"Deal {serial_id} does not exist")
     if deal.closed:
         abort(409, f"Deal {serial_id} is already closed")
-    if deal.end_time > datetime.now() and not force:
+    if deal.end_time > datetime.utcnow() and not force:
         abort(409, f"Deal {serial_id} has an end time {deal.end_time} which has not passed yet")
     dealer: Dealer = flask_session.get(Dealer, deal.dealer_name, with_for_update={"key_share": True})
     if not dealer:

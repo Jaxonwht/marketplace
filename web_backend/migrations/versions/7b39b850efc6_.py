@@ -5,6 +5,7 @@ Revises: 4bb8601aedf7
 Create Date: 2022-07-27 02:24:21.654090
 
 """
+from datetime import datetime
 from alembic import op
 import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql
@@ -22,7 +23,7 @@ def upgrade():
         "platform_transaction",
         sa.Column("transaction_hash", sa.String(), nullable=False),
         sa.Column("amount", sa.Float(), nullable=True),
-        sa.Column("timestamp", postgresql.TIMESTAMP(), nullable=False),
+        sa.Column("timestamp", postgresql.TIMESTAMP, nullable=False, default=datetime.utcnow),
         sa.Column("buyer_name", sa.String(), nullable=True),
         sa.Column("dealer_name", sa.String(), nullable=True),
         sa.Column("as_dealer", sa.Boolean(), nullable=False),
