@@ -25,6 +25,12 @@ export interface CreateDealResponse {
   created_deal_serial_id: number;
 }
 
+export interface BuySharesRequestBody {
+  buyer_name: string;
+  deal_serial_id: number;
+  shares: number;
+}
+
 export interface BackendConfig {
   max_deal_multiplier: number;
   maximum_allowed_rate: number;
