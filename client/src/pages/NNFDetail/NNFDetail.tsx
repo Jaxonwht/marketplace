@@ -22,35 +22,35 @@ export default function LoginForm(props: any) {
 
   const [sliderLList, setSliderLList] = useState([
     {
-      image: require("../../assets/images/d1.jpg").default,
+      image: require("../../assets/images/d1.jpg"),
       name: "NNN Name",
       price: 20.85,
       percent: "+30.87%",
       now: 27.29,
     },
     {
-      image: require("../../assets/images/d1.jpg").default,
+      image: require("../../assets/images/d1.jpg"),
       name: "NNN Name",
       price: 20.85,
       percent: "+30.87%",
       now: 27.29,
     },
     {
-      image: require("../../assets/images/d2.jpg").default,
+      image: require("../../assets/images/d2.jpg"),
       name: "NNN Name",
       price: 20.85,
       percent: "+30.87%",
       now: 27.29,
     },
     {
-      image: require("../../assets/images/d1.jpg").default,
+      image: require("../../assets/images/d1.jpg"),
       name: "NNN Name",
       price: 20.85,
       percent: "+30.87%",
       now: 27.29,
     },
     {
-      image: require("../../assets/images/d1.jpg").default,
+      image: require("../../assets/images/d1.jpg"),
       name: "NNN Name",
       price: 20.85,
       percent: "+30.87%",
@@ -120,7 +120,7 @@ export default function LoginForm(props: any) {
           <img
             className={styles.headimg}
             onClick={() => {}}
-            src={require("../../assets/images/headimg.png").default}
+            src={require("../../assets/images/headimg.png")}
             alt=""
           ></img>
           <Card title="INFO" style={{ width: 300, marginTop: 30 }}>
@@ -182,7 +182,7 @@ export default function LoginForm(props: any) {
       <div className={styles.listContainer}>
         <img
           style={{ width: 30, height: 30 }}
-          src={require("../../assets/images/left.jpg").default}
+          src={require("../../assets/images/left.jpg")}
           alt=""
         ></img>
         <div className={styles.list}>
@@ -195,7 +195,7 @@ export default function LoginForm(props: any) {
         </div>
         <img
           style={{ width: 30, height: 30 }}
-          src={require("../../assets/images/right.jpg").default}
+          src={require("../../assets/images/right.jpg")}
           alt=""
         ></img>
       </div>

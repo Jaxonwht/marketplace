@@ -11,23 +11,23 @@ import { useSelector, useDispatch } from "react-redux";
 export default function Home() {
   const [list, setList] = useState([
     {
-      image: require("../../assets/images/headimg.png").default,
+      image: require("../../assets/images/headimg.png"),
       name: "NNFF",
     },
     {
-      image: require("../../assets/images/headimg.png").default,
+      image: require("../../assets/images/headimg.png"),
       name: "NNFF",
     },
     {
-      image: require("../../assets/images/headimg.png").default,
+      image: require("../../assets/images/headimg.png"),
       name: "NNFF",
     },
     {
-      image: require("../../assets/images/headimg.png").default,
+      image: require("../../assets/images/headimg.png"),
       name: "NNFF",
     },
     {
-      image: require("../../assets/images/headimg.png").default,
+      image: require("../../assets/images/headimg.png"),
       name: "NNFF",
     },
   ]);
@@ -50,7 +50,7 @@ export default function Home() {
         <div>
           <img
             style={{ width: 600, height: 600, objectFit: "contain" }}
-            src={require("../../assets/images/nnf.jpg").default}
+            src={require("../../assets/images/nnf.jpg")}
             alt=""
           ></img>
         </div>

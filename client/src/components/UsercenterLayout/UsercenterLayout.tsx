@@ -19,70 +19,70 @@ export default function Layout(props: any) {
   const [menus, setMenus] = useState([
     {
       name: intl.get("Dashboard"),
-      icon: require("../../assets/images/dashboard.png").default,
+      icon: require("../../assets/images/dashboard.png"),
       path: "dashboard",
       selected: true,
       id: 1,
     },
     // {
     //   name: intl.get("Security"),
-    //   icon: require("../../assets/images/zhifubao.png").default,
+    //   icon: require("../../assets/images/zhifubao.png"),
     //   path: "security",
     //   selected: false,
     //   id: 2
     // },
     {
       name: intl.get("Identification"),
-      icon: require("../../assets/images/validate.png").default,
+      icon: require("../../assets/images/validate.png"),
       path: "identification",
       selected: false,
       id: 3,
     },
     {
       name: intl.get("Payment"),
-      icon: require("../../assets/images/daifukuan.png").default,
+      icon: require("../../assets/images/daifukuan.png"),
       path: "payment",
       selected: false,
       id: 4,
     },
     // {
     //   name: intl.get("Referral"),
-    //   icon: require("../../assets/images/tuijian.png").default,
+    //   icon: require("../../assets/images/tuijian.png"),
     //   path: "referral",
     //   selected: false,
     //   id: 101
     // },
     // {
     //   name: intl.get("Reward Center"),
-    //   icon: require("../../assets/images/jiangli.png").default,
+    //   icon: require("../../assets/images/jiangli.png"),
     //   path: "rewardCenter",
     //   selected: false,
     //   id: 102
     // },
     // {
     //   name: intl.get("API Management"),
-    //   icon: require("../../assets/images/kapian.png").default,
+    //   icon: require("../../assets/images/kapian.png"),
     //   path: "apiManagement",
     //   selected: false,
     //   id: 103
     // },
     {
       name: intl.get("Setting"),
-      icon: require("../../assets/images/setting.png").default,
+      icon: require("../../assets/images/setting.png"),
       path: "setting",
       selected: false,
       id: 5,
       children: [
         {
           name: intl.get("ProfileSetting"),
-          icon: require("../../assets/images/setting.png").default,
+          icon: require("../../assets/images/setting.png"),
           path: "profileSetting",
           selected: false,
           id: 6,
         },
         {
           name: intl.get("Security"),
-          icon: require("../../assets/images/setting.png").default,
+          icon: require("../../assets/images/setting.png"),
           path: "security",
           selected: false,
           id: 7,

@@ -23,49 +23,49 @@ export default function LoginForm(props: any) {
   const dispatch = useAppDispatch();
   const [list, setList] = useState([
     {
-      image: require("../../assets/images/headimg.png").default,
+      image: require("../../assets/images/headimg.png"),
       name: "Floor Price",
       price: 20.85,
       percent: "+30.87%",
       now: 27.29,
     },
     {
-      image: require("../../assets/images/headimg.png").default,
+      image: require("../../assets/images/headimg.png"),
       name: "Floor Price",
       price: 20.85,
       percent: "+30.87%",
       now: 27.29,
     },
     {
-      image: require("../../assets/images/headimg.png").default,
+      image: require("../../assets/images/headimg.png"),
       name: "Floor Price",
       price: 20.85,
       percent: "+30.87%",
       now: 27.29,
     },
     {
-      image: require("../../assets/images/headimg.png").default,
+      image: require("../../assets/images/headimg.png"),
       name: "Floor Price",
       price: 20.85,
       percent: "+30.87%",
       now: 27.29,
     },
     {
-      image: require("../../assets/images/headimg.png").default,
+      image: require("../../assets/images/headimg.png"),
       name: "Floor Price",
       price: 20.85,
       percent: "+30.87%",
       now: 27.29,
     },
     {
-      image: require("../../assets/images/headimg.png").default,
+      image: require("../../assets/images/headimg.png"),
       name: "Floor Price",
       price: 20.85,
       percent: "+30.87%",
       now: 27.29,
     },
     {
-      image: require("../../assets/images/headimg.png").default,
+      image: require("../../assets/images/headimg.png"),
       name: "Floor Price",
       price: 20.85,
       percent: "+30.87%",
@@ -92,7 +92,7 @@ export default function LoginForm(props: any) {
         <img
           className={styles.headimg}
           onClick={() => {}}
-          src={require("../../assets/images/headimg.png").default}
+          src={require("../../assets/images/headimg.png")}
           alt=""
         ></img>
         <div style={{ fontSize: 20, fontWeight: "bold", marginTop: 10 }}>
@@ -147,7 +147,7 @@ export default function LoginForm(props: any) {
                 position: "relative",
                 zIndex: 10,
               }}
-              src={require("../../assets/images/left.jpg").default}
+              src={require("../../assets/images/left.jpg")}
               alt=""
             ></img>
             <table className={styles.table}>
@@ -162,7 +162,7 @@ export default function LoginForm(props: any) {
                       {item.name}:
                       <img
                         style={{ width: 20, height: 20 }}
-                        src={require("../../assets/images/bi.png").default}
+                        src={require("../../assets/images/bi.png")}
                         alt=""
                       ></img>
                       {item.price}
@@ -174,7 +174,7 @@ export default function LoginForm(props: any) {
                   <td>
                     <img
                       style={{ width: 20, height: 20 }}
-                      src={require("../../assets/images/bi.png").default}
+                      src={require("../../assets/images/bi.png")}
                       alt=""
                     ></img>
                     <span>{item.now}</span>
@@ -190,7 +190,7 @@ export default function LoginForm(props: any) {
                 position: "relative",
                 zIndex: 1,
               }}
-              src={require("../../assets/images/right.jpg").default}
+              src={require("../../assets/images/right.jpg")}
               alt=""
             ></img>
           </div>
