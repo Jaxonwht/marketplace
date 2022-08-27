@@ -24,7 +24,7 @@ class PlatformTransaction(flask_db.Model):
     # Positive represents going into the platform.
     amount = Column(Float)
     amount_without_fees = Column(Float)
-    timestamp = Column(TIMESTAMP, nullable=False, default=datetime.now)
+    timestamp = Column(TIMESTAMP, nullable=False, default=datetime.utcnow)
     buyer_name = Column(String, ForeignKey("buyer.name", ondelete="CASCADE"))
     dealer_name = Column(String, ForeignKey("dealer.name", ondelete="CASCADE"))
     as_dealer = Column(Boolean, nullable=False)

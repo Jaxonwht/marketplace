@@ -112,13 +112,15 @@ const NNF = () => {
 
   return (
     <div className={styles.home}>
-      <button
-        className="button"
-        style={{ height: 60, width: 400 }}
-        onClick={() => setIsCreateDealModalVisible(true)}
-      >
-        Create a deal
-      </button>
+      {isDealer && (
+        <button
+          className="button"
+          style={{ height: 60, width: 400 }}
+          onClick={() => setIsCreateDealModalVisible(true)}
+        >
+          Create a deal
+        </button>
+      )}
       <div className={styles.font1}>Top Ongoing table</div>
       <table className={styles.table}>
         <tbody>

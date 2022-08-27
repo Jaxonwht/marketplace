@@ -5,6 +5,7 @@ Revises:
 Create Date: 2022-07-03 16:54:31.991463
 
 """
+from datetime import datetime
 from alembic import op
 import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql
@@ -43,8 +44,8 @@ def upgrade():
         sa.Column("shares_remaining", sa.Integer(), sa.CheckConstraint("shares_remaining >= 0"), nullable=False),
         sa.Column("open_asset_price", sa.Float(), sa.CheckConstraint("open_asset_price > 0"), nullable=True),
         sa.Column("closed_asset_price", sa.Float(), sa.CheckConstraint("closed_asset_price > 0"), nullable=True),
-        sa.Column("start_time", postgresql.TIMESTAMP(), nullable=False),
-        sa.Column("end_time", postgresql.TIMESTAMP(), nullable=False),
+        sa.Column("start_time", postgresql.TIMESTAMP, nullable=False, default=datetime.utcnow),
+        sa.Column("end_time", postgresql.TIMESTAMP, nullable=False, default=datetime.utcnow),
         sa.Column("closed", sa.Boolean(), nullable=False),
         sa.ForeignKeyConstraint(
             ["dealer_name"],
@@ -59,7 +60,7 @@ def upgrade():
         sa.Column("asset_price", sa.Float(), sa.CheckConstraint("asset_price > 0"), nullable=True),
         sa.Column("deal_serial_id", sa.Integer(), nullable=False),
         sa.Column("shares", sa.Integer(), nullable=False),
-        sa.Column("timestamp", postgresql.TIMESTAMP(), nullable=False),
+        sa.Column("timestamp", postgresql.TIMESTAMP, nullable=False, default=datetime.utcnow),
         sa.Column("rate", sa.Float(), nullable=False),
         sa.ForeignKeyConstraint(["buyer_name"], ["buyer.name"], ondelete="CASCADE"),
         sa.ForeignKeyConstraint(["deal_serial_id"], ["deal.serial_id"], ondelete="CASCADE"),
