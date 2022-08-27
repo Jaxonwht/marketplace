@@ -1,6 +1,11 @@
+import { Switch } from "antd";
 import React, { useState } from "react";
 import Web3 from "web3";
+import { refreshSignInStatus } from "../../reduxSlices/identitySlice";
+import { useAppDispatch } from "../../store/hooks";
 import { axiosInstance } from "../../utils/network";
+import { storeCredentialsIfDev } from "../../utils/storage";
+import styles from "./style.module.scss";
 
 declare global {
   interface Window {
@@ -8,15 +13,17 @@ declare global {
   }
 }
 
-interface CryptoSignInProps {
-  onSignedIn: (token: string) => Promise<void>;
-  asDealer?: boolean;
-}
-
 const MESSAGE_PREFIX = "I am signing in with my one-time nonce: ";
 
-const CryptoSignIn = ({ onSignedIn, asDealer }: CryptoSignInProps) => {
+const CryptoSignIn = () => {
   const [loading, setLoading] = useState(false); // Loading button state
+  const [asDealer, setAsDealer] = useState(false);
+  const dispatch = useAppDispatch();
+
+  const signIn = async (accessToken: string) => {
+    storeCredentialsIfDev(accessToken);
+    await dispatch(refreshSignInStatus);
+  };
 
   const getNonce = async (walletAccount: string) =>
     (
@@ -93,7 +100,7 @@ const CryptoSignIn = ({ onSignedIn, asDealer }: CryptoSignInProps) => {
       const nonce = await getNonce(walletAccount);
       const signature = await signMessage(walletAccount, nonce);
       const access_token = await authenticate(walletAccount, signature);
-      await onSignedIn(access_token);
+      await signIn(access_token);
     } catch (error) {
       window.alert(error);
     } finally {
@@ -102,9 +109,17 @@ const CryptoSignIn = ({ onSignedIn, asDealer }: CryptoSignInProps) => {
   };
 
   return (
-    <button className="button" onClick={handleClick}>
-      {loading ? "Loading..." : "Sign in with MetaMask"}
-    </button>
+    <div className={styles.container}>
+      <button className="button" onClick={handleClick}>
+        {loading ? "Loading..." : "Sign in with MetaMask"}
+      </button>
+      <Switch
+        checkedChildren="dealer"
+        unCheckedChildren="buyer"
+        checked={asDealer}
+        onChange={setAsDealer}
+      />
+    </div>
   );
 };
 

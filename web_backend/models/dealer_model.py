@@ -1,11 +1,8 @@
 """Dealer is the party that issues shares."""
-from typing import Dict, List
+from typing import Dict
 from sqlalchemy import CheckConstraint, Column, Float, String
 from sqlalchemy.dialects.postgresql import TIMESTAMP
-from sqlalchemy.orm import backref, relationship
 from db import flask_db
-from models.deal_model import Deal
-from models.platform_transaction_model import PlatformTransaction
 
 
 class Dealer(flask_db.Model):
@@ -18,10 +15,6 @@ class Dealer(flask_db.Model):
     lockup_balance = Column(Float, CheckConstraint("lockup_balance >= 0"), nullable=False, default=0)
     nonce = Column(String, nullable=False)
     nonce_expiration_timestamp = Column(TIMESTAMP, nullable=False)
-    deals: List[Deal] = relationship(Deal, backref=backref("dealer"), cascade="all, delete", passive_deletes=True)
-    platform_transactions: List[PlatformTransaction] = relationship(
-        PlatformTransaction, backref=backref("dealer"), cascade="all, delete", passive_deletes=True
-    )
 
     @property
     def info(self) -> Dict[str, str | float]:

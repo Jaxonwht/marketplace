@@ -50,9 +50,6 @@ class Config:  # pylint: disable=too-few-public-methods
     # Maximum allowed rate of profit or loss.
     MAXIMUM_ALLOWED_RATE = 0.2
 
-    # Minimum delay of start_time from now of a deal
-    MIN_START_TIME_DELAY = timedelta(days=1)
-
     # Minimum delay of end_time from start_time of a deal
     MIN_END_TIME_DELAY_FROM_START_TIME = timedelta(weeks=1)
 

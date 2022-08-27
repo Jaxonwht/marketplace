@@ -1,7 +1,7 @@
 // components/layout.js
 import React, { useEffect, useState } from "react";
 import styles from "./index.module.css";
-import { clear, getUser } from "../../utils/storage";
+import { clear, getUser, storeCredentialsIfDev } from "../../utils/storage";
 import MyMenu from "../Menu/Menu";
 
 import { Link, useNavigate } from "react-router-dom";
@@ -12,11 +12,11 @@ import { isMobile } from "../../utils/utils";
 import { MenuOutlined } from "@ant-design/icons";
 import { request } from "http";
 import CryptoSignIn from "../../components/metamask/CryptoSignIn";
-import { storeCredentials } from "../../utils/storage";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { Theme } from "../../reduxSlices/themeSlice";
 import { refreshSignInStatus } from "../../reduxSlices/identitySlice";
 import { setIsMobile } from "../../reduxSlices/mobileSlice";
+import CryptoSignOut from "../metamask/CryptoSignOut";
 
 const Navbar = () => {
   const [navBg, setNavBg] = useState(false);
@@ -24,11 +24,6 @@ const Navbar = () => {
   const dispatch = useAppDispatch();
   const theme = useAppSelector((state) => state.theme);
   const identity = useAppSelector((state) => state.identity);
-
-  const signIn = async (accessToken: string) => {
-    storeCredentials(accessToken);
-    await dispatch(refreshSignInStatus);
-  };
 
   const user = getUser();
   console.log("user2222", user);
@@ -54,11 +49,14 @@ const Navbar = () => {
   const navigate = useNavigate();
 
   const signInDisplay = identity ? (
-    <div className={styles.welcomeMessage}>
-      Welcome, {identity.account_type} {identity.username.substring(0, 8)}****
+    <div className={styles["sign-out-container"]}>
+      <div className={styles.welcomeMessage}>
+        Welcome, {identity.account_type} {identity.username.substring(0, 8)}****
+      </div>
+      <CryptoSignOut />
     </div>
   ) : (
-    <CryptoSignIn onSignedIn={signIn} />
+    <CryptoSignIn />
   );
 
   return (
