@@ -14,7 +14,8 @@ export interface CreateDealRequestBody {
   collection_id: string;
   asset_id?: string;
   rate: number;
-  shares: number;
+  initial_number_of_shares: number;
+  share_price: number;
   multiplier: number;
   start_time: Moment;
   end_time: Moment;

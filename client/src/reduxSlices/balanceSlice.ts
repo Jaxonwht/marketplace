@@ -30,7 +30,7 @@ export const fetchBalance =
     try {
       if (asDealer) {
         const response = await authenticatedAxiosInstance().get(
-          `/dealer/${username}`
+          `/dealer/${username}/`
         );
         const dealerInfo = response.data as DealerInfo;
         dispatch(
@@ -41,7 +41,7 @@ export const fetchBalance =
         );
       } else {
         const response = await authenticatedAxiosInstance().get(
-          `/buyer/${username}`
+          `/buyer/${username}/`
         );
         const buyerInfo = response.data as BuyerInfo;
         dispatch(

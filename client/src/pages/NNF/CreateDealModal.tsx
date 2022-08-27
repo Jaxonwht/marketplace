@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import moment, { Moment } from "moment";
+import web3 from "web3";
 import { Form, DatePicker, Input, InputNumber, Modal } from "antd";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { AccountType } from "../../reduxSlices/identitySlice";
@@ -9,9 +10,10 @@ import { fetchBackendConfig } from "../../reduxSlices/backendConfigSlice";
 
 interface CreateDealFormValues {
   collectionId: string;
-  assetId?: string;
+  assetId?: number | null;
   rate: number;
   shares: number;
+  sharePrice: number;
   multiplier: number;
   timeRange: [Moment, Moment];
 }
@@ -53,15 +55,19 @@ const CreateDealModal = ({
       const postBody: CreateDealRequestBody = {
         dealer_name: identity.username,
         collection_id: validatedValues.collectionId,
-        asset_id: validatedValues.assetId,
+        asset_id:
+          validatedValues.assetId == null
+            ? undefined
+            : String(validatedValues.assetId),
         rate: validatedValues.rate,
-        shares: validatedValues.shares,
+        initial_number_of_shares: validatedValues.shares,
+        share_price: validatedValues.sharePrice,
         multiplier: validatedValues.multiplier,
         start_time: validatedValues.timeRange[0],
         end_time: validatedValues.timeRange[1],
       };
       try {
-        const response = authenticatedAxiosInstance().post("/deal", postBody);
+        const response = authenticatedAxiosInstance().post("/deal/", postBody);
         const createdDealInfo = (await response).data as CreateDealResponse;
         console.log(createdDealInfo);
         setIsModalVisible(false);
@@ -76,7 +82,7 @@ const CreateDealModal = ({
 
   return (
     <Modal
-      title=""
+      title="Create a Deal"
       cancelText="Cancel"
       okText="Confirm"
       visible={isModalVisible}
@@ -87,18 +93,28 @@ const CreateDealModal = ({
         <Form.Item
           name="collectionId"
           label="Collection TXN Addr"
+          validateFirst
           rules={[
             {
               required: true,
               message:
                 "Please input the transaction address of the NFT collection on the ETH chain",
             },
+            {
+              validator: async (_, addr: string) => {
+                if (!web3.utils.isAddress(addr)) {
+                  throw new Error(
+                    "The address is not a valid contract address"
+                  );
+                }
+              },
+            },
           ]}
         >
           <Input />
         </Form.Item>
         <Form.Item name="assetId" label="NFT Asset ID">
-          <Input placeholder="(Optional) the asset ID if you want to create a deal on a specific asset" />
+          <InputNumber controls={false} />
         </Form.Item>
         <Form.Item
           name="rate"
@@ -133,6 +149,18 @@ const CreateDealModal = ({
           <InputNumber placeholder="Number of shares" min={0} />
         </Form.Item>
         <Form.Item
+          name="sharePrice"
+          label="Price per share"
+          rules={[
+            {
+              required: true,
+              message: "Price per share",
+            },
+          ]}
+        >
+          <InputNumber placeholder="Number of shares" min={0} />
+        </Form.Item>
+        <Form.Item
           name="multiplier"
           label="Multiplier"
           rules={[
@@ -153,6 +181,7 @@ const CreateDealModal = ({
         <Form.Item
           name="timeRange"
           label="Time Range"
+          validateFirst
           rules={[
             {
               required: true,
@@ -160,14 +189,12 @@ const CreateDealModal = ({
             },
             {
               validator: async (_, [startTime, endTime]: [Moment, Moment]) => {
-                if (startTime < moment()) {
-                  throw new Error(
-                    "Start time must be later than the current time"
-                  );
-                }
-                const minEndTime = startTime.add(
-                  backendConfig?.min_end_time_delay_from_start_time_days ?? 7,
-                  "days"
+                const minEndTime = moment.max(
+                  startTime.add(
+                    backendConfig?.min_end_time_delay_from_start_time_days ?? 7,
+                    "days"
+                  ),
+                  moment()
                 );
                 if (endTime < minEndTime) {
                   throw new Error(`End time must be later than ${minEndTime}`);
@@ -176,7 +203,12 @@ const CreateDealModal = ({
             },
           ]}
         >
-          <RangePicker showTime />
+          <RangePicker
+            showTime
+            ranges={{
+              "next month": [moment(), moment().add(1, "month")],
+            }}
+          />
         </Form.Item>
       </Form>
     </Modal>

@@ -9,11 +9,15 @@ import * as echarts from "echarts";
 import { useSelector, useDispatch } from "react-redux";
 import Item from "antd/lib/list/Item";
 import CreateDealModal from "./CreateDealModal";
+import { useAppSelector } from "../../store/hooks";
+import { selectIsDealer } from "../../selectors/identity";
 
 const NNF = () => {
   const navagate = useNavigate();
   const [isCreateDealModalVisible, setIsCreateDealModalVisible] =
     useState(false);
+
+  const isDealer = useAppSelector(selectIsDealer);
 
   const [list, setList] = useState([
     {
@@ -176,10 +180,12 @@ const NNF = () => {
           alt=""
         ></img>
       </div>
-      <CreateDealModal
-        isModalVisible={isCreateDealModalVisible}
-        setIsModalVisible={setIsCreateDealModalVisible}
-      />
+      {isDealer && (
+        <CreateDealModal
+          isModalVisible={isCreateDealModalVisible}
+          setIsModalVisible={setIsCreateDealModalVisible}
+        />
+      )}
     </div>
   );
 };
