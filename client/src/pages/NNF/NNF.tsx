@@ -10,57 +10,57 @@ import { useSelector, useDispatch } from "react-redux";
 import Item from "antd/lib/list/Item";
 import CreateDealModal from "./CreateDealModal";
 
-export default function Home() {
+const NNF = () => {
   const navagate = useNavigate();
   const [isCreateDealModalVisible, setIsCreateDealModalVisible] =
     useState(false);
 
   const [list, setList] = useState([
     {
-      image: require("../../assets/images/headimg.png").default,
-      name: "Floor Price",
+      image: require("../../assets/images/headimg.png"),
+      name: "Floor Price1",
       price: 20.85,
       percent: "+30.87%",
       now: 27.29,
     },
     {
-      image: require("../../assets/images/headimg.png").default,
-      name: "Floor Price",
+      image: require("../../assets/images/headimg.png"),
+      name: "Floor Price2",
       price: 20.85,
       percent: "+30.87%",
       now: 27.29,
     },
     {
-      image: require("../../assets/images/headimg.png").default,
-      name: "Floor Price",
+      image: require("../../assets/images/headimg.png"),
+      name: "Floor Price3",
       price: 20.85,
       percent: "+30.87%",
       now: 27.29,
     },
     {
-      image: require("../../assets/images/headimg.png").default,
-      name: "Floor Price",
+      image: require("../../assets/images/headimg.png"),
+      name: "Floor Price4",
       price: 20.85,
       percent: "+30.87%",
       now: 27.29,
     },
     {
-      image: require("../../assets/images/headimg.png").default,
-      name: "Floor Price",
+      image: require("../../assets/images/headimg.png"),
+      name: "Floor Price5",
       price: 20.85,
       percent: "+30.87%",
       now: 27.29,
     },
     {
-      image: require("../../assets/images/headimg.png").default,
-      name: "Floor Price",
+      image: require("../../assets/images/headimg.png"),
+      name: "Floor Price6",
       price: 20.85,
       percent: "+30.87%",
       now: 27.29,
     },
     {
-      image: require("../../assets/images/headimg.png").default,
-      name: "Floor Price",
+      image: require("../../assets/images/headimg.png"),
+      name: "Floor Price7",
       price: 20.85,
       percent: "+30.87%",
       now: 27.29,
@@ -69,36 +69,36 @@ export default function Home() {
 
   const [sliderLList, setSliderLList] = useState([
     {
-      image: require("../../assets/images/d1.jpg").default,
-      name: "NNN Name",
+      image: require("../../assets/images/d1.jpg"),
+      name: "NNN Name1",
       price: 20.85,
       percent: "+30.87%",
       now: 27.29,
     },
     {
-      image: require("../../assets/images/d1.jpg").default,
-      name: "NNN Name",
+      image: require("../../assets/images/d1.jpg"),
+      name: "NNN Name2",
       price: 20.85,
       percent: "+30.87%",
       now: 27.29,
     },
     {
-      image: require("../../assets/images/d2.jpg").default,
-      name: "NNN Name",
+      image: require("../../assets/images/d2.jpg"),
+      name: "NNN Name3",
       price: 20.85,
       percent: "+30.87%",
       now: 27.29,
     },
     {
-      image: require("../../assets/images/d1.jpg").default,
-      name: "NNN Name",
+      image: require("../../assets/images/d1.jpg"),
+      name: "NNN Name4",
       price: 20.85,
       percent: "+30.87%",
       now: 27.29,
     },
     {
-      image: require("../../assets/images/d1.jpg").default,
-      name: "NNN Name",
+      image: require("../../assets/images/d1.jpg"),
+      name: "NNN Name5",
       price: 20.85,
       percent: "+30.87%",
       now: 27.29,
@@ -117,51 +117,54 @@ export default function Home() {
       </button>
       <div className={styles.font1}>Top Ongoing table</div>
       <table className={styles.table}>
-        {list.map((item, i) => (
-          <tr
-            style={{ borderBottom: "1px solid #aaa" }}
-            onClick={() => {
-              navagate("/nnfdetail");
-            }}
-          >
-            <td style={{ fontWeight: "bold", fontSize: 20 }}>{i + 1}</td>
-            <td>
-              <img style={{ width: 80 }} src={item.image} alt=""></img>
-            </td>
-            <td>
-              <span>
-                {item.name}:
+        <tbody>
+          {list.map((item, i) => (
+            <tr
+              key={item.name}
+              style={{ borderBottom: "1px solid #aaa" }}
+              onClick={() => {
+                navagate("/nnfdetail");
+              }}
+            >
+              <td style={{ fontWeight: "bold", fontSize: 20 }}>{i + 1}</td>
+              <td>
+                <img style={{ width: 80 }} src={item.image} alt=""></img>
+              </td>
+              <td>
+                <span>
+                  {item.name}:
+                  <img
+                    style={{ width: 20, height: 20 }}
+                    src={require("../../assets/images/bi.png")}
+                    alt=""
+                  ></img>
+                  {item.price}
+                </span>
+              </td>
+              <td>
+                <span style={{ color: "#ff7000" }}>{item.percent}</span>
+              </td>
+              <td>
                 <img
                   style={{ width: 20, height: 20 }}
-                  src={require("../../assets/images/bi.png").default}
+                  src={require("../../assets/images/bi.png")}
                   alt=""
                 ></img>
-                {item.price}
-              </span>
-            </td>
-            <td>
-              <span style={{ color: "#ff7000" }}>{item.percent}</span>
-            </td>
-            <td>
-              <img
-                style={{ width: 20, height: 20 }}
-                src={require("../../assets/images/bi.png").default}
-                alt=""
-              ></img>
-              <span>{item.now}</span>
-            </td>
-          </tr>
-        ))}
+                <span>{item.now}</span>
+              </td>
+            </tr>
+          ))}
+        </tbody>
       </table>
       <div className={styles.listContainer}>
         <img
           style={{ width: 30, height: 30 }}
-          src={require("../../assets/images/left.jpg").default}
+          src={require("../../assets/images/left.jpg")}
           alt=""
         ></img>
         <div className={styles.list}>
           {sliderLList.map((item) => (
-            <div className={styles.listItem}>
+            <div key={item.name} className={styles.listItem}>
               <img src={item.image} alt=""></img>
               <div className={styles.listItemImage}>{item.name}</div>
             </div>
@@ -169,7 +172,7 @@ export default function Home() {
         </div>
         <img
           style={{ width: 30, height: 30 }}
-          src={require("../../assets/images/right.jpg").default}
+          src={require("../../assets/images/right.jpg")}
           alt=""
         ></img>
       </div>
@@ -179,4 +182,6 @@ export default function Home() {
       />
     </div>
   );
-}
+};
+
+export default NNF;

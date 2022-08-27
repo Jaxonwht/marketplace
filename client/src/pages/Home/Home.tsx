@@ -11,24 +11,24 @@ import { useSelector, useDispatch } from "react-redux";
 export default function Home() {
   const [list, setList] = useState([
     {
-      image: require("../../assets/images/headimg.png").default,
-      name: "NNFF",
+      image: require("../../assets/images/headimg.png"),
+      name: "NNFF1",
     },
     {
-      image: require("../../assets/images/headimg.png").default,
-      name: "NNFF",
+      image: require("../../assets/images/headimg.png"),
+      name: "NNFF2",
     },
     {
-      image: require("../../assets/images/headimg.png").default,
-      name: "NNFF",
+      image: require("../../assets/images/headimg.png"),
+      name: "NNFF3",
     },
     {
-      image: require("../../assets/images/headimg.png").default,
-      name: "NNFF",
+      image: require("../../assets/images/headimg.png"),
+      name: "NNFF4",
     },
     {
-      image: require("../../assets/images/headimg.png").default,
-      name: "NNFF",
+      image: require("../../assets/images/headimg.png"),
+      name: "NNFF5",
     },
   ]);
   useEffect(() => {
@@ -50,7 +50,7 @@ export default function Home() {
       </div>
       <div className={styles.list}>
         {list.map((item) => (
-          <div className={styles.listItem}>
+          <div className={styles.listItem} key={item.name}>
             <img src={item.image} alt=""></img>
             <div className={styles.listItemImage}>{item.name}</div>
           </div>

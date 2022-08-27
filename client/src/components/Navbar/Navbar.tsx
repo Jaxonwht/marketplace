@@ -67,7 +67,7 @@ const Navbar = () => {
             <img
               alt=""
               className={styles.logo}
-              src={require("../../assets/images/logo.jpg").default}
+              src={require("../../assets/images/logo.jpg")}
             ></img>
             IIASS
           </div>
@@ -75,7 +75,7 @@ const Navbar = () => {
         <div className={styles.searchInput}>
           <img
             style={{ width: 20, height: 20 }}
-            src={require("../../assets/images/search.png").default}
+            src={require("../../assets/images/search.png")}
             alt=""
           ></img>
           <input
@@ -101,7 +101,7 @@ const Navbar = () => {
             onClick={() => {
               navigate("/usercenter");
             }}
-            src={require("../../assets/images/user.png").default}
+            src={require("../../assets/images/user.png")}
             alt=""
           ></img>
         )}
