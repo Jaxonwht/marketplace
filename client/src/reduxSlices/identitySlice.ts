@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { AppDispatch } from "../store";
-import { authenticatedAxiosInstance, DEV_MODE, LS_KEY } from "../utils/network";
+import { authenticatedAxiosInstance } from "../utils/network";
 
 export enum AccountType {
   ADMIN = "admin",
@@ -30,11 +30,6 @@ export const { setIdentity } = identitySlice.actions;
 export default identitySlice.reducer;
 
 export const refreshSignInStatus = async (dispatch: AppDispatch) => {
-  const token = localStorage.getItem(LS_KEY);
-  if (DEV_MODE && token === null) {
-    dispatch(setIdentity(null));
-    return;
-  }
   try {
     const response = await authenticatedAxiosInstance().get("/auth/who-am-i");
     dispatch(setIdentity(response.data));

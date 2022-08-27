@@ -1,11 +1,11 @@
-import { Switch } from "antd";
 import React, { useState } from "react";
+import { Switch } from "antd";
 import Web3 from "web3";
 import { refreshSignInStatus } from "../../reduxSlices/identitySlice";
 import { useAppDispatch } from "../../store/hooks";
 import { axiosInstance } from "../../utils/network";
-import { storeCredentialsIfDev } from "../../utils/storage";
 import styles from "./style.module.scss";
+import { storeCredentialsIfDev } from "../../utils/storage";
 
 declare global {
   interface Window {
