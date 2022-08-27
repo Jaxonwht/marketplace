@@ -1,5 +1,6 @@
 from flask import Blueprint, jsonify, request
 from dal.ownership_dal import find_ownerships
+from utils.request_args_utils import value_is_true
 
 ownership_bp = Blueprint("ownership", __name__, url_prefix="/ownership")
 
@@ -24,6 +25,6 @@ def query_ownerships():
     """
     buyer_name = request.args.get("buyer_name")
     deal_serial_id = request.args.get("deal_serial_id", type=int)
-    closed = request.args.get("closed", type=bool)
+    closed = request.args.get("closed", type=value_is_true)
     queried_ownerships = find_ownerships(closed, buyer_name, deal_serial_id)
     return jsonify(tuple(ownership.info for ownership in queried_ownerships))
