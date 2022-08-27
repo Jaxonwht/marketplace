@@ -2,7 +2,7 @@
 from datetime import datetime
 from typing import Dict
 
-from sqlalchemy import CheckConstraint, Column, Float, ForeignKey, Integer, String
+from sqlalchemy import CheckConstraint, Column, Float, ForeignKey, Integer, String, func
 from sqlalchemy.dialects.postgresql import TIMESTAMP
 
 from db import flask_db
@@ -17,7 +17,7 @@ class Transaction(flask_db.Model):
     deal_serial_id = Column(Integer, ForeignKey("deal.serial_id", ondelete="CASCADE"), nullable=False)
     # Positive means buyer buying. Negative means buyer selling.
     shares = Column(Integer, nullable=False)
-    timestamp = Column(TIMESTAMP, nullable=False, default=datetime.now)
+    timestamp = Column(TIMESTAMP, nullable=False, default=datetime.utcnow)
 
     @property
     def info(self) -> Dict[str, str | int | float]:

@@ -13,7 +13,7 @@ def create_buyer(buyer_name: str, balance: Optional[float]) -> Buyer:
     if get_buyer_by_name(buyer_name):
         abort(409, f"Buyer with name {buyer_name} already exists")
     nonce = urandom(32).hex()
-    nonce_expiration = datetime.now() + timedelta(minutes=10)
+    nonce_expiration = datetime.utcnow() + timedelta(minutes=10)
     buyer_model = Buyer(name=buyer_name, balance=balance, nonce=nonce, nonce_expiration_timestamp=nonce_expiration)
     flask_session.add(buyer_model)
     flask_session.commit()

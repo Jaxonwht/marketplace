@@ -20,7 +20,7 @@ def buy_shares(buyer_name: str, deal_serial_id: int, shares: int, current_asset_
         abort(404, f"Deal {deal_serial_id} not found")
     if deal.closed:
         abort(409, f"Deal {deal_serial_id} is already closed")
-    if datetime.now() > deal.end_time:
+    if datetime.utcnow() > deal.end_time:
         abort(409, f"Deal {deal_serial_id} has ended at {deal.end_time}")
     if deal.shares_remaining < shares:
         abort(409, f"Deal {deal_serial_id} only has {deal.shares_remaining} shares left")
@@ -55,7 +55,7 @@ def sell_shares(buyer_name: str, deal_serial_id: int, current_asset_price: float
         abort(404, f"Deal {deal_serial_id} not found")
     if deal.closed:
         abort(409, f"Deal {deal_serial_id} is already closed")
-    if datetime.now() > deal.end_time:
+    if datetime.utcnow() > deal.end_time:
         abort(409, f"Deal {deal_serial_id} has ended at {deal.end_time}")
     buyer = flask_session.get(Buyer, buyer_name, with_for_update={"key_share": True})
     if buyer is None:
