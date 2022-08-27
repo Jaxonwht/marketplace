@@ -1,5 +1,5 @@
 from typing import Any, Dict, Iterable, List, Optional
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from flask import abort, current_app
 from sqlalchemy import select
 
@@ -44,7 +44,7 @@ def create_deal(
     if initial_number_of_shares <= 0:
         abort(400, "Initial number of shares must be positive")
     min_end_time_delay_from_start_time: timedelta = current_app.config["MIN_END_TIME_DELAY_FROM_START_TIME"]
-    if end_time < start_time + min_end_time_delay_from_start_time or end_time < datetime.now():
+    if end_time < start_time + min_end_time_delay_from_start_time or end_time < datetime.now(timezone.utc):
         abort(400, f"end_time should be at least {start_time + min_end_time_delay_from_start_time}")
     min_deal_multiplier = current_app.config["MIN_DEAL_MULTIPLIER"]
     max_deal_multiplier = current_app.config["MAX_DEAL_MULTIPLIER"]

@@ -21,7 +21,7 @@ export default backendConfigSlice.reducer;
 
 export const fetchBackendConfig = async (dispatch: AppDispatch) => {
   try {
-    const response = axiosInstance.get("/public-config");
+    const response = axiosInstance.get("/public-config/");
     const backendConfig = (await response).data as BackendConfig;
     dispatch(setBackendConfig(backendConfig));
   } catch (e) {
