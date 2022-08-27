@@ -35,19 +35,12 @@ const CryptoSignIn = () => {
     ).data as string;
 
   const authenticate = async (walletAccount: string, signature: string) => {
-    const response = await axiosInstance.post(
-      "/auth/sign-in",
-      {
-        username: walletAccount,
-        signature: signature,
-        message_prefix: MESSAGE_PREFIX,
-      },
-      {
-        params: {
-          as_dealer: asDealer,
-        },
-      }
-    );
+    const response = await axiosInstance.post("/auth/sign-in", {
+      username: walletAccount,
+      signature: signature,
+      message_prefix: MESSAGE_PREFIX,
+      as_dealer: asDealer,
+    });
     return response.data.access_token;
   };
 

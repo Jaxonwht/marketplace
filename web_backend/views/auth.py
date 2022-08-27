@@ -16,6 +16,7 @@ from dal.buyer_dal import get_buyer_by_name
 from dal.dealer_dal import get_dealer_by_name
 from jwt_manager import AccountType, MarketplaceIdentity
 from utils.json_utils import get_not_none
+from utils.request_args_utils import value_is_true
 
 auth_bp = Blueprint("auth", __name__, url_prefix="/auth")
 
@@ -49,13 +50,11 @@ def sign_in():  # pylint: disable=inconsistent-return-statements
     """
     Sign in with username and signature.
 
-    Request Params:
-        as_dealer (Optional[bool]): Whether you want to log in as a dealer.
-
     Body Params:
         username (str): Public address of the user.
         signature (str): Signature from nonce.
         message_prefix (str): Prefix to form the original message with a nonce.
+        as_dealer (Optional[bool]): Whether you want to log in as a dealer.
     """
     request_body_json = request.json
     if request_body_json is None:
@@ -63,7 +62,7 @@ def sign_in():  # pylint: disable=inconsistent-return-statements
     username = get_not_none(request_body_json, "username").lower()
     signature = get_not_none(request_body_json, "signature")
     message_prefix = get_not_none(request_body_json, "message_prefix")
-    sign_in_as_dealer = request.args.get("as_dealer", False, bool)
+    sign_in_as_dealer = request_body_json.get("as_dealer", False)
 
     web3_instance = Web3()
     if not web3_instance.isAddress(username):
@@ -137,7 +136,7 @@ def get_nonce(username: str):
     web3_instance = Web3()
     if not web3_instance.isAddress(username):
         abort(400, "Invalid username format")
-    as_dealer = request.args.get("as_dealer", default=False, type=bool)
+    as_dealer = request.args.get("as_dealer", default=False, type=value_is_true)
 
     if as_dealer:
         nonce = get_nonce_for_dealer(username.lower())
