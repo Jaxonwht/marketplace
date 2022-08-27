@@ -7,7 +7,7 @@ from werkzeug.exceptions import HTTPException
 from dal.deal_dal import (
     close_deal,
     create_deal,
-    current_open_deals,
+    get_deals,
     find_closeable_deal_serial_ids,
     get_deal_by_serial_id,
 )
@@ -20,7 +20,7 @@ deal_bp = Blueprint("deal", __name__, url_prefix="/deal")
 
 
 @deal_bp.route("/open", methods=["GET"])
-def get_open_deal_ids():
+def get_deal_ids():
     """
     Request Params:
         max_share_price (Optional[float]): Maximum share price to scan for.
@@ -30,7 +30,7 @@ def get_open_deal_ids():
         Will not return None.
     """
     max_share_price = request.args.get("max_share_price", type=float)
-    deals = current_open_deals(max_share_price)
+    deals = get_deals(max_share_price)
     return jsonify(tuple(deal.serial_id for deal in deals))
 
 

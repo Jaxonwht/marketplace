@@ -13,11 +13,11 @@ from models.transaction_model import Transaction
 from utils.profits_utils import profit_for_buyer
 
 
-def current_open_deals(max_share_price: Optional[float] = None) -> Iterable[Deal]:
-    filters = [Deal.start_time <= datetime.now()]
+def get_deals(max_share_price: Optional[float] = None) -> Iterable[Deal]:
+    filters = []
     if max_share_price is not None:
         filters.append(Deal.share_price <= max_share_price)
-    for deal in flask_session.scalars(select(Deal).filter_by(closed=False).where(*filters)):
+    for deal in flask_session.scalars(select(Deal).where(*filters)):
         yield deal
 
 
