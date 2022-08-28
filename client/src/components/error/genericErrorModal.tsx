@@ -1,5 +1,5 @@
 import { Modal } from "antd";
-import ReactJson from "react-json-view";
+import ReactJson from "@textea/json-viewer";
 
 export const genericErrorModal = (title: string, error: any) => {
   if (error.response) {
