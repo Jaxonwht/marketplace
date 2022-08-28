@@ -27,9 +27,9 @@ export const { setDealInfo, setDealInfoForOneDeal } = dealInfoSlice.actions;
 
 export default dealInfoSlice.reducer;
 
-export const fetchOpenDealInfo = async (dispatch: AppDispatch) => {
+export const fetchAllDealInfo = async (dispatch: AppDispatch) => {
   try {
-    const response = await axiosInstance.get("/deal/open");
+    const response = await axiosInstance.get("/deal/");
     dispatch(setDealInfo(response.data));
   } catch (e) {
     console.error(e);

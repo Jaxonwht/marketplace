@@ -20,7 +20,7 @@ deal_bp = Blueprint("deal", __name__, url_prefix="/deal")
 
 
 @deal_bp.route("/", methods=["GET"])
-def get_deal_ids():
+def get_deal_info():
     """
     Request Params:
         max_share_price (Optional[float]): Maximum share price to scan for.
@@ -28,7 +28,7 @@ def get_deal_ids():
         end_time (Optional[str]): Deals with end_time earlier than this param.
 
     Returns:
-        List of deal IDS that satisfy the constraints. Empty list if None matches.
+        List of deal Infos that satisfy the constraints. Empty list if None matches.
         Will not return None.
     """
     max_share_price = request.args.get("max_share_price", type=float)
@@ -44,7 +44,7 @@ def get_deal_ids():
         end_time = None
     max_share_price = request.args.get("max_share_price", type=float)
     deals = get_deals(max_share_price, start_time, end_time)
-    return jsonify(tuple(deal.serial_id for deal in deals))
+    return jsonify(tuple(deal.info for deal in deals))
 
 
 @deal_bp.get("/<int:serial_id>")
