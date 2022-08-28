@@ -190,7 +190,7 @@ const CreateDealModal = ({
             {
               validator: async (_, [startTime, endTime]: [Moment, Moment]) => {
                 const minEndTime = moment.max(
-                  startTime.add(
+                  moment(startTime).add(
                     backendConfig?.min_end_time_delay_from_start_time_days ?? 7,
                     "days"
                   ),
