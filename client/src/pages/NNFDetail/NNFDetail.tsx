@@ -6,8 +6,10 @@ import { Link, useNavigate } from "react-router-dom";
 import styles from "./style.module.css";
 import * as echarts from "echarts";
 import { Card } from "antd";
+import BuySharesModal from "./BuySharesModal";
 
 export default function LoginForm(props: any) {
+  const [isBuySharesModalVisible, setIsBuySharesModalVisible] = useState(false);
   const [list, setList] = useState([
     {
       floorPrice: 10.0,
@@ -126,8 +128,13 @@ export default function LoginForm(props: any) {
           <Card title="INFO" style={{ width: 300, marginTop: 30 }}>
             <p>ansbanbadasdadasdada</p>
           </Card>
-          <Card title="Create" style={{ width: 300, marginTop: 30 }}>
-            <p>ansbanbadasdadasdada</p>
+          <Card title="Transact" style={{ width: 300, marginTop: 30 }}>
+            <button
+              className="button"
+              onClick={() => setIsBuySharesModalVisible(true)}
+            >
+              Buy Shares
+            </button>
           </Card>
         </div>
         <div className={styles.dashboard}>
@@ -199,6 +206,11 @@ export default function LoginForm(props: any) {
           alt=""
         ></img>
       </div>
+      <BuySharesModal
+        dealSerialIdPrepopulated={1}
+        isModalVisible={isBuySharesModalVisible}
+        setIsModalVisible={setIsBuySharesModalVisible}
+      />
     </div>
   );
 }

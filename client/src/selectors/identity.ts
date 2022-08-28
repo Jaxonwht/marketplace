@@ -6,3 +6,8 @@ export const selectIsDealer = createSelector(
   (state: RootState) => state.identity,
   (identity) => identity?.account_type === AccountType.DEALER
 );
+
+export const selectIsBuyer = createSelector(
+  (state: RootState) => state.identity,
+  (identity) => identity?.account_type === AccountType.BUYER
+);
