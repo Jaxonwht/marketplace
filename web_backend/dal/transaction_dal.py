@@ -31,7 +31,7 @@ def buy_shares(buyer_name: str, deal_serial_id: int, shares: int, current_asset_
     user_balance = buyer.balance
     amount_needed = shares * deal.share_price
     if user_balance < amount_needed:
-        abort(409, f"Buyer has {user_balance}, need at leart {amount_needed}")
+        abort(409, f"Buyer has {user_balance}, need at least {amount_needed}")
     transaction = Transaction(
         buyer_name=buyer_name, deal_serial_id=deal.serial_id, shares=shares, asset_price=current_asset_price
     )

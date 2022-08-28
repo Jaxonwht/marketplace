@@ -7,6 +7,7 @@ import { AccountType } from "../../reduxSlices/identitySlice";
 import { authenticatedAxiosInstance } from "../../utils/network";
 import { CreateDealResponse, CreateDealRequestBody } from "../../backendTypes";
 import { fetchBackendConfig } from "../../reduxSlices/backendConfigSlice";
+import { genericErrorModal } from "../../components/error/genericErrorModal";
 
 interface CreateDealFormValues {
   collectionId: string;
@@ -49,7 +50,10 @@ const CreateDealModal = ({
     try {
       const validatedValues = await form.validateFields();
       if (!identity || identity.account_type !== AccountType.DEALER) {
-        console.error("You are not a dealer");
+        Modal.error({
+          title: "Identity Error",
+          content: <div>You are not a dealer</div>,
+        });
         return;
       }
       const postBody: CreateDealRequestBody = {
@@ -72,8 +76,8 @@ const CreateDealModal = ({
         console.log(createdDealInfo);
         setIsModalVisible(false);
         form.resetFields();
-      } catch (e) {
-        console.error("Failed to create a deal", e);
+      } catch (e: any) {
+        genericErrorModal("Deal Creation Error", e);
       }
     } catch (e) {
       console.error("Validation faild when creating deal", e);

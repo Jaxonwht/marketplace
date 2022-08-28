@@ -45,7 +45,7 @@ export interface DealInfo {
   readonly collection_id: string;
   readonly collection_name: string | null;
   readonly dealer_name: string;
-  readonly end_time: Moment;
+  readonly end_time: string;
   readonly extra_info: Record<string, unknown>;
   readonly lockup_balance: unknown;
   readonly multiplier: number;
@@ -53,5 +53,5 @@ export interface DealInfo {
   readonly serial_id: number;
   readonly share_price: number;
   readonly shares_remaining: number;
-  readonly start_time: Moment;
+  readonly start_time: string;
 }

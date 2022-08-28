@@ -6,6 +6,7 @@ import { authenticatedAxiosInstance } from "../../utils/network";
 import { BuySharesRequestBody } from "../../backendTypes";
 import { fetchDealInfoForOneDeal } from "../../reduxSlices/dealInfoSlice";
 import { selectDealInfoForSerialId } from "../../selectors/dealInfo";
+import { genericErrorModal } from "../../components/error/genericErrorModal";
 
 interface BuySharesFormValues {
   dealSerialId: number;
@@ -46,7 +47,10 @@ const BuySharesModal = ({
     try {
       const validatedValues = await form.validateFields();
       if (!isBuyer) {
-        console.error("You are not a buyer");
+        Modal.error({
+          title: "Identity Error",
+          content: <div>You are not a buyer</div>,
+        });
         return;
       }
       const postBody: BuySharesRequestBody = {
@@ -58,8 +62,8 @@ const BuySharesModal = ({
         await authenticatedAxiosInstance().post("/transaction/buy", postBody);
         setIsModalVisible(false);
         form.resetFields();
-      } catch (e) {
-        console.error("Failed to buy shares", e);
+      } catch (e: any) {
+        genericErrorModal("Buy Shares Error", e);
       }
     } catch (e) {
       console.error("Validation faild when creating deal", e);
