@@ -1,4 +1,4 @@
-import { HashRouter as Router, useRoutes } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 
 import Home from "./pages/Home/Home";
@@ -16,7 +16,6 @@ import Usercenter from "./pages/Usercenter/UserCenter";
 
 import themes from "./config/theme";
 
-import { useSelector, useDispatch } from "react-redux";
 import { isMobile } from "./utils/utils";
 import { useAppDispatch, useAppSelector } from "./store/hooks";
 import { setIsMobile } from "./reduxSlices/mobileSlice";
@@ -30,47 +29,6 @@ const locales = {
   "en-US": require("./locales/en-US.json"),
   "zh-CN": require("./locales/zh-CN.json"),
 };
-const GetRoutes = () => {
-  const routes = useRoutes([
-    {
-      path: "/",
-      element: <Layout></Layout>,
-      children: [
-        {
-          path: "home",
-          element: <Home></Home>,
-        },
-        {
-          path: "nnf",
-          element: <NNF></NNF>,
-        },
-        {
-          path: "about",
-          element: <About></About>,
-        },
-        {
-          path: "nnfDetail",
-          element: <NNFDetail></NNFDetail>,
-        },
-        {
-          path: "signin",
-          element: <Signin></Signin>,
-        },
-        {
-          path: "signup",
-          element: <Signup></Signup>,
-        },
-        {
-          path: "usercenter",
-          element: <Usercenter></Usercenter>,
-        },
-      ],
-    },
-  ]);
-
-  return routes;
-};
-
 const App = () => {
   const [initDone, setInitDone] = useState(false);
   const dispatch = useAppDispatch();
@@ -103,14 +61,23 @@ const App = () => {
   }, []);
 
   return initDone ? (
-    <Router>
-      {/* <Routes>
-        <Route path='/' element={Home} />
-      </Routes> */}
-      <GetRoutes />
-    </Router>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Layout />}>
+          <Route path="/home" element={<Home />} />
+          <Route path="/nnf" element={<NNF />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/nnfdetail">
+            <Route path=":dealSerialId" element={<NNFDetail />} />
+          </Route>
+          <Route path="/signin" element={<Signin />} />
+          <Route path="/singup" element={<Signup />} />
+          <Route path="/usercenter" element={<Usercenter />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
   ) : (
-    <div></div>
+    <div />
   );
 };
 

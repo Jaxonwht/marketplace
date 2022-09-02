@@ -2,14 +2,35 @@ import React, { useEffect, useState } from "react";
 import { Form, Input, Button, message } from "antd";
 import { RightOutlined, EllipsisOutlined } from "@ant-design/icons";
 import PropTypes from "prop-types";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import styles from "./style.module.css";
 import * as echarts from "echarts";
 import { Card } from "antd";
 import BuySharesModal from "./BuySharesModal";
+import { useAppDispatch, useAppSelector } from "../../store/hooks";
+import { fetchDealInfoForOneDeal } from "../../reduxSlices/dealInfoSlice";
+import {
+  selectAllNonClosedDealInfo,
+  selectDealInfoForSerialId,
+} from "../../selectors/dealInfo";
+import { getDealReadableName } from "../../backendTypes/utils";
+import DealSliderItem from "../../components/dealSlider/DealSliderItem";
+import DealSlider from "../../components/dealSlider/DealSlider";
 
-export default function LoginForm(props: any) {
+const NNFDetail = () => {
   const [isBuySharesModalVisible, setIsBuySharesModalVisible] = useState(false);
+  const dispatch = useAppDispatch();
+  const params = useParams();
+  const dealSerialId =
+    params.dealSerialId === undefined ? undefined : Number(params.dealSerialId);
+  useEffect(() => {
+    if (dealSerialId !== undefined) {
+      dispatch(fetchDealInfoForOneDeal(dealSerialId));
+    }
+  }, [dispatch, dealSerialId]);
+  const nonClosedDealInfo = useAppSelector(selectAllNonClosedDealInfo);
+  const dealInfo = useAppSelector(selectDealInfoForSerialId(dealSerialId));
+
   const [list, setList] = useState([
     {
       floorPrice: 10.0,
@@ -22,43 +43,6 @@ export default function LoginForm(props: any) {
     },
   ]);
 
-  const [sliderLList, setSliderLList] = useState([
-    {
-      image: require("../../assets/images/d1.jpg"),
-      name: "NNN Name",
-      price: 20.85,
-      percent: "+30.87%",
-      now: 27.29,
-    },
-    {
-      image: require("../../assets/images/d1.jpg"),
-      name: "NNN Name",
-      price: 20.85,
-      percent: "+30.87%",
-      now: 27.29,
-    },
-    {
-      image: require("../../assets/images/d2.jpg"),
-      name: "NNN Name",
-      price: 20.85,
-      percent: "+30.87%",
-      now: 27.29,
-    },
-    {
-      image: require("../../assets/images/d1.jpg"),
-      name: "NNN Name",
-      price: 20.85,
-      percent: "+30.87%",
-      now: 27.29,
-    },
-    {
-      image: require("../../assets/images/d1.jpg"),
-      name: "NNN Name",
-      price: 20.85,
-      percent: "+30.87%",
-      now: 27.29,
-    },
-  ]);
   useEffect(() => {
     loadChart1();
     loadChart2();
@@ -154,18 +138,20 @@ export default function LoginForm(props: any) {
                   <th>24HR Volume</th>
                 </tr>
               </thead>
-              {list.map((item, i) => (
-                <tr onClick={() => {}}>
-                  <td>{item.floorPrice}</td>
-                  <td>{item.currentPrice}</td>
-                  <td>
-                    {item.sold}/{item.total}
-                  </td>
-                  <td>{item.startTime}</td>
-                  <td>{item.endTime}</td>
-                  <td>{item.hrVolume}</td>
-                </tr>
-              ))}
+              <tbody>
+                {list.map((item, i) => (
+                  <tr onClick={() => {}}>
+                    <td>{item.floorPrice}</td>
+                    <td>{item.currentPrice}</td>
+                    <td>
+                      {item.sold}/{item.total}
+                    </td>
+                    <td>{item.startTime}</td>
+                    <td>{item.endTime}</td>
+                    <td>{item.hrVolume}</td>
+                  </tr>
+                ))}
+              </tbody>
             </table>
           </div>
           <div className={styles.dashboardContent}>
@@ -186,35 +172,14 @@ export default function LoginForm(props: any) {
           </div>
         </div>
       </div>
-      <div className={styles.listContainer}>
-        <img
-          style={{ width: 30, height: 30 }}
-          src={require("../../assets/images/left.jpg")}
-          alt=""
-        ></img>
-        <div className={styles.list}>
-          {sliderLList.map((item) => (
-            <div className={styles.listItem}>
-              <img src={item.image} alt=""></img>
-              <div className={styles.listItemImage}>{item.name}</div>
-            </div>
-          ))}
-        </div>
-        <img
-          style={{ width: 30, height: 30 }}
-          src={require("../../assets/images/right.jpg")}
-          alt=""
-        ></img>
-      </div>
+      <DealSlider dealInfoList={nonClosedDealInfo} />
       <BuySharesModal
-        dealSerialIdPrepopulated={1}
+        dealSerialIdPrepopulated={dealSerialId}
         isModalVisible={isBuySharesModalVisible}
         setIsModalVisible={setIsBuySharesModalVisible}
       />
     </div>
   );
-}
-
-LoginForm.propTypes = {
-  login: PropTypes.func,
 };
+
+export default NNFDetail;

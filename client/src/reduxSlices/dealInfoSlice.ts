@@ -3,22 +3,21 @@ import { DealInfo } from "../backendTypes";
 import { AppDispatch } from "../store";
 import { axiosInstance } from "../utils/network";
 
-const initialState: DealInfo[] = [];
+const initialState: Record<number, DealInfo> = {};
 
 const dealInfoSlice = createSlice({
   name: "dealInfo",
   initialState,
   reducers: {
-    setDealInfo: (state, action: PayloadAction<DealInfo[]>) => action.payload,
+    setDealInfo: (state, action: PayloadAction<DealInfo[]>) => {
+      return action.payload.reduce((currentObject, dealInfo) => {
+        currentObject[dealInfo.serial_id] = dealInfo;
+        return currentObject;
+      }, {} as Record<number, DealInfo>);
+    },
     setDealInfoForOneDeal: (state, action: PayloadAction<DealInfo>) => {
-      const oldIndex = state.findIndex(
-        (dealInfo) => dealInfo.serial_id === action.payload.serial_id
-      );
-      if (oldIndex === -1) {
-        state.push(action.payload);
-      } else {
-        state.splice(oldIndex, 1, action.payload);
-      }
+      const dealInfo = action.payload;
+      state[dealInfo.serial_id] = dealInfo;
     },
   },
 });
