@@ -31,6 +31,11 @@ export interface BuySharesRequestBody {
   shares: number;
 }
 
+export interface SellSharesRequestBody {
+  buyer_name: string;
+  deal_serial_id: number;
+}
+
 export interface BackendConfig {
   max_deal_multiplier: number;
   maximum_allowed_rate: number;

@@ -7,6 +7,7 @@ import styles from "./style.module.css";
 import * as echarts from "echarts";
 import { Card } from "antd";
 import BuySharesModal from "./BuySharesModal";
+import SellSharesModal from "./SellSharesModal";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { fetchDealInfoForOneDeal } from "../../reduxSlices/dealInfoSlice";
 import {
@@ -19,6 +20,8 @@ import DealSlider from "../../components/dealSlider/DealSlider";
 
 const NNFDetail = () => {
   const [isBuySharesModalVisible, setIsBuySharesModalVisible] = useState(false);
+  const [isSellSharesModalVisible, setIsSellSharesModalVisible] =
+    useState(false);
   const dispatch = useAppDispatch();
   const params = useParams();
   const dealSerialId =
@@ -110,7 +113,7 @@ const NNFDetail = () => {
             alt=""
           ></img>
           <Card title="INFO" style={{ width: 300, marginTop: 30 }}>
-            <p>ansbanbadasdadasdada</p>
+            <p>Best Share to buy!</p>
           </Card>
           <Card title="Transact" style={{ width: 300, marginTop: 30 }}>
             <button
@@ -119,12 +122,18 @@ const NNFDetail = () => {
             >
               Buy Shares
             </button>
+            <button
+              className="button"
+              onClick={() => setIsSellSharesModalVisible(true)}
+            >
+              Sell Shares
+            </button>
           </Card>
         </div>
         <div className={styles.dashboard}>
           <div className={styles.dashboardHeader}>
             <div style={{ fontSize: 30 }}>NAME</div>
-            <div>Creter Name</div>
+            <div>Creator Name</div>
           </div>
           <div className={styles.tableWrapper}>
             <table className={styles.table}>
@@ -177,6 +186,11 @@ const NNFDetail = () => {
         dealSerialIdPrepopulated={dealSerialId}
         isModalVisible={isBuySharesModalVisible}
         setIsModalVisible={setIsBuySharesModalVisible}
+      />
+      <SellSharesModal
+        dealSerialIdPrepopulated={dealSerialId}
+        isModalVisible={isSellSharesModalVisible}
+        setIsModalVisible={setIsSellSharesModalVisible}
       />
     </div>
   );
