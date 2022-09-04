@@ -3,34 +3,29 @@ import { Form, InputNumber, Modal } from "antd";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { AccountType } from "../../reduxSlices/identitySlice";
 import { authenticatedAxiosInstance } from "../../utils/network";
-import { BuySharesRequestBody } from "../../backendTypes";
+import { SellSharesRequestBody } from "../../backendTypes";
 import { fetchDealInfoForOneDeal } from "../../reduxSlices/dealInfoSlice";
-import { selectDealInfoForSerialId } from "../../selectors/dealInfo";
 import { genericErrorModal } from "../../components/error/genericErrorModal";
 
-interface BuySharesFormValues {
+interface SellSharesFormValues {
   dealSerialId: number;
-  shares: number;
 }
 
-interface BuySharesModalProps {
+interface SellSharesModalProps {
   dealSerialIdPrepopulated?: number;
   isModalVisible: boolean;
   setIsModalVisible: (visibility: boolean) => void;
 }
 
-const BuySharesModal = ({
+const SellSharesModal = ({
   dealSerialIdPrepopulated,
   isModalVisible,
   setIsModalVisible,
-}: BuySharesModalProps) => {
-  const [form] = Form.useForm<BuySharesFormValues>();
+}: SellSharesModalProps) => {
+  const [form] = Form.useForm<SellSharesFormValues>();
   const identity = useAppSelector((state) => state.identity);
   const isBuyer = identity?.account_type === AccountType.BUYER;
   const dispatch = useAppDispatch();
-  const dealInfo = useAppSelector(
-    selectDealInfoForSerialId(dealSerialIdPrepopulated)
-  );
 
   useEffect(() => {
     if (dealSerialIdPrepopulated !== undefined) {
@@ -53,17 +48,16 @@ const BuySharesModal = ({
         });
         return;
       }
-      const postBody: BuySharesRequestBody = {
+      const postBody: SellSharesRequestBody = {
         buyer_name: identity.username,
         deal_serial_id: validatedValues.dealSerialId,
-        shares: validatedValues.shares,
       };
       try {
-        await authenticatedAxiosInstance().post("/transaction/buy", postBody);
+        await authenticatedAxiosInstance().post("/transaction/sell", postBody);
         setIsModalVisible(false);
         form.resetFields();
       } catch (e: any) {
-        genericErrorModal("Buy Shares Error", e);
+        genericErrorModal("Sell Shares Error", e);
       }
     } catch (e) {
       console.error("Validation failed when creating deal", e);
@@ -72,7 +66,7 @@ const BuySharesModal = ({
 
   return (
     <Modal
-      title="Buy Shares"
+      title="Sell Shares"
       cancelText="Cancel"
       okText="Confirm"
       visible={isModalVisible}
@@ -94,31 +88,9 @@ const BuySharesModal = ({
         >
           <InputNumber controls={false} />
         </Form.Item>
-        <Form.Item
-          name="shares"
-          label="Number of Shares"
-          validateFirst
-          rules={[
-            {
-              required: true,
-              message: "Number of shares that can be purchased in this deal",
-            },
-            {
-              validator: async (_, numberOfShares: number) => {
-                if (!!dealInfo && dealInfo.shares_remaining < numberOfShares) {
-                  throw new Error(
-                    `The deal only has ${dealInfo.shares_remaining} shares remaining`
-                  );
-                }
-              },
-            },
-          ]}
-        >
-          <InputNumber placeholder="Number of shares" min={0} />
-        </Form.Item>
       </Form>
     </Modal>
   );
 };
 
-export default BuySharesModal;
+export default SellSharesModal;
