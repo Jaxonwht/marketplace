@@ -3,7 +3,7 @@ import { Form, Input, Button, message } from "antd";
 import { RightOutlined, EllipsisOutlined } from "@ant-design/icons";
 import PropTypes from "prop-types";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import styles from "./style.module.css";
+import styles from "./style.module.scss";
 import * as echarts from "echarts";
 import { Card } from "antd";
 import BuySharesModal from "./BuySharesModal";
@@ -17,6 +17,8 @@ import {
 import { getDealReadableName } from "../../backendTypes/utils";
 import DealSliderItem from "../../components/dealSlider/DealSliderItem";
 import DealSlider from "../../components/dealSlider/DealSlider";
+import { AccountType } from "../../reduxSlices/identitySlice";
+import classNames from "classnames";
 
 const NNFDetail = () => {
   const [isBuySharesModalVisible, setIsBuySharesModalVisible] = useState(false);
@@ -33,6 +35,8 @@ const NNFDetail = () => {
   }, [dispatch, dealSerialId]);
   const nonClosedDealInfo = useAppSelector(selectAllNonClosedDealInfo);
   const dealInfo = useAppSelector(selectDealInfoForSerialId(dealSerialId));
+  const identity = useAppSelector((state) => state.identity);
+  const isBuyer = identity?.account_type === AccountType.BUYER;
 
   const [list, setList] = useState([
     {
@@ -100,7 +104,6 @@ const NNFDetail = () => {
 
     option && myChart.setOption(option);
   };
-  const navigate = useNavigate();
 
   return (
     <div className={styles.container}>
@@ -112,22 +115,28 @@ const NNFDetail = () => {
             src={require("../../assets/images/headimg.png")}
             alt=""
           ></img>
-          <Card title="INFO" style={{ width: 300, marginTop: 30 }}>
+          <Card title="INFO" className={styles["narrow-window"]}>
             <p>Best Share to buy!</p>
           </Card>
-          <Card title="Transact" style={{ width: 300, marginTop: 30 }}>
-            <button
-              className="button"
-              onClick={() => setIsBuySharesModalVisible(true)}
-            >
-              Buy Shares
-            </button>
-            <button
-              className="button"
-              onClick={() => setIsSellSharesModalVisible(true)}
-            >
-              Sell Shares
-            </button>
+          <Card title="Transact" className={styles["narrow-window"]}>
+            {isBuyer ? (
+              <React.Fragment>
+                <button
+                  className="button"
+                  onClick={() => setIsBuySharesModalVisible(true)}
+                >
+                  Buy Shares
+                </button>
+                <button
+                  className={classNames("button", styles["sell-shares-button"])}
+                  onClick={() => setIsSellSharesModalVisible(true)}
+                >
+                  Sell Shares
+                </button>
+              </React.Fragment>
+            ) : (
+              <div>Log in as a buyer to transact</div>
+            )}
           </Card>
         </div>
         <div className={styles.dashboard}>
