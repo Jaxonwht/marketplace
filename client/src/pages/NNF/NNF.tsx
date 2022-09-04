@@ -18,9 +18,10 @@ const NNF = () => {
 
   const isDealer = useAppSelector(selectIsDealer);
   const nonClosedDealInfo = useAppSelector(selectAllNonClosedDealInfo);
+  const headImg = require("../../assets/images/headimg.png");
   const dealInfoList = nonClosedDealInfo.map((singleDealInfo) => ({
     dealserialid: singleDealInfo.serial_id,
-    image: require("../../assets/images/headimg.png"),
+    image: headImg,
     name: getDealReadableName(singleDealInfo),
     price: 20.85,
     percent: "+30.87%",
