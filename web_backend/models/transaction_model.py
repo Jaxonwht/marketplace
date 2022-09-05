@@ -8,6 +8,13 @@ from sqlalchemy.dialects.postgresql import TIMESTAMP
 from db import flask_db
 
 
+class TransactionInfo(TypedDict):
+    shares: int
+    profit: float
+    buy_timestamp: str
+    buy_asset_price: float
+
+
 class Transaction(flask_db.Model):
     """One transaction of shares."""
 
