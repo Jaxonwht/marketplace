@@ -1,11 +1,18 @@
 """In platform transactions."""
 from datetime import datetime
-from typing import Dict
+from typing import Dict, TypedDict
 
-from sqlalchemy import CheckConstraint, Column, Float, ForeignKey, Integer, String, func
+from sqlalchemy import CheckConstraint, Column, Float, ForeignKey, Integer, String
 from sqlalchemy.dialects.postgresql import TIMESTAMP
 
 from db import flask_db
+
+
+class TransactionInfo(TypedDict):
+    shares: int
+    profit: float
+    buy_timestamp: str
+    buy_asset_price: float
 
 
 class Transaction(flask_db.Model):

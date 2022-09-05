@@ -41,10 +41,25 @@ def prepare_ownerships_for_deal_before_close(deal_serial_id: int) -> Iterable[Tu
 
 def prepare_ownerships_to_sell(deal_serial_id: int, buyer_name: str) -> Iterable[Ownership]:
     """
-    For a given deal serial ID and buyer name, given all the ownerships that are not closed.
+    For a given deal serial ID and buyer name, give all the ownerships that are not closed.
     """
-    yield from flask_session.scalars(
-        select(Ownership)
-        .filter_by(deal_serial_id=deal_serial_id, buyer_name=buyer_name, closed=False)
-        .with_for_update(key_share=True)
-    )
+    yield from prepare_open_ownerships(deal_serial_id, buyer_name, with_for_update=True)
+
+
+def prepare_ownerships_for_query(deal_serial_id: int, buyer_name: str) -> Iterable[Ownership]:
+    """
+    For a given deal serial ID and buyer name, give all the ownerships that are not closed.
+    """
+    yield from prepare_open_ownerships(deal_serial_id, buyer_name, with_for_update=False)
+
+
+def prepare_open_ownerships(deal_serial_id: int, buyer_name: str, with_for_update: bool) -> Iterable[Ownership]:
+    """
+    For a given deal serial ID and buyer name, give all the ownerships that are not closed.
+    """
+    statement = select(Ownership).filter_by(deal_serial_id=deal_serial_id, buyer_name=buyer_name, closed=False)
+
+    if with_for_update:
+        statement = statement.with_for_update(key_share=True)
+
+    yield from flask_session.scalars(statement)
