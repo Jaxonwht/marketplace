@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { HashRouter, Route, Routes } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 
 import Home from "./pages/Home/Home";
@@ -61,7 +61,7 @@ const App = () => {
   }, []);
 
   return initDone ? (
-    <BrowserRouter>
+    <HashRouter>
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route path="/home" element={<Home />} />
@@ -75,7 +75,7 @@ const App = () => {
           <Route path="/usercenter" element={<Usercenter />} />
         </Route>
       </Routes>
-    </BrowserRouter>
+    </HashRouter>
   ) : (
     <div />
   );
