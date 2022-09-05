@@ -113,7 +113,7 @@ export default function LoginForm(props: any) {
             setIsAddBalanceModalVisible(true);
           }}
         >
-          ADD BANLANCE
+          ADD BALANCE
         </button>
         <button
           className="button"
@@ -135,7 +135,7 @@ export default function LoginForm(props: any) {
         >
           <div className={styles.cardHeader}>
             <div style={{ fontWeight: "bold" }}>Participating</div>
-            <div>Total Deal Banlace: 10.89</div>
+            <div>Total Deal Balance: 10.89</div>
           </div>
 
           <div className={styles.listContainer}>
