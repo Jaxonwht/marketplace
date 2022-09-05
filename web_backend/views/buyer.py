@@ -1,6 +1,6 @@
 from flask import Blueprint, abort, jsonify, request
 from flask_jwt_extended import jwt_required
-from dal.buyer_dal import create_buyer, get_buyer_by_name, get_buyers_by_names
+from dal.buyer_dal import create_buyer, get_buyer_by_name, get_buyers_by_names, get_deal_details_for_buyer
 from utils.decorators import admin_jwt_required
 from utils.json_utils import get_not_none
 
@@ -39,8 +39,8 @@ def get_profits_in_deal():
     buyer_name = request.args.get("buyer_name")
     deal_serial_id = request.args.get("deal_serial_id", type=int)
     if buyer_name is None or deal_serial_id is None:
-        abort(400, "Buyer name or deal serial id is not found")
-    return get_deal_details_for_buyer(buyer_name.lower(), deal_serial_id)
+        abort(400, "Buyer name or deal serial id is not specified")
+    return jsonify(get_deal_details_for_buyer(buyer_name.lower(), deal_serial_id))
 
 
 @buyer_bp.route("/<name>", methods=["GET"])

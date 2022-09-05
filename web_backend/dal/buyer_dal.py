@@ -1,12 +1,16 @@
 from collections.abc import Iterable
-from typing import List, Optional, TypedDict
+from typing import List, Optional
 from os import urandom
 from datetime import datetime, timedelta
 from flask import abort
 
 from sqlalchemy import select
+from dal.ownership_dal import prepare_ownerships_for_query
 from db import flask_session
 from models.buyer_model import Buyer
+from models.deal_model import Deal
+from models.transaction_model import Transaction, TransactionInfo
+from utils.profits_utils import profit_for_buyer
 
 
 def get_deal_details_for_buyer(buyer_name: str, deal_serial_id: int) -> List[TransactionInfo]:

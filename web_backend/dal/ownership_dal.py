@@ -48,7 +48,7 @@ def prepare_ownerships_to_sell(deal_serial_id: int, buyer_name: str) -> Iterable
 
 def prepare_ownerships_for_query(deal_serial_id: int, buyer_name: str) -> Iterable[Ownership]:
     """
-    For a given deal serial ID and buyer name, given all the ownerships that are not closed.
+    For a given deal serial ID and buyer name, give all the ownerships that are not closed.
     """
     yield from prepare_open_ownerships(deal_serial_id, buyer_name, with_for_update=False)
 
