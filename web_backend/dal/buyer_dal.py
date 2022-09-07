@@ -48,6 +48,21 @@ def get_deal_details_for_buyer(buyer_name: str, deal_serial_id: int) -> List[Tra
     return transaction_info
 
 
+def get_deals_for_buyer(buyer_name: str) -> List[TransactionInfo]:
+
+    deal_info = []
+    deal_set = set()
+    for transactions in find_transactions(buyer_name=buyer_name):
+        deal_set.add(transactions.deal_serial_id)
+
+    for deal_serial_id in deal_set:
+        transaction_info = get_deal_details_for_buyer(buyer_name, deal.deal_serial_id)
+        deal_profit = sum(t["profit"] for t in transaction_info)
+        deal_info.append({"deal_serial_id": deal_serial_id, "deal_profit": deal_profit})
+
+    return deal_info
+
+
 def create_buyer(buyer_name: str, balance: Optional[float]) -> Buyer:
     if get_buyer_by_name(buyer_name):
         abort(409, f"Buyer with name {buyer_name} already exists")
