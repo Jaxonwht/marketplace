@@ -1,9 +1,9 @@
 from typing import Iterable, List, Optional, Tuple
-from flask import abort
 
-from datetime import datetime, timedelta
+from datetime import datetime
 from sqlalchemy import select
 from sqlalchemy.dialects.postgresql import array_agg
+from flask import abort
 
 from utils.profits_utils import profit_for_buyer
 from db import flask_session
