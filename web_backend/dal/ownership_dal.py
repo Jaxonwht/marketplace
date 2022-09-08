@@ -1,10 +1,86 @@
 from typing import Iterable, List, Optional, Tuple
+from flask import abort
 
+from datetime import datetime, timedelta
 from sqlalchemy import select
 from sqlalchemy.dialects.postgresql import array_agg
 
+from utils.profits_utils import profit_for_buyer
 from db import flask_session
-from models.ownership_model import Ownership
+from models.ownership_model import Ownership, OwnershipSummary
+from models.transaction_model import Transaction, TransactionInfo
+from models.deal_model import Deal
+from models.buyer_model import Buyer
+
+
+def get_deal_details_for_buyer(buyer_name: str, deal_serial_id: int) -> List[TransactionInfo]:
+    current_asset_price: float = 0.01  # TODO: ZIYI
+    deal: Deal = flask_session.get(Deal, deal_serial_id, with_for_update={"key_share": True})
+    if not deal:
+        abort(404, f"Deal {deal_serial_id} not found")
+    if deal.closed:
+        abort(409, f"Deal {deal_serial_id} is already closed")
+    if datetime.utcnow() > deal.end_time:
+        abort(409, f"Deal {deal_serial_id} has ended at {deal.end_time}")
+    buyer = flask_session.get(Buyer, buyer_name)
+    if buyer is None:
+        abort(404, f"Can't find buyer {buyer_name}")
+    transaction_info = []
+    for ownership in prepare_ownerships_for_query(deal_serial_id, buyer_name):
+        buy_transaction: Transaction = flask_session.get(Transaction, ownership.transaction_serial_id)
+        profit = profit_for_buyer(
+            buy_transaction.asset_price,
+            current_asset_price,
+            deal.share_price,
+            deal.rate,
+            buy_transaction.shares,
+            deal.multiplier,
+        )
+        transaction_info.append(
+            TransactionInfo(
+                shares=buy_transaction.shares,
+                profit=profit,
+                buy_timestamp=str(buy_transaction.timestamp),
+                buy_asset_price=buy_transaction.asset_price,
+            )
+        )
+
+    return transaction_info
+
+
+def find_ownership_summaries(
+    buyer_name: str,
+) -> Iterable[OwnershipSummary]:
+    """
+    For a given buyer, find all the ownership summary for this user.
+    """
+    buyer = flask_session.get(Buyer, buyer_name)
+    if buyer is None:
+        abort(404, f"Can't find buyer {buyer_name}")
+    query = (
+        select(array_agg(Transaction.serial_id), Transaction.deal_serial_id)
+        .join(Ownership)
+        .where(~Ownership.closed, Ownership.buyer_name == buyer_name)
+        .group_by(Transaction.deal_serial_id)
+    )
+    for unclosed_transaction_ids, deal_serial_id in flask_session.execute(query):
+        # TODO ZIYI get fucking price
+        current_asset_price = 10
+        deal: Deal = flask_session.get(Deal, deal_serial_id)
+        query_for_transactions = select(Transaction).where(Transaction.serial_id.in_(unclosed_transaction_ids))
+        total_profit = 0
+        total_shares = 0
+        for transaction in flask_session.scalars(query_for_transactions):
+            total_shares += transaction.shares
+            total_profit += profit_for_buyer(
+                transaction.asset_price,
+                current_asset_price,
+                deal.share_price,
+                deal.rate,
+                transaction.shares,
+                deal.multiplier,
+            )
+        yield OwnershipSummary(deal_serial_id=deal_serial_id, shares=total_shares, profit=total_profit)
 
 
 def find_ownerships(

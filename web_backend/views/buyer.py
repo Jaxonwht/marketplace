@@ -2,10 +2,8 @@ from flask import Blueprint, abort, jsonify, request
 from flask_jwt_extended import jwt_required
 from dal.buyer_dal import (
     create_buyer,
-    find_ownership_summaries,
     get_buyer_by_name,
     get_buyers_by_names,
-    get_deal_details_for_buyer,
 )
 from utils.decorators import admin_jwt_required
 from utils.json_utils import get_not_none
@@ -31,34 +29,6 @@ def get_buyers():
     names = request.args.getlist("names")
     buyers = get_buyers_by_names(names)
     return jsonify(tuple(buyer.info for buyer in buyers))
-
-
-@buyer_bp.route("/profits-in-deal", methods=["GET"])
-def get_profits_in_deal():
-    """
-    Request Params:
-        buyer_name (str): Name of the buyer.
-        deal_serial_id (int): Serial ID of deal.
-
-    Returns: Total profits or losses of deal for buyer.
-    """
-    buyer_name = request.args.get("buyer_name")
-    deal_serial_id = request.args.get("deal_serial_id", type=int)
-    if buyer_name is None or deal_serial_id is None:
-        abort(400, "Buyer name or deal serial id is not specified")
-    return jsonify(get_deal_details_for_buyer(buyer_name.lower(), deal_serial_id))
-
-
-@buyer_bp.get("/profits-summary/<buyer_name>")
-def get_profits_summary(buyer_name: str):
-    """
-    Path params:
-        buyer_name (str): Name of the buyer.
-
-    Returns: List[OwnershipSummary]. It represents the number of shares
-        and total profits of this buyer in all the deals he has a non-zero stake in.
-    """
-    return jsonify(tuple(find_ownership_summaries(buyer_name.lower())))
 
 
 @buyer_bp.route("/<name>", methods=["GET"])
