@@ -1,9 +1,18 @@
 """Stores the aggregated ownership of specific shares by different buyers."""
-from typing import Any, Dict
+from typing import Any, Dict, TypedDict
 
 from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
 
 from db import flask_db
+
+
+class OwnershipSummary(TypedDict):
+    """Contains information about a user's profit or loss in a given deal."""
+
+    deal_serial_id: int
+    shares: int
+    # Positive means in profit.
+    profit: float
 
 
 class Ownership(flask_db.Model):

@@ -5,10 +5,12 @@ from datetime import datetime, timedelta
 from flask import abort
 
 from sqlalchemy import select
+from sqlalchemy.dialects.postgresql import array_agg
 from dal.ownership_dal import prepare_ownerships_for_query
 from db import flask_session
 from models.buyer_model import Buyer
 from models.deal_model import Deal
+from models.ownership_model import Ownership, OwnershipSummary
 from models.transaction_model import Transaction, TransactionInfo
 from utils.profits_utils import profit_for_buyer
 
@@ -46,6 +48,38 @@ def get_deal_details_for_buyer(buyer_name: str, deal_serial_id: int) -> List[Tra
         )
 
     return transaction_info
+
+
+def find_ownership_summaries(
+    buyer_name: str,
+) -> Iterable[OwnershipSummary]:
+    """
+    For a given buyer, find all the ownership summary for this user.
+    """
+    query = (
+        select(array_agg(Transaction.serial_id), Transaction.deal_serial_id)
+        .join(Ownership)
+        .where(~Ownership.closed, Ownership.buyer_name == buyer_name)
+        .group_by(Transaction.deal_serial_id)
+    )
+    for unclosed_transaction_ids, deal_serial_id in flask_session.execute(query):
+        # TODO ZIYI get fucking price
+        current_asset_price = 10
+        deal: Deal = flask_session.get(Deal, deal_serial_id)
+        query_for_transactions = select(Transaction).where(Transaction.serial_id.in_(unclosed_transaction_ids))
+        total_profit = 0
+        total_shares = 0
+        for transaction in flask_session.scalars(query_for_transactions):
+            total_shares += transaction.shares
+            total_profit += profit_for_buyer(
+                transaction.asset_price,
+                current_asset_price,
+                deal.share_price,
+                deal.rate,
+                transaction.shares,
+                deal.multiplier,
+            )
+        yield OwnershipSummary(deal_serial_id=deal_serial_id, shares=total_shares, profit=total_profit)
 
 
 def create_buyer(buyer_name: str, balance: Optional[float]) -> Buyer:
