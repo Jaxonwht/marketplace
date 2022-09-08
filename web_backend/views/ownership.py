@@ -1,8 +1,40 @@
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, abort
 from dal.ownership_dal import find_ownerships
 from utils.request_args_utils import value_is_true
+from dal.ownership_dal import (
+    find_ownership_summaries,
+    get_deal_details_for_buyer,
+)
 
 ownership_bp = Blueprint("ownership", __name__, url_prefix="/ownership")
+
+
+@ownership_bp.route("/profits-in-deal", methods=["GET"])
+def get_profits_in_deal():
+    """
+    Request Params:
+        buyer_name (str): Name of the buyer.
+        deal_serial_id (int): Serial ID of deal.
+
+    Returns: Total profits or losses of deal for buyer.
+    """
+    buyer_name = request.args.get("buyer_name")
+    deal_serial_id = request.args.get("deal_serial_id", type=int)
+    if buyer_name is None or deal_serial_id is None:
+        abort(400, "Buyer name or deal serial id is not specified")
+    return jsonify(get_deal_details_for_buyer(buyer_name.lower(), deal_serial_id))
+
+
+@ownership_bp.get("/profits-summary/<buyer_name>")
+def get_profits_summary(buyer_name: str):
+    """
+    Path params:
+        buyer_name (str): Name of the buyer.
+
+    Returns: List[OwnershipSummary]. It represents the number of shares
+        and total profits of this buyer in all the deals he has a non-zero stake in.
+    """
+    return jsonify(tuple(find_ownership_summaries(buyer_name.lower())))
 
 
 @ownership_bp.get("/")
