@@ -58,7 +58,7 @@ def get_profits_summary(buyer_name: str):
     Returns: List[OwnershipSummary]. It represents the number of shares
         and total profits of this buyer in all the deals he has a non-zero stake in.
     """
-    return jsonify(tuple(find_ownership_summaries(buyer_name)))
+    return jsonify(tuple(find_ownership_summaries(buyer_name.lower())))
 
 
 @buyer_bp.route("/<name>", methods=["GET"])

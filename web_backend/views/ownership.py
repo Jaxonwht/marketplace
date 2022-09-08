@@ -23,7 +23,11 @@ def query_ownerships():
         A list of detaied information about the queried ownerships. If no
         ownership matches the given description, an empty list will be returned.
     """
-    buyer_name = request.args.get("buyer_name")
+    buyer_name_original = request.args.get("buyer_name")
+    if buyer_name_original is None:
+        buyer_name = None
+    else:
+        buyer_name = buyer_name_original.lower()
     deal_serial_id = request.args.get("deal_serial_id", type=int)
     closed = request.args.get("closed", type=value_is_true)
     queried_ownerships = find_ownerships(closed, buyer_name, deal_serial_id)
