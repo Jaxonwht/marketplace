@@ -4,7 +4,6 @@ from sqlalchemy import select
 from sqlalchemy.dialects.postgresql import array_agg
 
 from db import flask_session
-from models.ownership_model import Ownership
 
 
 def find_ownerships(
