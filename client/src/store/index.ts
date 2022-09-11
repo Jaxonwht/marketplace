@@ -5,6 +5,8 @@ import isMobileReducer from "../reduxSlices/mobileSlice";
 import balanceReducer from "../reduxSlices/balanceSlice";
 import bakcendConfigReducer from "../reduxSlices/backendConfigSlice";
 import dealInfoReducer from "../reduxSlices/dealInfoSlice";
+import profitDetailReducer from "../reduxSlices/profitDetailSlice";
+import ownershipSummaryReducer from "../reduxSlices/ownershipSummarySlice";
 
 const store = configureStore({
   reducer: {
@@ -14,6 +16,8 @@ const store = configureStore({
     balance: balanceReducer,
     backendConfig: bakcendConfigReducer,
     dealInfo: dealInfoReducer,
+    profitDetail: profitDetailReducer,
+    ownershipSummary: ownershipSummaryReducer,
   },
 });
 

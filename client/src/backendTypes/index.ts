@@ -44,11 +44,11 @@ export interface BackendConfig {
 }
 
 export interface DealInfo {
-  readonly asset_id: string;
+  readonly asset_id: string | null;
   readonly closed: boolean;
   readonly closed_asset_price: number | null;
   readonly collection_id: string;
-  readonly collection_name: string | null;
+  readonly collection_name: string;
   readonly dealer_name: string;
   readonly end_time: string;
   readonly extra_info: Record<string, unknown>;
@@ -65,6 +65,7 @@ export interface OwnershipSummary {
   readonly deal_serial_id: number;
   readonly shares: number;
   readonly profit: number;
+  readonly profit_ratio: number;
 }
 
 export interface TransactionInfo {

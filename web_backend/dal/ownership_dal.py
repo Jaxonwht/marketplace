@@ -80,7 +80,13 @@ def find_ownership_summaries(
                 transaction.shares,
                 deal.multiplier,
             )
-        yield OwnershipSummary(deal_serial_id=deal_serial_id, shares=total_shares, profit=total_profit)
+        total_cost = total_shares * deal.share_price
+        yield OwnershipSummary(
+            deal_serial_id=deal_serial_id,
+            shares=total_shares,
+            profit=total_profit,
+            profit_ratio=total_profit / total_cost,
+        )
 
 
 def find_ownerships(

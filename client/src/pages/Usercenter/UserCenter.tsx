@@ -11,8 +11,14 @@ import { AccountType } from "../../reduxSlices/identitySlice";
 import AddBalanceConfirmationModal from "./AddBalanceConfirmationModal";
 import WithdrawConfirmationModal from "./WithdrawConfirmationModal";
 import { fetchOnwershipSummary } from "../../reduxSlices/ownershipSummarySlice";
+import { fetchAllDealInfo } from "../../reduxSlices/dealInfoSlice";
+import {
+  selectAllNonClosedDealInfo,
+  selectDealInfoForSerialId,
+} from "../../selectors/dealInfo";
+import { getDealReadableName } from "../../backendTypes/utils";
 
-export default function LoginForm(props: any) {
+const UserCenter = () => {
   const [accounts, setAccounts] = useState([]);
   const [openOrders, setOpenOrders] = useState([]);
   const [announcements, setAnnouncements] = useState([]);
@@ -23,61 +29,30 @@ export default function LoginForm(props: any) {
   const balance = useAppSelector((state) => state.balance);
   const dispatch = useAppDispatch();
   useEffect(() => {
+    dispatch(fetchAllDealInfo);
+  }, [dispatch]);
+  useEffect(() => {
     if (!!identity) {
       dispatch(fetchOnwershipSummary(identity.username));
     }
   }, [dispatch, identity]);
-  const [list, setList] = useState([
-    {
-      image: require("../../assets/images/headimg.png"),
-      name: "Floor Price",
-      price: 20.85,
-      percent: "+30.87%",
-      now: 27.29,
-    },
-    {
-      image: require("../../assets/images/headimg.png"),
-      name: "Floor Price",
-      price: 20.85,
-      percent: "+30.87%",
-      now: 27.29,
-    },
-    {
-      image: require("../../assets/images/headimg.png"),
-      name: "Floor Price",
-      price: 20.85,
-      percent: "+30.87%",
-      now: 27.29,
-    },
-    {
-      image: require("../../assets/images/headimg.png"),
-      name: "Floor Price",
-      price: 20.85,
-      percent: "+30.87%",
-      now: 27.29,
-    },
-    {
-      image: require("../../assets/images/headimg.png"),
-      name: "Floor Price",
-      price: 20.85,
-      percent: "+30.87%",
-      now: 27.29,
-    },
-    {
-      image: require("../../assets/images/headimg.png"),
-      name: "Floor Price",
-      price: 20.85,
-      percent: "+30.87%",
-      now: 27.29,
-    },
-    {
-      image: require("../../assets/images/headimg.png"),
-      name: "Floor Price",
-      price: 20.85,
-      percent: "+30.87%",
-      now: 27.29,
-    },
-  ]);
+  const ownershipSummary = useAppSelector((state) => state.ownershipSummary);
+  const nonClosedDealInfo = useAppSelector(selectAllNonClosedDealInfo);
+  const ownershipSummaryFormattedList = ownershipSummary.map(
+    (ownershipForDeal) => {
+      const dealInfo = nonClosedDealInfo[ownershipForDeal.deal_serial_id];
+      return {
+        dealSerialId: ownershipForDeal.deal_serial_id,
+        image: require("../../assets/images/headimg.png"),
+        name: dealInfo ? getDealReadableName(dealInfo) : "Unknown Deal",
+        shares: ownershipForDeal.shares,
+        profit: ownershipForDeal.profit.toFixed(),
+        profitPercentage: `${(ownershipForDeal.profit_ratio * 100).toFixed(
+          3
+        )}%`,
+      };
+    }
+  );
 
   useEffect(() => {
     if (identity) {
@@ -157,36 +132,54 @@ export default function LoginForm(props: any) {
               alt=""
             ></img>
             <table className={styles.table}>
-              {list.map((item, i) => (
-                <tr onClick={() => {}}>
-                  <td style={{ fontWeight: "bold", fontSize: 20 }}>{i + 1}</td>
-                  <td>
-                    <img style={{ width: 80 }} src={item.image} alt=""></img>
-                  </td>
-                  <td>
-                    <span>
-                      {item.name}:
+              <thead>
+                <tr>
+                  <td>Deal</td>
+                  <td>Holding Shares</td>
+                  <td>Profit</td>
+                  <td>Profit Percentage</td>
+                  <td>Current Asset Price</td>
+                </tr>
+              </thead>
+              <tbody>
+                {ownershipSummaryFormattedList.map((item, i) => (
+                  <tr key={item.dealSerialId}>
+                    <td
+                      onClick={() =>
+                        navigate(`/nnfdetail/${item.dealSerialId}`)
+                      }
+                      className={styles["table__deal-identifier"]}
+                    >
+                      <img style={{ width: 80 }} src={item.image} alt=""></img>
+                      <span>{item.name}</span>
+                    </td>
+                    <td>{item.shares}</td>
+                    <td>
+                      <span>
+                        <img
+                          style={{ width: 20, height: 20 }}
+                          src={require("../../assets/images/bi.png")}
+                          alt=""
+                        ></img>
+                        {item.profit}
+                      </span>
+                    </td>
+                    <td>
+                      <span style={{ color: "#ff7000" }}>
+                        {item.profitPercentage}
+                      </span>
+                    </td>
+                    <td>
                       <img
                         style={{ width: 20, height: 20 }}
                         src={require("../../assets/images/bi.png")}
                         alt=""
                       ></img>
-                      {item.price}
-                    </span>
-                  </td>
-                  <td>
-                    <span style={{ color: "#ff7000" }}>{item.percent}</span>
-                  </td>
-                  <td>
-                    <img
-                      style={{ width: 20, height: 20 }}
-                      src={require("../../assets/images/bi.png")}
-                      alt=""
-                    ></img>
-                    <span>{item.now}</span>
-                  </td>
-                </tr>
-              ))}
+                      <span>TODO ZIYI</span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
             </table>
             <img
               style={{
@@ -212,4 +205,6 @@ export default function LoginForm(props: any) {
       />
     </div>
   );
-}
+};
+
+export default UserCenter;
