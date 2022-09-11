@@ -13,6 +13,7 @@ class OwnershipSummary(TypedDict):
     shares: int
     # Positive means in profit.
     profit: float
+    profit_ratio: float
 
 
 class Ownership(flask_db.Model):

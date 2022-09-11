@@ -21,7 +21,7 @@ class Deal(flask_db.Model):
     closed = Column(Boolean, nullable=False, index=True)
     lockup_balance = Column(Float, CheckConstraint("lockup_balance >= 0"), nullable=False)
     extra_info = Column(JSON)
-    collection_name = Column(String, index=True)
+    collection_name = Column(String, nullable=False, index=True)
     multiplier = Column(Float, nullable=False, default=1)
 
     @property

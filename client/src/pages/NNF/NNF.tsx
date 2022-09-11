@@ -25,7 +25,7 @@ const NNF = () => {
     name: getDealReadableName(singleDealInfo),
     price: 20.85,
     percent: "+30.87%",
-    now: 27.29,
+    sharePrice: singleDealInfo.share_price,
     multiplier: singleDealInfo.multiplier,
     cap: singleDealInfo.rate,
   }));
@@ -47,6 +47,18 @@ const NNF = () => {
       )}
       <div className={styles.font1}>Top Ongoing table</div>
       <table className={styles.table}>
+        <thead>
+          <tr>
+            <td />
+            <td>Deal</td>
+            <td />
+            <td>Current Asset Price</td>
+            <td>Asset Price Change</td>
+            <td>Share Price</td>
+            <td>Profit/Loss Cap</td>
+            <td>Multiplier</td>
+          </tr>
+        </thead>
         <tbody>
           {dealInfoList.map((item) => (
             <tr
@@ -60,7 +72,11 @@ const NNF = () => {
                 {item.dealserialid}
               </td>
               <td>
-                <img style={{ width: 80 }} src={item.image} alt=""></img>
+                <img
+                  style={{ width: 80 }}
+                  src={item.image}
+                  alt={item.name}
+                ></img>
               </td>
               <td>{item.name}</td>
               <td>
@@ -82,13 +98,13 @@ const NNF = () => {
                   src={require("../../assets/images/bi.png")}
                   alt=""
                 />
-                <span>{item.now}</span>
+                <span>{item.sharePrice}</span>
               </td>
               <td>
-                <span>Capped at {item.cap * 100}%</span>
+                <span>{item.cap * 100}%</span>
               </td>
               <td>
-                <span>Multiplier: {item.multiplier}</span>
+                <span>{item.multiplier}</span>
               </td>
             </tr>
           ))}

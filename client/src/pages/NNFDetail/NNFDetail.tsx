@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Form, Input, Button, message } from "antd";
+import { Form, Input, Button, message, List } from "antd";
 import { RightOutlined, EllipsisOutlined } from "@ant-design/icons";
 import PropTypes from "prop-types";
 import { Link, useNavigate, useParams } from "react-router-dom";
@@ -20,6 +20,13 @@ import DealSlider from "../../components/dealSlider/DealSlider";
 import { AccountType } from "../../reduxSlices/identitySlice";
 import classNames from "classnames";
 import { fetchProfitDetail } from "../../reduxSlices/profitDetailSlice";
+import { utcStringToLocalShort } from "../../utils/datetime";
+import {
+  openseaAssetLink,
+  openseaCollectionLink,
+  goerliScanLink,
+} from "../../utils/link";
+import { reduceByField } from "../../utils/array";
 
 const NNFDetail = () => {
   const [isBuySharesModalVisible, setIsBuySharesModalVisible] = useState(false);
@@ -41,6 +48,7 @@ const NNFDetail = () => {
       }
     }
   }, [dispatch, dealSerialId, identity]);
+  const profitDetail = useAppSelector((state) => state.profitDetail);
 
   const [list, setList] = useState([
     {
@@ -109,6 +117,8 @@ const NNFDetail = () => {
     option && myChart.setOption(option);
   };
 
+  const hasStakes = profitDetail.length !== 0;
+
   return (
     <div className={styles.container}>
       <div className={styles.containerWrapper}>
@@ -120,7 +130,24 @@ const NNFDetail = () => {
             alt=""
           ></img>
           <Card title="INFO" className={styles["narrow-window"]}>
-            <p>Best Share to buy!</p>
+            {!!dealInfo ? (
+              <React.Fragment>
+                <div>Profit/Loss Cap: {dealInfo.rate * 100}%</div>
+                <div>Multiplier: {dealInfo.multiplier}</div>
+                {
+                  // TODO ZIYI
+                }
+                <div>Current Asset Price: 0.5</div>
+                <div>
+                  Start Time: {utcStringToLocalShort(dealInfo.start_time)}
+                </div>
+                <div>End Time: {utcStringToLocalShort(dealInfo.end_time)}</div>
+                <div>Share Price: {dealInfo.share_price}</div>
+                <div>Shares Remaining: {dealInfo.shares_remaining}</div>
+              </React.Fragment>
+            ) : (
+              <div>Unknown Deal??</div>
+            )}
           </Card>
           <Card title="Transact" className={styles["narrow-window"]}>
             {isBuyer ? (
@@ -144,36 +171,79 @@ const NNFDetail = () => {
           </Card>
         </div>
         <div className={styles.dashboard}>
-          <div className={styles.dashboardHeader}>
-            <div style={{ fontSize: 30 }}>NAME</div>
-            <div>Creator Name</div>
-          </div>
+          {dealInfo ? (
+            <React.Fragment>
+              <div className={styles["dashboardHeader__main-header"]}>
+                Collection Name:{" "}
+                {openseaCollectionLink(dealInfo.collection_name)}
+              </div>
+              {!!dealInfo.asset_id && (
+                <div className={styles["dashboardHeader__sub-header"]}>
+                  Asset ID:{" "}
+                  {openseaAssetLink(dealInfo.collection_id, dealInfo.asset_id)}
+                </div>
+              )}
+              <div>Dealer Address: {goerliScanLink(dealInfo.dealer_name)}</div>
+            </React.Fragment>
+          ) : (
+            "Unknown Deal"
+          )}
           <div className={styles.tableWrapper}>
             <table className={styles.table}>
+              <caption>
+                {hasStakes
+                  ? "Your stakes in this deal"
+                  : "You don't have a stake in this deal"}
+              </caption>
               <thead>
                 <tr>
-                  <th>Floor Price</th>
-                  <th>Current Price</th>
-                  <th>Sold/Total</th>
-                  <th>Start Time</th>
-                  <th>End Time</th>
-                  <th>24HR Volume</th>
+                  <th>Index</th>
+                  <th>Bought Shares</th>
+                  <th>Purchase Time</th>
+                  <th>Asset Price at Purchase</th>
+                  <th>Profit/Loss</th>
                 </tr>
               </thead>
               <tbody>
-                {list.map((item, i) => (
-                  <tr onClick={() => {}}>
-                    <td>{item.floorPrice}</td>
-                    <td>{item.currentPrice}</td>
+                {profitDetail.map((profitBreakdown, index) => (
+                  <tr key={profitBreakdown.buy_timestamp}>
+                    <td>{index + 1}</td>
+                    <td>{profitBreakdown.shares}</td>
                     <td>
-                      {item.sold}/{item.total}
+                      {utcStringToLocalShort(profitBreakdown.buy_timestamp)}
                     </td>
-                    <td>{item.startTime}</td>
-                    <td>{item.endTime}</td>
-                    <td>{item.hrVolume}</td>
+                    <td>{profitBreakdown.buy_asset_price}</td>
+                    <td>{profitBreakdown.profit.toFixed(3)}</td>
                   </tr>
                 ))}
               </tbody>
+              <tfoot
+                className={
+                  styles[`table__footer${hasStakes ? "--has-stakes" : ""}`]
+                }
+              >
+                <tr>
+                  <td>Total</td>
+                  <td>
+                    {reduceByField(
+                      profitDetail,
+                      "shares",
+                      (partialSum, shares) => partialSum + shares,
+                      0
+                    )}
+                  </td>
+                  <td />
+                  <td />
+                  <td>
+                    {reduceByField(
+                      profitDetail,
+                      "profit",
+                      (partialSum, profit) => partialSum + profit,
+                      0
+                    ).toFixed(3)}
+                  </td>
+                </tr>
+              </tfoot>
             </table>
           </div>
           <div className={styles.dashboardContent}>
@@ -188,7 +258,7 @@ const NNFDetail = () => {
             </div>
 
             <div className={styles.card}>
-              <div className={styles.cardHeader}>Trading Volumne</div>
+              <div className={styles.cardHeader}>Trading Volume</div>
               <div id="lineChart2" className={styles.lineChart2}></div>
             </div>
           </div>

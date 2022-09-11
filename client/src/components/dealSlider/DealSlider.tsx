@@ -1,3 +1,4 @@
+import { useRef } from "react";
 import type { DealInfo } from "../../backendTypes/index";
 import { getDealReadableName } from "../../backendTypes/utils";
 import DealSliderItem from "./DealSliderItem";
@@ -8,6 +9,7 @@ interface DealSliderProps {
 }
 
 const DealSlider = ({ dealInfoList }: DealSliderProps) => {
+  const sliderRef = useRef<HTMLDivElement>(null);
   const dealInfoSliderList = Object.values(dealInfoList).map(
     (singleDealInfo) => ({
       dealSerialId: singleDealInfo.serial_id,
@@ -15,14 +17,22 @@ const DealSlider = ({ dealInfoList }: DealSliderProps) => {
       name: getDealReadableName(singleDealInfo),
     })
   );
+
+  const scroll = (scrollOffset: number) => {
+    if (sliderRef.current) {
+      sliderRef.current.scrollLeft += scrollOffset;
+    }
+  };
+
   return (
     <div className={styles["list-container"]}>
       <img
         className={styles["list-arrow"]}
         src={require("../../assets/images/left.jpg")}
         alt="left-arrow"
+        onClick={() => scroll(-100)}
       ></img>
-      <div className={styles.list}>
+      <div className={styles.list} ref={sliderRef}>
         {dealInfoSliderList.map((item) => (
           <DealSliderItem
             key={item.dealSerialId}
@@ -36,6 +46,7 @@ const DealSlider = ({ dealInfoList }: DealSliderProps) => {
         className={styles["list-arrow"]}
         src={require("../../assets/images/right.jpg")}
         alt="right-arrow"
+        onClick={() => scroll(100)}
       ></img>
     </div>
   );
