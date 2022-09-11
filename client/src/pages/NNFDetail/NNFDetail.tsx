@@ -19,6 +19,7 @@ import DealSliderItem from "../../components/dealSlider/DealSliderItem";
 import DealSlider from "../../components/dealSlider/DealSlider";
 import { AccountType } from "../../reduxSlices/identitySlice";
 import classNames from "classnames";
+import { fetchProfitDetail } from "../../reduxSlices/profitDetailSlice";
 
 const NNFDetail = () => {
   const [isBuySharesModalVisible, setIsBuySharesModalVisible] = useState(false);
@@ -28,15 +29,18 @@ const NNFDetail = () => {
   const params = useParams();
   const dealSerialId =
     params.dealSerialId === undefined ? undefined : Number(params.dealSerialId);
-  useEffect(() => {
-    if (dealSerialId !== undefined) {
-      dispatch(fetchDealInfoForOneDeal(dealSerialId));
-    }
-  }, [dispatch, dealSerialId]);
   const nonClosedDealInfo = useAppSelector(selectAllNonClosedDealInfo);
   const dealInfo = useAppSelector(selectDealInfoForSerialId(dealSerialId));
   const identity = useAppSelector((state) => state.identity);
   const isBuyer = identity?.account_type === AccountType.BUYER;
+  useEffect(() => {
+    if (dealSerialId !== undefined) {
+      dispatch(fetchDealInfoForOneDeal(dealSerialId));
+      if (!!identity) {
+        dispatch(fetchProfitDetail(identity.username, dealSerialId));
+      }
+    }
+  }, [dispatch, dealSerialId, identity]);
 
   const [list, setList] = useState([
     {

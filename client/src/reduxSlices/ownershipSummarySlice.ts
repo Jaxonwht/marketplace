@@ -27,7 +27,7 @@ export const fetchOnwershipSummary =
   (username: string) => async (dispatch: AppDispatch) => {
     try {
       const response = await authenticatedAxiosInstance().get(
-        `/profits-summary/${username}`
+        `/ownership/profits-summary/${username}`
       );
       const ownershipSummaries = response.data as OwnershipSummary[];
       dispatch(setOwnershipSummary(ownershipSummaries));
