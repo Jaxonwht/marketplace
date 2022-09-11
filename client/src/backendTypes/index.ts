@@ -60,3 +60,16 @@ export interface DealInfo {
   readonly shares_remaining: number;
   readonly start_time: string;
 }
+
+export interface OwnershipSummary {
+  readonly deal_serial_id: number;
+  readonly shares: number;
+  readonly profit: number;
+}
+
+export interface TransactionInfo {
+  readonly shares: number;
+  readonly profit: number;
+  readonly buy_timestamp: string;
+  readonly buy_asset_price: number;
+}

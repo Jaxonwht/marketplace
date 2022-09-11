@@ -10,6 +10,7 @@ import { fetchBalance } from "../../reduxSlices/balanceSlice";
 import { AccountType } from "../../reduxSlices/identitySlice";
 import AddBalanceConfirmationModal from "./AddBalanceConfirmationModal";
 import WithdrawConfirmationModal from "./WithdrawConfirmationModal";
+import { fetchOnwershipSummary } from "../../reduxSlices/ownershipSummarySlice";
 
 export default function LoginForm(props: any) {
   const [accounts, setAccounts] = useState([]);
@@ -21,6 +22,11 @@ export default function LoginForm(props: any) {
   const identity = useAppSelector((state) => state.identity);
   const balance = useAppSelector((state) => state.balance);
   const dispatch = useAppDispatch();
+  useEffect(() => {
+    if (!!identity) {
+      dispatch(fetchOnwershipSummary(identity.username));
+    }
+  }, [dispatch, identity]);
   const [list, setList] = useState([
     {
       image: require("../../assets/images/headimg.png"),
