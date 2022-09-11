@@ -38,7 +38,7 @@ const UserCenter = () => {
   }, [dispatch, identity]);
   const ownershipSummary = useAppSelector((state) => state.ownershipSummary);
   const nonClosedDealInfo = useAppSelector(selectAllNonClosedDealInfo);
-  const ownershipSummaryFormattedListTemp = ownershipSummary.map(
+  const ownershipSummaryFormattedList = ownershipSummary.map(
     (ownershipForDeal) => {
       const dealInfo = nonClosedDealInfo[ownershipForDeal.deal_serial_id];
       return {
@@ -53,9 +53,6 @@ const UserCenter = () => {
       };
     }
   );
-  const ownershipSummaryFormattedList = Array(50)
-    .fill(ownershipSummaryFormattedListTemp)
-    .flat(1);
 
   useEffect(() => {
     if (identity) {
