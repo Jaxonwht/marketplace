@@ -8,7 +8,7 @@ import { selectIsDealer } from "../../selectors/identity";
 import { fetchAllDealInfo } from "../../reduxSlices/dealInfoSlice";
 import { getDealReadableName } from "../../backendTypes/utils";
 import DealSlider from "../../components/dealSlider/DealSlider";
-import { selectAllNonClosedDealInfo } from "../../selectors/dealInfo";
+import { selectAllNonClosedDealInfoList } from "../../selectors/dealInfo";
 
 const NNF = () => {
   const navigate = useNavigate();
@@ -17,7 +17,7 @@ const NNF = () => {
   const dispatch = useAppDispatch();
 
   const isDealer = useAppSelector(selectIsDealer);
-  const nonClosedDealInfo = useAppSelector(selectAllNonClosedDealInfo);
+  const nonClosedDealInfo = useAppSelector(selectAllNonClosedDealInfoList);
   const headImg = require("../../assets/images/headimg.png");
   const dealInfoList = nonClosedDealInfo.map((singleDealInfo) => ({
     dealserialid: singleDealInfo.serial_id,

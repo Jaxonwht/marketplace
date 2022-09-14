@@ -11,7 +11,7 @@ import SellSharesModal from "./SellSharesModal";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { fetchDealInfoForOneDeal } from "../../reduxSlices/dealInfoSlice";
 import {
-  selectAllNonClosedDealInfo,
+  selectAllNonClosedDealInfoList,
   selectDealInfoForSerialId,
 } from "../../selectors/dealInfo";
 import { getDealReadableName } from "../../backendTypes/utils";
@@ -36,7 +36,7 @@ const NNFDetail = () => {
   const params = useParams();
   const dealSerialId =
     params.dealSerialId === undefined ? undefined : Number(params.dealSerialId);
-  const nonClosedDealInfo = useAppSelector(selectAllNonClosedDealInfo);
+  const nonClosedDealInfo = useAppSelector(selectAllNonClosedDealInfoList);
   const dealInfo = useAppSelector(selectDealInfoForSerialId(dealSerialId));
   const identity = useAppSelector((state) => state.identity);
   const isBuyer = identity?.account_type === AccountType.BUYER;
