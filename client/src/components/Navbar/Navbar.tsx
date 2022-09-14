@@ -26,7 +26,7 @@ const Navbar = () => {
   const identity = useAppSelector((state) => state.identity);
 
   const user = getUser();
-  console.log("user2222", user);
+  console.log("getUser", user);
 
   useEffect(() => {
     window.onscroll = function () {
