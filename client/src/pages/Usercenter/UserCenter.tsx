@@ -1,5 +1,6 @@
 import React, { ChangeEvent, useEffect, useState } from "react";
-import { Form, Input, Button, message } from "antd";
+import { Form, Input, Button, message, Table } from "antd";
+import type { ColumnsType } from "antd/es/table";
 import { RightOutlined, EllipsisOutlined } from "@ant-design/icons";
 import PropTypes from "prop-types";
 import { Link, useNavigate } from "react-router-dom";
@@ -17,6 +18,16 @@ import {
   selectDealInfoForSerialId,
 } from "../../selectors/dealInfo";
 import { getDealReadableName } from "../../backendTypes/utils";
+import { OwnershipSummary } from "../../backendTypes";
+
+interface DataType {
+  key: number;
+  deal: { name: string; serialId: number };
+  holdingShares: number;
+  profit: string;
+  profitPercentage: string;
+  currentAssetPrice: number;
+}
 
 const UserCenter = () => {
   const [accounts, setAccounts] = useState([]);
@@ -64,6 +75,37 @@ const UserCenter = () => {
       );
     }
   }, [dispatch, identity]);
+
+  const participatingDealTableColumns: ColumnsType<DataType> = [
+    {
+      title: "Deal",
+      dataIndex: "deal",
+      key: "deal",
+      render: (deal) => (
+        <Link to={`/nnfdetail/${deal.serialId}`}>{deal.name}</Link>
+      ),
+    },
+    {
+      title: "Holding Shares",
+      dataIndex: "holdingShares",
+      key: "holdingShares",
+    },
+    {
+      title: "Profit",
+      dataIndex: "profit",
+      key: "profit",
+    },
+    {
+      title: "Profit Percentage",
+      dataIndex: "profitPercentage",
+      key: "profitPercentage",
+    },
+    {
+      title: "Current Asset Price",
+      dataIndex: "currentAssetPrice",
+      key: "currentAssetPrice",
+    },
+  ];
 
   const navigate = useNavigate();
 
@@ -120,78 +162,20 @@ const UserCenter = () => {
           </div>
 
           <div className={styles.listContainer}>
-            <img
-              style={{
-                width: 30,
-                height: 30,
-                marginLeft: -15,
-                position: "relative",
-                zIndex: 10,
-              }}
-              src={require("../../assets/images/left.jpg")}
-              alt=""
-            ></img>
-            <table className={styles.table}>
-              <thead>
-                <tr>
-                  <td>Deal</td>
-                  <td>Holding Shares</td>
-                  <td>Profit</td>
-                  <td>Profit Percentage</td>
-                  <td>Current Asset Price</td>
-                </tr>
-              </thead>
-              <tbody>
-                {ownershipSummaryFormattedList.map((item, i) => (
-                  <tr key={item.dealSerialId}>
-                    <td
-                      onClick={() =>
-                        navigate(`/nnfdetail/${item.dealSerialId}`)
-                      }
-                      className={styles["table__deal-identifier"]}
-                    >
-                      <img style={{ width: 80 }} src={item.image} alt=""></img>
-                      <span>{item.name}</span>
-                    </td>
-                    <td>{item.shares}</td>
-                    <td>
-                      <span>
-                        <img
-                          style={{ width: 20, height: 20 }}
-                          src={require("../../assets/images/bi.png")}
-                          alt=""
-                        ></img>
-                        {item.profit}
-                      </span>
-                    </td>
-                    <td>
-                      <span style={{ color: "#ff7000" }}>
-                        {item.profitPercentage}
-                      </span>
-                    </td>
-                    <td>
-                      <img
-                        style={{ width: 20, height: 20 }}
-                        src={require("../../assets/images/bi.png")}
-                        alt=""
-                      ></img>
-                      <span>TODO ZIYI</span>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-            <img
-              style={{
-                width: 30,
-                height: 30,
-                marginRight: -15,
-                position: "relative",
-                zIndex: 1,
-              }}
-              src={require("../../assets/images/right.jpg")}
-              alt=""
-            ></img>
+            <Table
+              columns={participatingDealTableColumns}
+              dataSource={ownershipSummaryFormattedList.map((item, i) => {
+                return {
+                  key: i,
+                  deal: { name: item.name, serialId: item.dealSerialId },
+                  holdingShares: item.shares,
+                  profit: item.profit,
+                  profitPercentage: item.profitPercentage,
+                  // TODO: ZIYI!!
+                  currentAssetPrice: 0.5,
+                };
+              })}
+            />
           </div>
         </div>
       </div>
