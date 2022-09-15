@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Form, Input, Button, message, List } from "antd";
+import { Form, Input, Button, message, List, Table, Divider } from "antd";
+import type { ColumnsType } from "antd/es/table";
 import { RightOutlined, EllipsisOutlined } from "@ant-design/icons";
 import PropTypes from "prop-types";
 import { Link, useNavigate, useParams } from "react-router-dom";
@@ -27,6 +28,14 @@ import {
   goerliScanLink,
 } from "../../utils/link";
 import { reduceByField } from "../../utils/array";
+
+interface DataType {
+  key: number;
+  boughtShares: number;
+  purchaseTime: string;
+  buyAssetPrice: number;
+  profit: number;
+}
 
 const NNFDetail = () => {
   const [isBuySharesModalVisible, setIsBuySharesModalVisible] = useState(false);
@@ -117,6 +126,34 @@ const NNFDetail = () => {
     option && myChart.setOption(option);
   };
 
+  const profitDetailTableColumns: ColumnsType<DataType> = [
+    {
+      title: "",
+      dataIndex: "key",
+      key: "key",
+    },
+    {
+      title: "Bought Shares",
+      dataIndex: "boughtShares",
+      key: "boughtShares",
+    },
+    {
+      title: "Purchase Time",
+      dataIndex: "purchaseTime",
+      key: "purchaseTime",
+    },
+    {
+      title: "Asset Price at Purchase",
+      dataIndex: "buyAssetPrice",
+      key: "buyAssetPrice",
+    },
+    {
+      title: "Profit/Loss",
+      dataIndex: "profit",
+      key: "profit",
+    },
+  ];
+
   const hasStakes = profitDetail.length !== 0;
 
   return (
@@ -152,18 +189,18 @@ const NNFDetail = () => {
           <Card title="Transact" className={styles["narrow-window"]}>
             {isBuyer ? (
               <React.Fragment>
-                <button
-                  className="button"
+                <Button
                   onClick={() => setIsBuySharesModalVisible(true)}
+                  type="primary"
                 >
                   Buy Shares
-                </button>
-                <button
-                  className={classNames("button", styles["sell-shares-button"])}
+                </Button>
+                <Button
                   onClick={() => setIsSellSharesModalVisible(true)}
+                  type="primary"
                 >
                   Sell Shares
-                </button>
+                </Button>
               </React.Fragment>
             ) : (
               <div>Log in as a buyer to transact</div>
@@ -189,62 +226,52 @@ const NNFDetail = () => {
             "Unknown Deal"
           )}
           <div className={styles.tableWrapper}>
-            <table className={styles.table}>
-              <caption>
-                {hasStakes
-                  ? "Your stakes in this deal"
-                  : "You don't have a stake in this deal"}
-              </caption>
-              <thead>
-                <tr>
-                  <th>Index</th>
-                  <th>Bought Shares</th>
-                  <th>Purchase Time</th>
-                  <th>Asset Price at Purchase</th>
-                  <th>Profit/Loss</th>
-                </tr>
-              </thead>
-              <tbody>
-                {profitDetail.map((profitBreakdown, index) => (
-                  <tr key={profitBreakdown.buy_timestamp}>
-                    <td>{index + 1}</td>
-                    <td>{profitBreakdown.shares}</td>
-                    <td>
-                      {utcStringToLocalShort(profitBreakdown.buy_timestamp)}
-                    </td>
-                    <td>{profitBreakdown.buy_asset_price}</td>
-                    <td>{profitBreakdown.profit.toFixed(3)}</td>
-                  </tr>
-                ))}
-              </tbody>
-              <tfoot
-                className={
-                  styles[`table__footer${hasStakes ? "--has-stakes" : ""}`]
+            <Table
+              pagination={{ hideOnSinglePage: true }}
+              columns={profitDetailTableColumns}
+              dataSource={profitDetail.map((item, i) => {
+                return {
+                  key: i + 1,
+                  boughtShares: item.shares,
+                  purchaseTime: item.buy_timestamp,
+                  buyAssetPrice: item.buy_asset_price,
+                  profit: item.profit,
+                };
+              })}
+              summary={(profitDetailTableData) => {
+                if (!hasStakes) {
+                  return null;
                 }
-              >
-                <tr>
-                  <td>Total</td>
-                  <td>
-                    {reduceByField(
-                      profitDetail,
-                      "shares",
-                      (partialSum, shares) => partialSum + shares,
-                      0
-                    )}
-                  </td>
-                  <td />
-                  <td />
-                  <td>
-                    {reduceByField(
-                      profitDetail,
-                      "profit",
-                      (partialSum, profit) => partialSum + profit,
-                      0
-                    ).toFixed(3)}
-                  </td>
-                </tr>
-              </tfoot>
-            </table>
+                let totalBoughtShares = 0;
+                let totalProfit = 0;
+
+                profitDetailTableData.forEach(({ boughtShares, profit }) => {
+                  totalBoughtShares += boughtShares;
+
+                  totalProfit += profit;
+                });
+                return (
+                  <Table.Summary fixed>
+                    <Table.Summary.Row>
+                      <Table.Summary.Cell index={0}>Total</Table.Summary.Cell>
+                      <Table.Summary.Cell index={1}>
+                        {totalBoughtShares}
+                      </Table.Summary.Cell>
+                      <Table.Summary.Cell index={2}></Table.Summary.Cell>
+                      <Table.Summary.Cell index={3}></Table.Summary.Cell>
+                      <Table.Summary.Cell index={4}>
+                        {totalProfit}
+                      </Table.Summary.Cell>
+                    </Table.Summary.Row>
+                  </Table.Summary>
+                );
+              }}
+              footer={() =>
+                hasStakes
+                  ? "Your stakes in this deal"
+                  : "You have no stake in this deal"
+              }
+            />
           </div>
           <div className={styles.dashboardContent}>
             <div

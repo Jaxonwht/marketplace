@@ -18,7 +18,6 @@ import {
   selectDealInfoForSerialId,
 } from "../../selectors/dealInfo";
 import { getDealReadableName } from "../../backendTypes/utils";
-import { OwnershipSummary } from "../../backendTypes";
 
 interface DataType {
   key: number;
@@ -129,24 +128,22 @@ const UserCenter = () => {
             Lock-up balance: {balance.lockup_balance}
           </div>
         )}
-        <button
-          className="button"
-          style={{ width: 200, marginTop: 20 }}
+        <Button
           onClick={() => {
             setIsAddBalanceModalVisible(true);
           }}
+          type="primary"
         >
-          ADD BALANCE
-        </button>
-        <button
-          className="button"
-          style={{ width: 200, marginTop: 20 }}
+          Add Balance
+        </Button>
+        <Button
           onClick={() => {
             setIsWithdrawModalVisible(true);
           }}
+          type="primary"
         >
-          CASH OUT
-        </button>
+          Cash out
+        </Button>
       </div>
 
       <div className={styles.dashboard}>
@@ -163,6 +160,7 @@ const UserCenter = () => {
 
           <div className={styles.listContainer}>
             <Table
+              pagination={{ hideOnSinglePage: true }}
               columns={participatingDealTableColumns}
               dataSource={ownershipSummaryFormattedList.map((item, i) => {
                 return {
