@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Switch } from "antd";
+import { Switch, Button } from "antd";
 import Web3 from "web3";
 import { refreshSignInStatus } from "../../reduxSlices/identitySlice";
 import { useAppDispatch } from "../../store/hooks";
@@ -103,9 +103,9 @@ const CryptoSignIn = () => {
 
   return (
     <div className={styles.container}>
-      <button className="button" onClick={handleClick}>
-        {loading ? "Loading..." : "Sign in with MetaMask"}
-      </button>
+      <Button onClick={handleClick} loading={loading} type="primary">
+        Sign in with MetaMask
+      </Button>
       <Switch
         checkedChildren="dealer"
         unCheckedChildren="buyer"

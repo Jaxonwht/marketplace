@@ -1,3 +1,4 @@
+import { Button } from "antd";
 import { refreshSignInStatus } from "../../reduxSlices/identitySlice";
 import { useAppDispatch } from "../../store/hooks";
 import { authenticatedAxiosInstance } from "../../utils/network";
@@ -6,7 +7,7 @@ import { removeCredentialsIfDev } from "../../utils/storage";
 const CryptoSignOut = () => {
   const dispatch = useAppDispatch();
 
-  const signOut = async () => {
+  const handleClick = async () => {
     removeCredentialsIfDev();
     try {
       await authenticatedAxiosInstance().post("/auth/sign-out");
@@ -17,9 +18,9 @@ const CryptoSignOut = () => {
   };
 
   return (
-    <button className="button" onClick={signOut}>
+    <Button onClick={handleClick} type="primary">
       Sign out
-    </button>
+    </Button>
   );
 };
 
