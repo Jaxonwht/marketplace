@@ -55,7 +55,7 @@ const WithdrawConfirmationModal = ({
       onOk={async () => {
         if (readyToSend) {
           await authenticatedAxiosInstance().post(
-            "platform-transaction/withdraw",
+            "/platform-transaction/withdraw",
             {
               username: identity.username,
               transfer_value: Number(amount),

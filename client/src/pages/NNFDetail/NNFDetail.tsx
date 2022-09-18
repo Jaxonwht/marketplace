@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { Form, Input, Button, message, List, Table, Divider } from "antd";
+import { Button, Table } from "antd";
 import type { ColumnsType } from "antd/es/table";
-import { RightOutlined, EllipsisOutlined } from "@ant-design/icons";
-import PropTypes from "prop-types";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import styles from "./style.module.scss";
-import * as echarts from "echarts";
 import { Card } from "antd";
+import * as echarts from "echarts";
 import BuySharesModal from "./BuySharesModal";
 import SellSharesModal from "./SellSharesModal";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
@@ -15,11 +13,8 @@ import {
   selectAllNonClosedDealInfoList,
   selectDealInfoForSerialId,
 } from "../../selectors/dealInfo";
-import { getDealReadableName } from "../../backendTypes/utils";
-import DealSliderItem from "../../components/dealSlider/DealSliderItem";
 import DealSlider from "../../components/dealSlider/DealSlider";
 import { AccountType } from "../../reduxSlices/identitySlice";
-import classNames from "classnames";
 import { fetchProfitDetail } from "../../reduxSlices/profitDetailSlice";
 import { utcStringToLocalShort } from "../../utils/datetime";
 import {
@@ -27,7 +22,7 @@ import {
   openseaCollectionLink,
   goerliScanLink,
 } from "../../utils/link";
-import { reduceByField } from "../../utils/array";
+import GeneratedImage from "../../components/GeneratedImage";
 
 interface DataType {
   key: number;
@@ -58,18 +53,6 @@ const NNFDetail = () => {
     }
   }, [dispatch, dealSerialId, identity]);
   const profitDetail = useAppSelector((state) => state.profitDetail);
-
-  const [list, setList] = useState([
-    {
-      floorPrice: 10.0,
-      currentPrice: 13.0,
-      sold: 25,
-      total: 70,
-      startTime: "04/18/2022 11:00 AM",
-      endTime: "05/18/2022 11:00 AM",
-      hrVolume: 20,
-    },
-  ]);
 
   useEffect(() => {
     loadChart1();
@@ -128,7 +111,7 @@ const NNFDetail = () => {
 
   const profitDetailTableColumns: ColumnsType<DataType> = [
     {
-      title: "",
+      title: "Index",
       dataIndex: "key",
       key: "key",
     },
@@ -160,15 +143,14 @@ const NNFDetail = () => {
     <div className={styles.container}>
       <div className={styles.containerWrapper}>
         <div className={styles.left}>
-          <img
-            className={styles.headimg}
-            onClick={() => {}}
-            src={require("../../assets/images/headimg.png")}
-            alt=""
-          ></img>
+          <GeneratedImage
+            generateSize={300}
+            generateSource={dealSerialId}
+            alt={`Deal ${dealSerialId}`}
+          />
           <Card title="INFO" className={styles["narrow-window"]}>
             {!!dealInfo ? (
-              <React.Fragment>
+              <>
                 <div>Profit/Loss Cap: {dealInfo.rate * 100}%</div>
                 <div>Multiplier: {dealInfo.multiplier}</div>
                 {
@@ -181,27 +163,30 @@ const NNFDetail = () => {
                 <div>End Time: {utcStringToLocalShort(dealInfo.end_time)}</div>
                 <div>Share Price: {dealInfo.share_price}</div>
                 <div>Shares Remaining: {dealInfo.shares_remaining}</div>
-              </React.Fragment>
+              </>
             ) : (
               <div>Unknown Deal??</div>
             )}
           </Card>
           <Card title="Transact" className={styles["narrow-window"]}>
             {isBuyer ? (
-              <React.Fragment>
+              <>
                 <Button
+                  block
                   onClick={() => setIsBuySharesModalVisible(true)}
                   type="primary"
                 >
                   Buy Shares
                 </Button>
                 <Button
+                  block
+                  className={styles["sell-shares-button"]}
                   onClick={() => setIsSellSharesModalVisible(true)}
                   type="primary"
                 >
                   Sell Shares
                 </Button>
-              </React.Fragment>
+              </>
             ) : (
               <div>Log in as a buyer to transact</div>
             )}
@@ -209,7 +194,7 @@ const NNFDetail = () => {
         </div>
         <div className={styles.dashboard}>
           {dealInfo ? (
-            <React.Fragment>
+            <>
               <div className={styles["dashboardHeader__main-header"]}>
                 Collection Name:{" "}
                 {openseaCollectionLink(dealInfo.collection_name)}
@@ -221,19 +206,20 @@ const NNFDetail = () => {
                 </div>
               )}
               <div>Dealer Address: {goerliScanLink(dealInfo.dealer_name)}</div>
-            </React.Fragment>
+            </>
           ) : (
             "Unknown Deal"
           )}
           <div className={styles.tableWrapper}>
             <Table
+              className={styles.table}
               pagination={{ hideOnSinglePage: true }}
               columns={profitDetailTableColumns}
               dataSource={profitDetail.map((item, i) => {
                 return {
                   key: i + 1,
                   boughtShares: item.shares,
-                  purchaseTime: item.buy_timestamp,
+                  purchaseTime: utcStringToLocalShort(item.buy_timestamp),
                   buyAssetPrice: item.buy_asset_price,
                   profit: item.profit,
                 };

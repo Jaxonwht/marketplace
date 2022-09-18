@@ -17,6 +17,7 @@ import { Theme } from "../../reduxSlices/themeSlice";
 import { refreshSignInStatus } from "../../reduxSlices/identitySlice";
 import { setIsMobile } from "../../reduxSlices/mobileSlice";
 import CryptoSignOut from "../metamask/CryptoSignOut";
+import GeneratedImage from "../GeneratedImage";
 
 const Navbar = () => {
   const [navBg, setNavBg] = useState(false);
@@ -96,14 +97,15 @@ const Navbar = () => {
         {signInDisplay}
 
         {identity && (
-          <img
+          <GeneratedImage
             className={styles.headimg}
             onClick={() => {
               navigate("/usercenter");
             }}
-            src={require("../../assets/images/user.png")}
-            alt=""
-          ></img>
+            generateSource={identity.username}
+            generateSize={60}
+            alt={identity.username}
+          />
         )}
 
         <div

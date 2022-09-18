@@ -7,31 +7,10 @@ import intl from "react-intl-universal";
 import styles from "./style.module.css";
 import * as echarts from "echarts";
 import { useSelector, useDispatch } from "react-redux";
+import GeneratedImage from "../../components/GeneratedImage";
 
 export default function Home() {
-  const [list, setList] = useState([
-    {
-      image: require("../../assets/images/headimg.png"),
-      name: "NNFF",
-    },
-    {
-      image: require("../../assets/images/headimg.png"),
-      name: "NNFF",
-    },
-    {
-      image: require("../../assets/images/headimg.png"),
-      name: "NNFF",
-    },
-    {
-      image: require("../../assets/images/headimg.png"),
-      name: "NNFF",
-    },
-    {
-      image: require("../../assets/images/headimg.png"),
-      name: "NNFF",
-    },
-  ]);
-  useEffect(() => {}, []);
+  const featuredUsers = ["NNFF1", "NNFF2", "NNFF3", "NNFF4", "NNFF5"];
 
   return (
     <div className={styles.home}>
@@ -56,10 +35,14 @@ export default function Home() {
         </div>
       </div>
       <div className={styles.list}>
-        {list.map((item) => (
+        {featuredUsers.map((user) => (
           <div className={styles.listItem}>
-            <img src={item.image} alt=""></img>
-            <div className={styles.listItemImage}>{item.name}</div>
+            <GeneratedImage
+              generateSource={user}
+              generateSize={120}
+              alt={user}
+            />
+            <div className={styles.listItemImage}>{user}</div>
           </div>
         ))}
       </div>
