@@ -1,5 +1,10 @@
 from flask import Blueprint, abort, jsonify, request
 from dal.transaction_dal import buy_shares, find_transactions, sell_shares
+
+from db import flask_session
+from models.deal_model import Deal
+
+import nft_utils.deal_info as deal_info
 from utils.json_utils import get_not_none
 
 transaction_bp = Blueprint("transaction", __name__, url_prefix="/transaction")
@@ -27,7 +32,9 @@ def post_buy_transaction():
     shares = get_not_none(request_body_json, "shares")
     if shares <= 0:
         abort(400, "Number of shares to buy must be a positive integer")
-    created_transaction = buy_shares(buyer_name, deal_serial_id, shares)
+    deal: Deal = flask_session.get(Deal, deal_serial_id, with_for_update={"key_share": True})
+    current_asset_price = deal_info.get_deal_current_price(deal)
+    created_transaction = buy_shares(buyer_name, deal_serial_id, shares, current_asset_price)
     return jsonify(buy_transaction_serial_id=created_transaction.serial_id)
 
 
@@ -49,7 +56,9 @@ def post_sell_transactions():
         abort(400, "Not a valid JSON body")
     buyer_name = get_not_none(request_body_json, "buyer_name")
     deal_serial_id = get_not_none(request_body_json, "deal_serial_id")
-    created_transactions = sell_shares(buyer_name, deal_serial_id)
+    deal: Deal = flask_session.get(Deal, deal_serial_id, with_for_update={"key_share": True})
+    current_asset_price = deal_info.get_deal_current_price(deal)
+    created_transactions = sell_shares(buyer_name, deal_serial_id, current_asset_price)
     return jsonify(sell_transaction_serial_ids=tuple(map(lambda x: x.serial_id, created_transactions)))
 
 

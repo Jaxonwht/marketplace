@@ -73,9 +73,9 @@ def create_deal(
     dealer.lockup_balance = Dealer.lockup_balance + amount_needed
     if collection_id is not None:
         info = deal_info.get_deal_info_with_ids(collection_id, asset_id)
-        collection_name = get_not_none(info, "collection_name")
-        #  if asset_id is not None:
-        #  collection_name += asset_id
+        collection_name = get_not_none(info, 'collection_name')
+        if asset_id is not None:
+            collection_name += asset_id        
     else:
         # TODO Ziyi Add support for index
         # info = deal_info.get_info_index()

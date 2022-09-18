@@ -11,7 +11,6 @@ from models.ownership_model import Ownership, OwnershipSummary
 from models.transaction_model import Transaction, TransactionInfo
 from models.deal_model import Deal
 from models.buyer_model import Buyer
-from models.dealer_model import Dealer
 import nft_utils.deal_info as deal_info
 
 
@@ -76,6 +75,7 @@ def find_buyer_ownership_summaries(
     )
     for unclosed_transaction_ids, deal_serial_id in flask_session.execute(query):
         deal: Deal = flask_session.get(Deal, deal_serial_id)
+        # Here collection_id = contract address; asset_id = token_id
         current_asset_price = deal_info.get_deal_current_price(deal)
         query_for_transactions = select(Transaction).where(Transaction.serial_id.in_(unclosed_transaction_ids))
         total_profit = 0
