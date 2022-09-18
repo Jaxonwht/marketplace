@@ -1,11 +1,8 @@
-import React, { ChangeEvent, useEffect, useState } from "react";
-import { Form, Input, Button, message, Table } from "antd";
+import React, { useEffect, useState } from "react";
+import { Button, Table } from "antd";
 import type { ColumnsType } from "antd/es/table";
-import { RightOutlined, EllipsisOutlined } from "@ant-design/icons";
-import PropTypes from "prop-types";
 import { Link, useNavigate } from "react-router-dom";
 import styles from "./style.module.scss";
-import * as echarts from "echarts";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { fetchBalance } from "../../reduxSlices/balanceSlice";
 import { AccountType } from "../../reduxSlices/identitySlice";
@@ -13,10 +10,7 @@ import AddBalanceConfirmationModal from "./AddBalanceConfirmationModal";
 import WithdrawConfirmationModal from "./WithdrawConfirmationModal";
 import { fetchOnwershipSummary } from "../../reduxSlices/ownershipSummarySlice";
 import { fetchAllDealInfo } from "../../reduxSlices/dealInfoSlice";
-import {
-  selectAllNonClosedDealInfo,
-  selectDealInfoForSerialId,
-} from "../../selectors/dealInfo";
+import { selectAllNonClosedDealInfo } from "../../selectors/dealInfo";
 import { getDealReadableName } from "../../backendTypes/utils";
 
 interface DataType {
@@ -121,7 +115,7 @@ const UserCenter = () => {
           {identity?.username?.substring(0, 10) || "Unknown user"}
         </div>
         <div style={{ fontSize: 20, marginTop: 20 }}>
-          Balance: {balance?.balance || "Unknown balance"}
+          Balance: {balance?.balance || 0}
         </div>
         {balance?.lockup_balance && (
           <div style={{ fontSize: 10, marginTop: -5 }}>
@@ -129,6 +123,7 @@ const UserCenter = () => {
           </div>
         )}
         <Button
+          className={styles["add-balance-button"]}
           onClick={() => {
             setIsAddBalanceModalVisible(true);
           }}
@@ -137,6 +132,7 @@ const UserCenter = () => {
           Add Balance
         </Button>
         <Button
+          className={styles["cash-out-button"]}
           onClick={() => {
             setIsWithdrawModalVisible(true);
           }}
@@ -160,11 +156,12 @@ const UserCenter = () => {
 
           <div className={styles.listContainer}>
             <Table
+              className={styles.table}
               pagination={{ hideOnSinglePage: true }}
               columns={participatingDealTableColumns}
-              dataSource={ownershipSummaryFormattedList.map((item, i) => {
+              dataSource={ownershipSummaryFormattedList.map((item) => {
                 return {
-                  key: i,
+                  key: item.dealSerialId,
                   deal: { name: item.name, serialId: item.dealSerialId },
                   holdingShares: item.shares,
                   profit: item.profit,

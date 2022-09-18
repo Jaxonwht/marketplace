@@ -69,7 +69,7 @@ const AddBalanceConfirmationModal = ({
       >
         <div className={styles.addBalanceModalText}>Add Balance</div>
         <div className={styles.addBalanceModalText}>
-          {balance?.balance || "Unknown balance"}
+          {balance?.balance || 0}
         </div>
       </div>
       <input

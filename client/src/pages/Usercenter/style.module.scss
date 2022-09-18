@@ -39,35 +39,17 @@
   padding: 10px 20px;
   height: 100%;
 }
-
 .table {
   width: 100%;
-  text-align: center;
-
-  &__deal-identifier {
-    cursor: pointer;
-
-    & span {
-      margin-left: 5px;
-    }
-  }
 }
-.table thead {
-  border-bottom: 2px solid lightgray;
-  // background-color: #eee;
-  // line-height: 50px;
+.add-balance-button {
+  margin-top: 20px;
+  width: 200px;
 }
-.table td {
-  padding: 10px;
-  font-size: 16px;
+.cash-out-button {
+  margin-top: 10px;
+  width: 200px;
 }
-.dashboardHeader {
-}
-
-.addBalanceModalText {
-  font-size: 20px;
-}
-
 .lineChart1,
 .lineChart2 {
   height: 300px;

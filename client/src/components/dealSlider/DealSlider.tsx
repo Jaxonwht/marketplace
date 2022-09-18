@@ -10,6 +10,9 @@ interface DealSliderProps {
 
 const DealSlider = ({ dealInfoList }: DealSliderProps) => {
   const sliderRef = useRef<HTMLDivElement>(null);
+  if (dealInfoList.length === 0) {
+    return null;
+  }
   const dealInfoSliderList = Object.values(dealInfoList).map(
     (singleDealInfo) => ({
       dealSerialId: singleDealInfo.serial_id,
