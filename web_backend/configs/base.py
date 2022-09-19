@@ -28,13 +28,17 @@ class Config:  # pylint: disable=too-few-public-methods
 
     @property
     def PLATFORM_PRIVATE_KEY(self) -> str:  # pylint: disable=invalid-name
-        """Lazily evaluate platform private key."""
-        return os.getenv("PLATFORM_PRIVATE_KEY", "PLATFORM_PRIVATE_KEY not set")
+        private_key = os.getenv("PLATFORM_PRIVATE_KEY")
+        if private_key is None:
+            raise Exception("PLATFORM_PRIVATE_KEY is not set")
+        return private_key
 
     @property
     def WEB3(self) -> Web3:  # pylint: disable=invalid-name
         """Lazily evaluate w3 instance."""
-        infura_provider_key = os.getenv("INFURA_PROVIDER_KEY", "INFURA_PROVIDER_KEY not set")
+        infura_provider_key = os.getenv("INFURA_PROVIDER_KEY")
+        if not infura_provider_key:
+            raise Exception("INFURA_PROVIDER_KEY must be set")
         web3 = Web3(Web3.HTTPProvider(f"https://goerli.infura.io/v3/{infura_provider_key}"))
         # TODO: Only for goeli testnet since it's proof-of-authority network.
         web3.middleware_onion.inject(geth_poa_middleware, layer=0)
