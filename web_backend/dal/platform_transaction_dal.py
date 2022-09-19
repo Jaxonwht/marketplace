@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta
-from typing import Dict, List, Optional, cast
+from typing import Dict, List, cast
 from eth_typing.encoding import HexStr
 from flask import abort, current_app
 from sqlalchemy import select
