@@ -3,7 +3,6 @@ from datetime import timedelta
 import os
 import json
 from logging import DEBUG
-from typing import Optional
 from eth_typing.evm import ChecksumAddress, HexAddress
 from eth_typing.encoding import HexStr
 from web3 import Web3
