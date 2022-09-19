@@ -16,7 +16,6 @@ const DealSlider = ({ dealInfoList }: DealSliderProps) => {
   const dealInfoSliderList = Object.values(dealInfoList).map(
     (singleDealInfo) => ({
       dealSerialId: singleDealInfo.serial_id,
-      image: require("../../assets/images/d1.jpg"),
       name: getDealReadableName(singleDealInfo),
     })
   );
@@ -39,7 +38,6 @@ const DealSlider = ({ dealInfoList }: DealSliderProps) => {
         {dealInfoSliderList.map((item) => (
           <DealSliderItem
             key={item.dealSerialId}
-            imagePath={item.image}
             name={item.name}
             dealSerialId={item.dealSerialId}
           />

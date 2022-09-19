@@ -1,17 +1,13 @@
 import { useNavigate } from "react-router-dom";
+import GeneratedImage from "../GeneratedImage";
 import styles from "./style.module.scss";
 
 interface DealSliderItemProps {
-  imagePath: string;
   name: string;
   dealSerialId: number;
 }
 
-const DealSliderItem = ({
-  imagePath,
-  name,
-  dealSerialId,
-}: DealSliderItemProps) => {
+const DealSliderItem = ({ name, dealSerialId }: DealSliderItemProps) => {
   const navigate = useNavigate();
 
   return (
@@ -20,11 +16,11 @@ const DealSliderItem = ({
       key={dealSerialId}
       onClick={() => navigate(`/nnfdetail/${dealSerialId}`)}
     >
-      <img
-        src={imagePath}
+      <GeneratedImage
+        generateSource={dealSerialId}
         alt={name}
-        className={styles["list-item__image"]}
-      ></img>
+        generateSize={100}
+      />
       <div>{name}</div>
     </div>
   );

@@ -12,6 +12,7 @@ import { fetchOnwershipSummary } from "../../reduxSlices/ownershipSummarySlice";
 import { fetchAllDealInfo } from "../../reduxSlices/dealInfoSlice";
 import { selectAllNonClosedDealInfo } from "../../selectors/dealInfo";
 import { getDealReadableName } from "../../backendTypes/utils";
+import GeneratedImage from "../../components/GeneratedImage";
 
 interface DataType {
   key: number;
@@ -23,9 +24,6 @@ interface DataType {
 }
 
 const UserCenter = () => {
-  const [accounts, setAccounts] = useState([]);
-  const [openOrders, setOpenOrders] = useState([]);
-  const [announcements, setAnnouncements] = useState([]);
   const [isAddBalanceModalVisible, setIsAddBalanceModalVisible] =
     useState(false);
   const [isWithdrawModalVisible, setIsWithdrawModalVisible] = useState(false);
@@ -47,7 +45,6 @@ const UserCenter = () => {
       const dealInfo = nonClosedDealInfo[ownershipForDeal.deal_serial_id];
       return {
         dealSerialId: ownershipForDeal.deal_serial_id,
-        image: require("../../assets/images/headimg.png"),
         name: dealInfo ? getDealReadableName(dealInfo) : "Unknown Deal",
         shares: ownershipForDeal.shares,
         profit: ownershipForDeal.profit.toFixed(),
@@ -105,12 +102,11 @@ const UserCenter = () => {
   return (
     <div className={styles.container}>
       <div className={styles.left}>
-        <img
-          className={styles.headimg}
-          onClick={() => {}}
-          src={require("../../assets/images/headimg.png")}
-          alt=""
-        ></img>
+        <GeneratedImage
+          generateSize={120}
+          generateSource={identity?.username}
+          alt={identity?.username}
+        />
         <div style={{ fontSize: 20, fontWeight: "bold", marginTop: 10 }}>
           {identity?.username?.substring(0, 10) || "Unknown user"}
         </div>
