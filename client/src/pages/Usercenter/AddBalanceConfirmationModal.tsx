@@ -7,6 +7,7 @@ import { ERC_20_ABI, GOERLI_USDC, PLATFORM_ADDRESS } from "../../utils/network";
 import { handleSendTransaction } from "../../utils/sendTokens";
 import { fetchBalance } from "../../reduxSlices/balanceSlice";
 import { AccountType } from "../../reduxSlices/identitySlice";
+import { genericErrorModal } from "../../components/error/genericErrorModal";
 
 interface AddBalanceConfirmationModalProps {
   isModalVisible: boolean;
@@ -49,13 +50,17 @@ const AddBalanceConfirmationModal = ({
       }}
       onOk={async () => {
         if (readyToSend) {
-          await handleSendTransaction(
-            identity.username,
-            ERC_20_ABI,
-            GOERLI_USDC,
-            PLATFORM_ADDRESS,
-            amount
-          );
+          try {
+            await handleSendTransaction(
+              identity.username,
+              ERC_20_ABI,
+              GOERLI_USDC,
+              PLATFORM_ADDRESS,
+              amount
+            );
+          } catch (e) {
+            genericErrorModal("Top-up Error", e);
+          }
         }
         setIsModalVisible(false);
       }}

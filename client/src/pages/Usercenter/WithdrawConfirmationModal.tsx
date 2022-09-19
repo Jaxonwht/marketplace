@@ -6,6 +6,7 @@ import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { authenticatedAxiosInstance } from "../../utils/network";
 import { AccountType } from "../../reduxSlices/identitySlice";
 import { fetchBalance } from "../../reduxSlices/balanceSlice";
+import { genericErrorModal } from "../../components/error/genericErrorModal";
 
 interface WithdrawConfirmationModalProps {
   isModalVisible: boolean;
@@ -54,14 +55,18 @@ const WithdrawConfirmationModal = ({
       }}
       onOk={async () => {
         if (readyToSend) {
-          await authenticatedAxiosInstance().post(
-            "/platform-transaction/withdraw",
-            {
-              username: identity.username,
-              transfer_value: Number(amount),
-              as_dealer: identity.account_type === AccountType.DEALER,
-            }
-          );
+          try {
+            await authenticatedAxiosInstance().post(
+              "/platform-transaction/withdraw",
+              {
+                username: identity.username,
+                transfer_value: Number(amount),
+                as_dealer: identity.account_type === AccountType.DEALER,
+              }
+            );
+          } catch (e) {
+            genericErrorModal("Withdraw Error", e);
+          }
         }
         setIsModalVisible(false);
       }}
