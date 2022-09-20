@@ -73,6 +73,8 @@ def create_new_deal():
         collection_id (str): Id of the underlying collection.
         asset_id (Optional[str]): Id of the underlying asset. If none, this deal is
             aimed for the whole collection.
+        is_nft_index (bool): Whether this "collection" is an NFT index collection as opposed
+            to an OpenSea collection.
         share_price (float): Price of each share.
         rate (float): Rate (profit/loss cap) for this deal.
         initial_number_of_shares (int): Starting number of shares to sell.
@@ -90,6 +92,7 @@ def create_new_deal():
     dealer_name = get_not_none(request_body_json, "dealer_name")
     collection_id = get_not_none(request_body_json, "collection_id")
     asset_id = request_body_json.get("asset_id")
+    is_nft_index = get_not_none(request_body_json, "is_nft_index")
     share_price = get_not_none(request_body_json, "share_price")
     rate = get_not_none(request_body_json, "rate")
     initial_number_of_shares = get_not_none(request_body_json, "initial_number_of_shares")
@@ -104,6 +107,7 @@ def create_new_deal():
         dealer_name,
         collection_id,
         asset_id,
+        is_nft_index,
         share_price,
         rate,
         initial_number_of_shares,

@@ -13,6 +13,7 @@ export interface CreateDealRequestBody {
   dealer_name: string;
   collection_id: string;
   asset_id?: string;
+  is_nft_index: boolean;
   rate: number;
   initial_number_of_shares: number;
   share_price: number;
@@ -49,6 +50,7 @@ export interface DealInfo {
   readonly closed_asset_price: number | null;
   readonly collection_id: string;
   readonly collection_name: string;
+  readonly is_nft_index: boolean;
   readonly dealer_name: string;
   readonly end_time: string;
   readonly extra_info: Record<string, unknown>;
