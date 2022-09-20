@@ -12,6 +12,7 @@ class Deal(flask_db.Model):
     dealer_name = Column(String, ForeignKey("dealer.name"))
     collection_id = Column(String, nullable=False)
     asset_id = Column(String)
+    is_nft_index = Column(Boolean, nullable=False)
     share_price = Column(Float, CheckConstraint("share_price > 0"), nullable=False)
     rate = Column(Float, CheckConstraint("rate > 0"), nullable=False)
     shares_remaining = Column(Integer, CheckConstraint("shares_remaining >= 0"), nullable=False)
@@ -31,6 +32,7 @@ class Deal(flask_db.Model):
             "dealer_name": self.dealer_name,
             "collection_id": self.collection_id,
             "asset_id": self.asset_id,
+            "is_nft_index": self.is_nft_index,
             "share_price": self.share_price,
             "rate": self.rate,
             "shares_remaining": self.shares_remaining,

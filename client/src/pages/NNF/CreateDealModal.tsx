@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import moment, { Moment } from "moment";
 import web3 from "web3";
-import { Form, DatePicker, Input, InputNumber, Modal } from "antd";
+import { Form, DatePicker, Input, InputNumber, Modal, Switch } from "antd";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { AccountType } from "../../reduxSlices/identitySlice";
 import { authenticatedAxiosInstance } from "../../utils/network";
@@ -12,6 +12,7 @@ import { genericErrorModal } from "../../components/error/genericErrorModal";
 interface CreateDealFormValues {
   collectionId: string;
   assetId?: number | null;
+  isNftIndex: boolean;
   rate: number;
   shares: number;
   sharePrice: number;
@@ -63,6 +64,7 @@ const CreateDealModal = ({
           validatedValues.assetId == null
             ? undefined
             : String(validatedValues.assetId),
+        is_nft_index: validatedValues.isNftIndex,
         rate: validatedValues.rate,
         initial_number_of_shares: validatedValues.shares,
         share_price: validatedValues.sharePrice,
@@ -116,6 +118,19 @@ const CreateDealModal = ({
           ]}
         >
           <Input />
+        </Form.Item>
+        <Form.Item
+          name="isNftIndex"
+          label="Is an NFT Index"
+          valuePropName="checked"
+          rules={[
+            {
+              required: true,
+              message: "You must specify whether this is an NFT index",
+            },
+          ]}
+        >
+          <Switch checkedChildren="yes" unCheckedChildren="no" />
         </Form.Item>
         <Form.Item name="assetId" label="NFT Asset ID">
           <InputNumber controls={false} />

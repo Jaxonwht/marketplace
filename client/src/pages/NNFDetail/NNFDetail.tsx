@@ -196,7 +196,7 @@ const NNFDetail = () => {
           {dealInfo ? (
             <>
               <div className={styles["dashboardHeader__main-header"]}>
-                Collection Name:{" "}
+                {`${dealInfo.is_nft_index ? "Index" : "Collection"}`} Name:{" "}
                 {openseaCollectionLink(dealInfo.collection_name)}
               </div>
               {!!dealInfo.asset_id && (
@@ -221,7 +221,7 @@ const NNFDetail = () => {
                   boughtShares: item.shares,
                   purchaseTime: utcStringToLocalShort(item.buy_timestamp),
                   buyAssetPrice: item.buy_asset_price,
-                  profit: item.profit,
+                  profit: Number(item.profit.toFixed(3)),
                 };
               })}
               summary={(profitDetailTableData) => {
