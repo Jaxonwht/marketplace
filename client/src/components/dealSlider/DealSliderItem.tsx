@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import GeneratedImage from "../GeneratedImage";
+import GeneratedImage from "../generated_image/GeneratedImage";
 import styles from "./style.module.scss";
 
 interface DealSliderItemProps {

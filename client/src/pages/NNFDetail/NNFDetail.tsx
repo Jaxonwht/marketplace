@@ -22,7 +22,8 @@ import {
   openseaCollectionLink,
   goerliScanLink,
 } from "../../utils/link";
-import GeneratedImage from "../../components/GeneratedImage";
+import GeneratedImage from "../../components/generated_image/GeneratedImage";
+import DealInfoCard from "./DealInfoCard";
 
 interface DataType {
   key: number;
@@ -50,10 +51,10 @@ const NNFDetail = () => {
     if (dealSerialId !== undefined) {
       dispatch(fetchDealInfoForOneDeal(dealSerialId));
       if (!!identity) {
-        const id = setInterval(
-          () => dispatch(fetchProfitDetail(identity.username, dealSerialId)),
-          PROFIT_INFO_REFRESH_MS
-        );
+        const refreshProfitInfo = () =>
+          dispatch(fetchProfitDetail(identity.username, dealSerialId));
+        refreshProfitInfo();
+        const id = setInterval(refreshProfitInfo, PROFIT_INFO_REFRESH_MS);
         return () => clearInterval(id);
       }
     }
@@ -154,26 +155,7 @@ const NNFDetail = () => {
             generateSource={dealSerialId}
             alt={`Deal ${dealSerialId}`}
           />
-          <Card title="INFO" className={styles["narrow-window"]}>
-            {!!dealInfo ? (
-              <>
-                <div>Profit/Loss Cap: {dealInfo.rate * 100}%</div>
-                <div>Multiplier: {dealInfo.multiplier}</div>
-                {
-                  // TODO ZIYI
-                }
-                <div>Current Asset Price: 0.5</div>
-                <div>
-                  Start Time: {utcStringToLocalShort(dealInfo.start_time)}
-                </div>
-                <div>End Time: {utcStringToLocalShort(dealInfo.end_time)}</div>
-                <div>Share Price: {dealInfo.share_price}</div>
-                <div>Shares Remaining: {dealInfo.shares_remaining}</div>
-              </>
-            ) : (
-              <div>Unknown Deal??</div>
-            )}
-          </Card>
+          <DealInfoCard dealInfo={dealInfo} />
           <Card title="Transact" className={styles["narrow-window"]}>
             {isBuyer ? (
               <>

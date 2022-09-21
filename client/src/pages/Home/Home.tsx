@@ -1,6 +1,5 @@
 import styles from "./style.module.css";
-import { toSvg } from "jdenticon";
-import GeneratedImage from "../../components/GeneratedImage";
+import GeneratedImage from "../../components/generated_image/GeneratedImage";
 
 const Home = () => {
   const featuredUsers = ["NNF1", "NNF2", "NNF3", "NNF4", "NNF5"];

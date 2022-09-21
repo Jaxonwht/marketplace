@@ -17,7 +17,7 @@ import { Theme } from "../../reduxSlices/themeSlice";
 import { refreshSignInStatus } from "../../reduxSlices/identitySlice";
 import { setIsMobile } from "../../reduxSlices/mobileSlice";
 import CryptoSignOut from "../metamask/CryptoSignOut";
-import GeneratedImage from "../GeneratedImage";
+import GeneratedImage from "../generated_image/GeneratedImage";
 
 const Navbar = () => {
   const [navBg, setNavBg] = useState(false);
