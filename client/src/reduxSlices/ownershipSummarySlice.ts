@@ -24,10 +24,15 @@ export const { setOwnershipSummary } = ownershipSummarySlice.actions;
 export default ownershipSummarySlice.reducer;
 
 export const fetchOnwershipSummary =
-  (username: string) => async (dispatch: AppDispatch) => {
+  (username: string, asDealer: boolean) => async (dispatch: AppDispatch) => {
     try {
       const response = await authenticatedAxiosInstance().get(
-        `/ownership/profits-summary/${username}`
+        `/ownership/profits-summary/${username}`,
+        {
+          params: {
+            as_dealer: asDealer,
+          },
+        }
       );
       const ownershipSummaries = response.data as OwnershipSummary[];
       dispatch(setOwnershipSummary(ownershipSummaries));

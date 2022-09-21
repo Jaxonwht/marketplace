@@ -32,6 +32,8 @@ interface DataType {
   profit: number;
 }
 
+const PROFIT_INFO_REFRESH_MS = 3000;
+
 const NNFDetail = () => {
   const [isBuySharesModalVisible, setIsBuySharesModalVisible] = useState(false);
   const [isSellSharesModalVisible, setIsSellSharesModalVisible] =
@@ -48,7 +50,11 @@ const NNFDetail = () => {
     if (dealSerialId !== undefined) {
       dispatch(fetchDealInfoForOneDeal(dealSerialId));
       if (!!identity) {
-        dispatch(fetchProfitDetail(identity.username, dealSerialId));
+        const id = setInterval(
+          () => dispatch(fetchProfitDetail(identity.username, dealSerialId)),
+          PROFIT_INFO_REFRESH_MS
+        );
+        return () => clearInterval(id);
       }
     }
   }, [dispatch, dealSerialId, identity]);
