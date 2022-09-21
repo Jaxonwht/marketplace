@@ -1,4 +1,4 @@
-from typing import Iterable, List, Optional, Tuple
+from typing import Iterable, List, Optional, Tuple, cast
 
 from datetime import datetime
 from sqlalchemy import select
@@ -11,6 +11,7 @@ from models.ownership_model import Ownership, OwnershipSummary
 from models.transaction_model import Transaction, TransactionInfo
 from models.deal_model import Deal
 from models.buyer_model import Buyer
+from models.dealer_model import Dealer
 
 
 def get_deal_details_for_buyer(buyer_name: str, deal_serial_id: int) -> List[TransactionInfo]:
@@ -48,7 +49,16 @@ def get_deal_details_for_buyer(buyer_name: str, deal_serial_id: int) -> List[Tra
     return transaction_info
 
 
-def find_ownership_summaries(
+def find_ownership_summaries(user_name: str, as_dealer: bool) -> Iterable[OwnershipSummary]:
+    if not as_dealer:
+        for summary in find_buyer_ownership_summaries(user_name):
+            yield summary
+    else:
+        for summary in find_dealer_ownership_summaries(user_name):
+            yield summary
+
+
+def find_buyer_ownership_summaries(
     buyer_name: str,
 ) -> Iterable[OwnershipSummary]:
     """
@@ -86,6 +96,48 @@ def find_ownership_summaries(
             shares=total_shares,
             profit=total_profit,
             profit_ratio=total_profit / total_cost,
+        )
+
+
+def find_dealer_ownership_summaries(
+    dealer_name: str,
+) -> Iterable[OwnershipSummary]:
+    """
+    For a given dealer, find all the ownership summary for this user.
+    """
+    dealer = flask_session.get(Dealer, dealer_name)
+    if dealer is None:
+        abort(404, f"Can't find dealer {dealer_name}")
+    query = (
+        select(array_agg(Transaction.serial_id), Transaction.deal_serial_id)
+        .join(Ownership)
+        .join(Deal)
+        .where(~Ownership.closed, Deal.dealer_name == dealer_name)
+        .group_by(Transaction.deal_serial_id)
+    )
+    for unclosed_transaction_ids, deal_serial_id in flask_session.execute(query):
+        # TODO ZIYI get fucking price
+        current_asset_price = 10
+        deal: Deal = flask_session.get(Deal, deal_serial_id)
+        query_for_transactions = select(Transaction).where(Transaction.serial_id.in_(unclosed_transaction_ids))
+        total_profit = 0
+        total_shares = 0
+        for transaction in flask_session.scalars(query_for_transactions):
+            total_shares += transaction.shares
+            total_profit += profit_for_buyer(
+                transaction.asset_price,
+                current_asset_price,
+                deal.share_price,
+                deal.rate,
+                transaction.shares,
+                deal.multiplier,
+            )
+        total_cost = total_shares * deal.share_price
+        yield OwnershipSummary(
+            deal_serial_id=deal_serial_id,
+            shares=total_shares,
+            profit=-total_profit,
+            profit_ratio=-total_profit / total_cost,
         )
 
 

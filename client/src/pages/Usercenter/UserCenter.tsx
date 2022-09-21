@@ -23,6 +23,8 @@ interface DataType {
   currentAssetPrice: number;
 }
 
+const ACCOUNT_INFO_REFRESH_MS = 3000;
+
 const UserCenter = () => {
   const [isAddBalanceModalVisible, setIsAddBalanceModalVisible] =
     useState(false);
@@ -35,7 +37,17 @@ const UserCenter = () => {
   }, [dispatch]);
   useEffect(() => {
     if (!!identity) {
-      dispatch(fetchOnwershipSummary(identity.username));
+      const id = setInterval(
+        () =>
+          dispatch(
+            fetchOnwershipSummary(
+              identity.username,
+              identity.account_type === AccountType.DEALER
+            )
+          ),
+        ACCOUNT_INFO_REFRESH_MS
+      );
+      return () => clearInterval(id);
     }
   }, [dispatch, identity]);
   const ownershipSummary = useAppSelector((state) => state.ownershipSummary);
@@ -47,7 +59,7 @@ const UserCenter = () => {
         dealSerialId: ownershipForDeal.deal_serial_id,
         name: dealInfo ? getDealReadableName(dealInfo) : "Unknown Deal",
         shares: ownershipForDeal.shares,
-        profit: ownershipForDeal.profit.toFixed(),
+        profit: ownershipForDeal.profit.toFixed(3),
         profitPercentage: `${(ownershipForDeal.profit_ratio * 100).toFixed(
           3
         )}%`,
