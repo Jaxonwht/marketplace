@@ -32,6 +32,12 @@
 .table {
   width: 1000px;
 }
+.nnf-title-with-icon {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+  align-items: center;
+}
 .table td {
   padding: 20px 0px;
   font-size: 20px;

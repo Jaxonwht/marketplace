@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { Form, Input, Button, message, Table } from "antd";
+import { Button, Table } from "antd";
 import type { ColumnsType } from "antd/es/table";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 import styles from "./style.module.css";
 import CreateDealModal from "./CreateDealModal";
@@ -11,6 +11,7 @@ import { fetchAllDealInfo } from "../../reduxSlices/dealInfoSlice";
 import { getDealReadableName } from "../../backendTypes/utils";
 import DealSlider from "../../components/dealSlider/DealSlider";
 import { selectAllNonClosedDealInfoList } from "../../selectors/dealInfo";
+import DealLinkWithIcon from "../../components/links/DealLinkWithIcon";
 
 interface DataType {
   key: number;
@@ -23,7 +24,6 @@ interface DataType {
 }
 
 const NNF = () => {
-  const navigate = useNavigate();
   const [isCreateDealModalVisible, setIsCreateDealModalVisible] =
     useState(false);
   const dispatch = useAppDispatch();
@@ -47,8 +47,12 @@ const NNF = () => {
       title: "Deal",
       dataIndex: "deal",
       key: "deal",
-      render: (deal) => (
-        <Link to={`/nnfdetail/${deal.serialId}`}>{deal.name}</Link>
+      render: (deal: DataType["deal"]) => (
+        <DealLinkWithIcon
+          dealSerialId={deal.serialId}
+          dealName={deal.name}
+          iconSize={30}
+        />
       ),
     },
     {

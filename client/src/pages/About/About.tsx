@@ -1,13 +1,5 @@
-import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { request } from "../../utils/request";
-
-import intl from "react-intl-universal";
-
 import styles from "./style.module.css";
-import * as echarts from "echarts";
-import { useSelector, useDispatch } from "react-redux";
-import GeneratedImage from "../../components/GeneratedImage";
+import GeneratedImage from "../../components/generated_image/GeneratedImage";
 
 export default function Home() {
   const featuredUsers = ["NNFF1", "NNFF2", "NNFF3", "NNFF4", "NNFF5"];

@@ -22,7 +22,7 @@ import {
   openseaCollectionLink,
   goerliScanLink,
 } from "../../utils/link";
-import GeneratedImage from "../../components/GeneratedImage";
+import GeneratedImage from "../../components/generated_image/GeneratedImage";
 import DealInfoCard from "./DealInfoCard";
 
 interface DataType {
@@ -51,10 +51,10 @@ const NNFDetail = () => {
     if (dealSerialId !== undefined) {
       dispatch(fetchDealInfoForOneDeal(dealSerialId));
       if (!!identity) {
-        const id = setInterval(
-          () => dispatch(fetchProfitDetail(identity.username, dealSerialId)),
-          PROFIT_INFO_REFRESH_MS
-        );
+        const refreshProfitInfo = () =>
+          dispatch(fetchProfitDetail(identity.username, dealSerialId));
+        refreshProfitInfo();
+        const id = setInterval(refreshProfitInfo, PROFIT_INFO_REFRESH_MS);
         return () => clearInterval(id);
       }
     }

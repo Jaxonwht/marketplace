@@ -1,0 +1,14 @@
+.link-icon-wrapper {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  align-items: center;
+
+  img {
+    transition: transform 0.7s ease-in-out;
+  }
+
+  &:hover img {
+    transform: scale(1.15) rotate(90deg);
+  }
+}

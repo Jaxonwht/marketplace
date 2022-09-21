@@ -12,7 +12,8 @@ import { fetchOnwershipSummary } from "../../reduxSlices/ownershipSummarySlice";
 import { fetchAllDealInfo } from "../../reduxSlices/dealInfoSlice";
 import { selectAllNonClosedDealInfo } from "../../selectors/dealInfo";
 import { getDealReadableName } from "../../backendTypes/utils";
-import GeneratedImage from "../../components/GeneratedImage";
+import GeneratedImage from "../../components/generated_image/GeneratedImage";
+import DealLinkWithIcon from "../../components/links/DealLinkWithIcon";
 
 interface DataType {
   key: number;
@@ -37,16 +38,15 @@ const UserCenter = () => {
   }, [dispatch]);
   useEffect(() => {
     if (!!identity) {
-      const id = setInterval(
-        () =>
-          dispatch(
-            fetchOnwershipSummary(
-              identity.username,
-              identity.account_type === AccountType.DEALER
-            )
-          ),
-        ACCOUNT_INFO_REFRESH_MS
-      );
+      const refreshOwnershipSummary = () =>
+        dispatch(
+          fetchOnwershipSummary(
+            identity.username,
+            identity.account_type === AccountType.DEALER
+          )
+        );
+      refreshOwnershipSummary();
+      const id = setInterval(refreshOwnershipSummary, ACCOUNT_INFO_REFRESH_MS);
       return () => clearInterval(id);
     }
   }, [dispatch, identity]);
@@ -83,8 +83,12 @@ const UserCenter = () => {
       title: "Deal",
       dataIndex: "deal",
       key: "deal",
-      render: (deal) => (
-        <Link to={`/nnfdetail/${deal.serialId}`}>{deal.name}</Link>
+      render: (deal: DataType["deal"]) => (
+        <DealLinkWithIcon
+          dealSerialId={deal.serialId}
+          dealName={deal.name}
+          iconSize={30}
+        />
       ),
     },
     {
