@@ -11,7 +11,7 @@ import {
 } from "../../reduxSlices/identitySlice";
 import AddBalanceConfirmationModal from "./AddBalanceConfirmationModal";
 import WithdrawConfirmationModal from "./WithdrawConfirmationModal";
-import { fetchOnwershipSummary } from "../../reduxSlices/ownershipSummarySlice";
+import { fetchOwnershipSummary } from "../../reduxSlices/ownershipSummarySlice";
 import { fetchAllDealInfo } from "../../reduxSlices/dealInfoSlice";
 import { selectAllNonClosedDealInfo } from "../../selectors/dealInfo";
 import { getDealReadableName } from "../../backendTypes/utils";
@@ -46,7 +46,7 @@ const UserCenter = () => {
     if (!!identity) {
       const refreshOwnershipSummary = () =>
         dispatch(
-          fetchOnwershipSummary(
+          fetchOwnershipSummary(
             identity.username,
             identity.account_type === AccountType.DEALER
           )
@@ -56,7 +56,7 @@ const UserCenter = () => {
       return () => clearInterval(id);
     } else {
       const timeoutId = setTimeout(
-        () => promptSignIn(2, () => navigate("/home")),
+        () => promptSignIn(3, () => navigate("/home")),
         200
       );
       return () => clearTimeout(timeoutId);
@@ -144,7 +144,7 @@ const UserCenter = () => {
           Balance: {balance?.balance || 0}
         </div>
         {balance?.lockup_balance && (
-          <div style={{ fontSize: 10, marginTop: -5 }}>
+          <div style={{ fontSize: 20, marginTop: 0 }}>
             Lock-up balance: {balance.lockup_balance}
           </div>
         )}

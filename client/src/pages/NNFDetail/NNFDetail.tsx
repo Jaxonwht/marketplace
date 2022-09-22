@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, Table } from "antd";
+import { Button, Table, PageHeader, Descriptions } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { useParams } from "react-router-dom";
 import styles from "./style.module.scss";
@@ -176,7 +176,7 @@ const NNFDetail = () => {
                 </Button>
               </>
             ) : (
-              <div>Log in as a buyer to transact</div>
+              <div>Sign in as a buyer to transact</div>
             )}
           </Card>
         </div>
