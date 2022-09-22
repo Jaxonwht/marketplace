@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Button, Table } from "antd";
+import { Button, Empty, Table } from "antd";
 import type { ColumnsType } from "antd/es/table";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import styles from "./style.module.scss";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { fetchBalance } from "../../reduxSlices/balanceSlice";
@@ -14,6 +14,7 @@ import { selectAllNonClosedDealInfo } from "../../selectors/dealInfo";
 import { getDealReadableName } from "../../backendTypes/utils";
 import GeneratedImage from "../../components/generated_image/GeneratedImage";
 import DealLinkWithIcon from "../../components/links/DealLinkWithIcon";
+import { promptSignIn } from "../../components/error/promptSignIn";
 
 interface DataType {
   key: number;
@@ -36,6 +37,7 @@ const UserCenter = () => {
   useEffect(() => {
     dispatch(fetchAllDealInfo);
   }, [dispatch]);
+  const navigate = useNavigate();
   useEffect(() => {
     if (!!identity) {
       const refreshOwnershipSummary = () =>
@@ -48,6 +50,8 @@ const UserCenter = () => {
       refreshOwnershipSummary();
       const id = setInterval(refreshOwnershipSummary, ACCOUNT_INFO_REFRESH_MS);
       return () => clearInterval(id);
+    } else {
+      promptSignIn(2, () => navigate("/home"));
     }
   }, [dispatch, identity]);
   const ownershipSummary = useAppSelector((state) => state.ownershipSummary);
@@ -113,7 +117,9 @@ const UserCenter = () => {
     },
   ];
 
-  const navigate = useNavigate();
+  if (!identity) {
+    return <Empty />;
+  }
 
   return (
     <div className={styles.container}>
