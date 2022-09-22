@@ -8,7 +8,7 @@ import { fetchBalance } from "../../reduxSlices/balanceSlice";
 import { AccountType } from "../../reduxSlices/identitySlice";
 import AddBalanceConfirmationModal from "./AddBalanceConfirmationModal";
 import WithdrawConfirmationModal from "./WithdrawConfirmationModal";
-import { fetchOnwershipSummary } from "../../reduxSlices/ownershipSummarySlice";
+import { fetchOwnershipSummary } from "../../reduxSlices/ownershipSummarySlice";
 import { fetchAllDealInfo } from "../../reduxSlices/dealInfoSlice";
 import { selectAllNonClosedDealInfo } from "../../selectors/dealInfo";
 import { getDealReadableName } from "../../backendTypes/utils";
@@ -42,7 +42,7 @@ const UserCenter = () => {
     if (!!identity) {
       const refreshOwnershipSummary = () =>
         dispatch(
-          fetchOnwershipSummary(
+          fetchOwnershipSummary(
             identity.username,
             identity.account_type === AccountType.DEALER
           )
@@ -50,8 +50,6 @@ const UserCenter = () => {
       refreshOwnershipSummary();
       const id = setInterval(refreshOwnershipSummary, ACCOUNT_INFO_REFRESH_MS);
       return () => clearInterval(id);
-    } else {
-      promptSignIn(2, () => navigate("/home"));
     }
   }, [dispatch, identity]);
   const ownershipSummary = useAppSelector((state) => state.ownershipSummary);
@@ -136,7 +134,7 @@ const UserCenter = () => {
           Balance: {balance?.balance || 0}
         </div>
         {balance?.lockup_balance && (
-          <div style={{ fontSize: 10, marginTop: -5 }}>
+          <div style={{ fontSize: 20, marginTop: 0 }}>
             Lock-up balance: {balance.lockup_balance}
           </div>
         )}

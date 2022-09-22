@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, Table } from "antd";
+import { Button, Table, PageHeader, Descriptions } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { useParams } from "react-router-dom";
 import styles from "./style.module.scss";
@@ -176,11 +176,36 @@ const NNFDetail = () => {
                 </Button>
               </>
             ) : (
-              <div>Log in as a buyer to transact</div>
+              <div>Sign in as a buyer to transact</div>
             )}
           </Card>
         </div>
         <div className={styles.dashboard}>
+          <PageHeader
+            title="dummy_collection"
+            subTitle="0xf9cc8cdd43c521b7b9c3a9391f52e9b3622d868b"
+          >
+            <Descriptions size="small" column={3}>
+              <Descriptions.Item label="Asset ID">1</Descriptions.Item>
+              <Descriptions.Item label="Dealer">
+                <a>622d868b</a>
+              </Descriptions.Item>
+              <Descriptions.Item label="Profit/Loss Cap">20%</Descriptions.Item>
+              <Descriptions.Item label="Multiplier">1</Descriptions.Item>
+              <Descriptions.Item label="Current Asset Price">
+                0.5
+              </Descriptions.Item>
+              <Descriptions.Item label="Start Time">
+                2022-10-18 00:07:56
+              </Descriptions.Item>
+              <Descriptions.Item label="End Time">
+                2022-10-27 00:08:02
+              </Descriptions.Item>
+              <Descriptions.Item label="Share Price">2</Descriptions.Item>
+              <Descriptions.Item label="Shares Remaining">2</Descriptions.Item>
+            </Descriptions>
+          </PageHeader>
+
           {dealInfo ? (
             <>
               <div className={styles["dashboardHeader__main-header"]}>
