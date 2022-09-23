@@ -5,7 +5,7 @@ import { clear, getUser, storeCredentialsIfDev } from "../../utils/storage";
 import MyMenu from "../Menu/Menu";
 
 import { Link, useNavigate } from "react-router-dom";
-import { Dropdown, Menu, Switch } from "antd";
+import { Dropdown, Input, Avatar, Typography } from "antd";
 import intl from "react-intl-universal";
 import { useDispatch } from "react-redux";
 import { isMobile } from "../../utils/utils";
@@ -18,8 +18,11 @@ import { refreshSignInStatus } from "../../reduxSlices/identitySlice";
 import { setIsMobile } from "../../reduxSlices/mobileSlice";
 import CryptoSignOut from "../metamask/CryptoSignOut";
 import GeneratedImage from "../generated_image/GeneratedImage";
+import { shortenAddress } from "../../utils/address";
 
 const Navbar = () => {
+  const { Text } = Typography;
+  const { Search } = Input;
   const [navBg, setNavBg] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
   const dispatch = useAppDispatch();
@@ -52,7 +55,9 @@ const Navbar = () => {
   const signInDisplay = identity ? (
     <div className={styles["sign-out-container"]}>
       <div className={styles.welcomeMessage}>
-        Welcome, {identity.account_type} {identity.username.substring(0, 8)}****
+        <Text>
+          Welcome, {identity.account_type} {shortenAddress(identity.username)}
+        </Text>
       </div>
       <CryptoSignOut />
     </div>
@@ -65,29 +70,15 @@ const Navbar = () => {
       <div className={styles.headerContent}>
         <Link to={"/home"}>
           <div className={styles.caption} style={{ cursor: "pointer" }}>
-            <img
+            <Avatar
               alt=""
               className={styles.logo}
               src={require("../../assets/images/logo.jpg")}
-            ></img>
-            IIASS
+            ></Avatar>
+            <Text>ASISSI</Text>
           </div>
         </Link>
-        <div className={styles.searchInput}>
-          <img
-            style={{ width: 20, height: 20 }}
-            src={require("../../assets/images/search.png")}
-            alt=""
-          ></img>
-          <input
-            placeholder="Search Bar"
-            onKeyUp={(e) => {
-              if (e.keyCode === 13) {
-                // request()
-              }
-            }}
-          ></input>
-        </div>
+        <Search placeholder="Search" onSearch={() => {}} enterButton />
         <div style={{ flex: 1 }}>
           <div className={styles.menus}>
             <MyMenu></MyMenu>
