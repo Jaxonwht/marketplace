@@ -5,7 +5,10 @@ import { useNavigate } from "react-router-dom";
 import styles from "./style.module.scss";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { fetchBalance } from "../../reduxSlices/balanceSlice";
-import { AccountType } from "../../reduxSlices/identitySlice";
+import {
+  AccountType,
+  refreshSignInStatus,
+} from "../../reduxSlices/identitySlice";
 import AddBalanceConfirmationModal from "./AddBalanceConfirmationModal";
 import WithdrawConfirmationModal from "./WithdrawConfirmationModal";
 import { fetchOnwershipSummary } from "../../reduxSlices/ownershipSummarySlice";
@@ -35,6 +38,7 @@ const UserCenter = () => {
   const balance = useAppSelector((state) => state.balance);
   const dispatch = useAppDispatch();
   useEffect(() => {
+    dispatch(refreshSignInStatus);
     dispatch(fetchAllDealInfo);
   }, [dispatch]);
   const navigate = useNavigate();
@@ -51,7 +55,11 @@ const UserCenter = () => {
       const id = setInterval(refreshOwnershipSummary, ACCOUNT_INFO_REFRESH_MS);
       return () => clearInterval(id);
     } else {
-      promptSignIn(2, () => navigate("/home"));
+      const timeoutId = setTimeout(
+        () => promptSignIn(2, () => navigate("/home")),
+        200
+      );
+      return () => clearTimeout(timeoutId);
     }
   }, [dispatch, identity]);
   const ownershipSummary = useAppSelector((state) => state.ownershipSummary);
