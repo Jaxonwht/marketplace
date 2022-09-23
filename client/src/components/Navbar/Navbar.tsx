@@ -5,11 +5,11 @@ import { clear, getUser, storeCredentialsIfDev } from "../../utils/storage";
 import MyMenu from "../Menu/Menu";
 
 import { Link, useNavigate } from "react-router-dom";
-import { Dropdown, Menu, Switch } from "antd";
+import { Dropdown, Select, Avatar, Typography } from "antd";
 import intl from "react-intl-universal";
 import { useDispatch } from "react-redux";
 import { isMobile } from "../../utils/utils";
-import { MenuOutlined } from "@ant-design/icons";
+import { MenuOutlined, SearchOutlined } from "@ant-design/icons";
 import { request } from "http";
 import CryptoSignIn from "../../components/metamask/CryptoSignIn";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
@@ -23,8 +23,11 @@ import {
   selectAllNonClosedDealInfo,
 } from "../../selectors/dealInfo";
 import { fetchAllDealInfo } from "../../reduxSlices/dealInfoSlice";
+import { shortenAddress } from "../../utils/address";
 
 const Navbar = () => {
+  const { Text } = Typography;
+  const { Option } = Select;
   const [navBg, setNavBg] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
   const dispatch = useAppDispatch();
@@ -57,13 +60,52 @@ const Navbar = () => {
   const signInDisplay = identity ? (
     <div className={styles["sign-out-container"]}>
       <div className={styles.welcomeMessage}>
-        Welcome, {identity.account_type} {identity.username.substring(0, 8)}****
+        <Text>
+          Welcome, {identity.account_type} {shortenAddress(identity.username)}
+        </Text>
       </div>
       <CryptoSignOut />
     </div>
   ) : (
     <CryptoSignIn />
   );
+
+  const SearchInput: React.FC<{ placeholder: string; style: React.CSSProperties }> = props => {
+  const [data, setData] = useState<any[]>([]);
+  const [value, setValue] = useState<string>();
+
+  const handleSearch = (newValue: string) => {
+    if (newValue) {
+      // fetch(newValue, setData);
+    } else {
+      setData([]);
+    }
+  };
+
+  const handleChange = (newValue: string) => {
+    setValue(newValue);
+  };
+
+  const options = data.map(d => <Option key={d.value}>{d.text}</Option>);
+
+  return (
+    <Select
+      showSearch
+      value={value}
+      placeholder={props.placeholder}
+      style={props.style}
+      defaultActiveFirstOption={false}
+      showArrow={false}
+      filterOption={false}
+      onSearch={handleSearch}
+      onChange={handleChange}
+      notFoundContent={null}
+    >
+      {options}
+    </Select>
+  );
+};
+
 
   const [searchStr, setSearchStr] = useState<string>("");
 
@@ -75,36 +117,16 @@ const Navbar = () => {
       <div className={styles.headerContent}>
         <Link to={"/home"}>
           <div className={styles.caption} style={{ cursor: "pointer" }}>
-            <img
+            <Avatar
               alt=""
               className={styles.logo}
               src={require("../../assets/images/logo.jpg")}
-            ></img>
-            IIASS
+            ></Avatar>
+            <Text>AISSI</Text>
           </div>
         </Link>
-        <div className={styles.searchInput}>
-          <img
-            style={{ width: 20, height: 20 }}
-            src={require("../../assets/images/search.png")}
-            alt=""
-          ></img>
-          <input
-            placeholder="Search Bar"
-            value={searchStr}
-            onChange={(e) => {
-              e.preventDefault();
-              setSearchStr(e.target.value);
-            }}
-            onKeyUp={(e) => {
-              if (e.keyCode === 13) {
-                dispatch(fetchAllDealInfo);
-                // request()
-              }
-            }}
-          ></input>
-        </div>
-        <div style={{ flex: 1 }}>
+          <SearchInput placeholder="Search" style={{ width: 200 }}/>
+          <div style={{ flex: 1 }} >
           <div className={styles.menus}>
             <MyMenu></MyMenu>
           </div>
