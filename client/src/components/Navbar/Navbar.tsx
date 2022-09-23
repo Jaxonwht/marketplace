@@ -18,6 +18,11 @@ import { refreshSignInStatus } from "../../reduxSlices/identitySlice";
 import { setIsMobile } from "../../reduxSlices/mobileSlice";
 import CryptoSignOut from "../metamask/CryptoSignOut";
 import GeneratedImage from "../generated_image/GeneratedImage";
+import {
+  fuzzySearchDealInfo,
+  selectAllNonClosedDealInfo,
+} from "../../selectors/dealInfo";
+import { fetchAllDealInfo } from "../../reduxSlices/dealInfoSlice";
 
 const Navbar = () => {
   const [navBg, setNavBg] = useState(false);
@@ -60,6 +65,11 @@ const Navbar = () => {
     <CryptoSignIn />
   );
 
+  const [searchStr, setSearchStr] = useState<string>("");
+
+  const fuzzySearchResults = useAppSelector(fuzzySearchDealInfo(searchStr));
+  console.log(fuzzySearchResults);
+
   return (
     <div className={`${styles.header} ${navBg ? styles.navBg : ""}`}>
       <div className={styles.headerContent}>
@@ -81,8 +91,14 @@ const Navbar = () => {
           ></img>
           <input
             placeholder="Search Bar"
+            value={searchStr}
+            onChange={(e) => {
+              e.preventDefault();
+              setSearchStr(e.target.value);
+            }}
             onKeyUp={(e) => {
               if (e.keyCode === 13) {
+                dispatch(fetchAllDealInfo);
                 // request()
               }
             }}

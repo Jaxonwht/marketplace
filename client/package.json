@@ -16,6 +16,7 @@
     "classnames": "^2.3.1",
     "crypto-browserify": "^3.12.0",
     "echarts": "^5.3.3",
+    "fuse.js": "^6.6.2",
     "http-proxy-middleware": "^2.0.6",
     "https-browserify": "^1.0.0",
     "jdenticon": "^3.2.0",
