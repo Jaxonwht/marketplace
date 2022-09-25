@@ -10,7 +10,7 @@ export default function Home() {
     <div className={styles.home}>
       <div className={styles.top}>
         <div className={styles.topLeft}>
-          <div>
+          <div className={styles.homeTopCaption}>
             <Text>What is AISSI?</Text>
           </div>
           <p className={styles.topDesc}>

@@ -43,8 +43,5 @@ const fuseOptions = {
   ],
 };
 
-export const fuzzySearchDealInfo =
-  (searchStr: string) => (state: RootState) => {
-    const fuse = new Fuse<DealInfo>(Object.values(state.dealInfo), fuseOptions);
-    return fuse.search(searchStr);
-  };
+export const fuzzySearchFuse = (state: RootState) =>
+  new Fuse<DealInfo>(Object.values(state.dealInfo), fuseOptions);

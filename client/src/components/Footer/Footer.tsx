@@ -1,11 +1,10 @@
-import { Space, Typography } from "antd";
 import React from "react";
-import styles from "./index.module.css";
-import intl from "react-intl-universal";
+import { Typography } from "antd";
+import styles from "./index.module.scss";
 
-const { Text, Link, Title } = Typography;
+const { Text, Title } = Typography;
 
-export default function Layout() {
+const Footer = () => {
   return (
     <div className={styles.footer}>
       <div className={styles.content}>
@@ -13,20 +12,21 @@ export default function Layout() {
           <Title level={3}>CONTACT INFO</Title>
         </div>
         <div className={styles.right}>
-          <div className={styles.rightItem}>
+          <div>
             <Text> Email: </Text>
-            <Link
+            <a
               href="mailto:masterSunDoctorNai@unicleChao.com"
               target="_blank"
+              className={styles.email}
             >
               masterSunDoctorNai@unicleChao.com
-            </Link>
+            </a>
           </div>
-          <div className={styles.rightItem}>
-            <Text>Phone: (999)999-9999</Text>
-          </div>
+          <Text>Phone: (999)999-9999</Text>
         </div>
       </div>
     </div>
   );
-}
+};
+
+export default Footer;
