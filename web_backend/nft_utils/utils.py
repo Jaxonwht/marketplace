@@ -1,5 +1,6 @@
 import json, math
 import datetime
+# from models.deal_model import Deal
 
 # Enums
 # INFO TYPE
@@ -48,6 +49,14 @@ MN_STEPS = (
 )
 # CoinMarketCap Macros
 CMC_API_KEY = "8f86607f-8c64-470e-83e8-2fdfffc12f43"
+CMC_BASE_URL = "https://pro-api.coinmarketcap.com"
+CMC_API_HEADER = {
+    'Accepts': 'application/json',
+    'Accept-Encoding': 'deflate, gzip',
+    'X-CMC_PRO_API_KEY': CMC_API_KEY,
+    }
+CMC_INDEX_URL_BASE = "https://coinmarketcap.com/currencies"
+
 
 def json_print(json_obj):
     if isinstance(json_obj, str):
@@ -95,3 +104,15 @@ def time_series_group_by_day(time_arr):
             new_time_arr[2][new_arr_ptr] += time_arr[2][idx]
         else:
             new_arr_ptr += 1
+            
+# deal related helper functions
+def deal_is_collection(deal):
+    if deal.collection_id is not None:
+        return deal.asset_id is None
+
+def deal_is_asset(deal):
+    # TODO (Maybe add check to catch no collection_id but asset_id?)
+    return deal.asset_id is not None
+
+def deal_is_index(deal):
+    return deal.collection_id is None

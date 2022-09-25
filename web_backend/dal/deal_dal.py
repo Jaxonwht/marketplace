@@ -11,6 +11,8 @@ from models.dealer_model import Dealer
 from models.ownership_model import Ownership
 from models.transaction_model import Transaction
 from utils.profits_utils import profit_for_buyer
+import nft_utils.deal_info as deal_info
+from utils.json_utils import get_not_none
 
 
 def get_deals(
@@ -69,8 +71,15 @@ def create_deal(
             f"Issuing these shares require a balance of {dealer.lockup_balance + amount_needed}, but the dealer only has {dealer.balance}",
         )
     dealer.lockup_balance = Dealer.lockup_balance + amount_needed
-    # TODO ziyi fetch these two shites
-    collection_name = "dummy_collection"
+    if collection_id is not None:
+        info = deal_info.get_deal_info_with_ids(collection_id, asset_id)
+        collection_name = get_not_none(info, 'collection_name')
+        if asset_id is not None:
+            collection_name += asset_id        
+    else:
+        # TODO Ziyi Add support for index
+        # info = deal_info.get_info_index()
+        collection_name = "dummy_index"
     extra_info: Dict[str, Any] = {}
     new_deal = Deal(
         dealer_name=dealer_name,

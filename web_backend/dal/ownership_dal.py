@@ -12,11 +12,12 @@ from models.transaction_model import Transaction, TransactionInfo
 from models.deal_model import Deal
 from models.buyer_model import Buyer
 from models.dealer_model import Dealer
+import nft_utils.deal_info as deal_info
 
 
 def get_deal_details_for_buyer(buyer_name: str, deal_serial_id: int) -> List[TransactionInfo]:
-    current_asset_price: float = 0.01  # TODO: ZIYI
     deal: Deal = flask_session.get(Deal, deal_serial_id, with_for_update={"key_share": True})
+    current_asset_price: float = deal_info.get_deal_current_price(deal)
     if not deal:
         abort(404, f"Deal {deal_serial_id} not found")
     if deal.closed:
@@ -74,9 +75,9 @@ def find_buyer_ownership_summaries(
         .group_by(Transaction.deal_serial_id)
     )
     for unclosed_transaction_ids, deal_serial_id in flask_session.execute(query):
-        # TODO ZIYI get fucking price
-        current_asset_price = 10
         deal: Deal = flask_session.get(Deal, deal_serial_id)
+        # Here collection_id = contract address; asset_id = token_id
+        current_asset_price = deal_info.get_deal_current_price(deal)
         query_for_transactions = select(Transaction).where(Transaction.serial_id.in_(unclosed_transaction_ids))
         total_profit = 0
         total_shares = 0

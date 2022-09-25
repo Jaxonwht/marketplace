@@ -1,9 +1,81 @@
 from gc import collect
 from re import L
+from typing import ParamSpecArgs
 from mnemonic_utils import *
 from utils import *
 from opensea_utils import *
 from quicknode_utils import *
+from models.deal_model import Deal
+
+# Abstraction on deal level
+def get_deal_info(deal):
+    if deal_is_collection(deal):
+        return get_info(
+            TYPE_COLLECTION,
+            deal.collection_id,
+            deal.extra_info
+        )
+    if deal_is_asset(deal):
+        return get_info(
+            TYPE_ASSET,
+            deal.collection_id,
+            deal.asset_id,
+            deal.extra_info
+        )
+    return get_info(TYPE_INDEX, deal.extra_info)
+
+def get_deal_info_with_ids(contract, token_id):
+    if token_id is not None:
+        return get_info_asset(contract, token_id)
+    return get_info_collection(contract)
+
+def get_deal_prices_history(deal):
+    if deal_is_collection(deal):
+        return get_prices_history(
+            TYPE_COLLECTION,
+            deal.collection_id,
+            deal.extra_info
+        )
+    if deal_is_asset(deal):
+        return get_prices_history(
+            TYPE_ASSET,
+            deal.collection_id,
+            deal.asset_id,
+            deal.extra_info
+        )
+    return get_prices_history(TYPE_INDEX, deal.extra_info)
+
+def get_deal_current_price(deal):
+    if deal_is_collection(deal):
+        return get_current_price(
+            TYPE_COLLECTION,
+            deal.collection_id,
+            deal.extra_info
+        )
+    if deal_is_asset(deal):
+        return get_current_price(
+            TYPE_ASSET,
+            deal.collection_id,
+            deal.asset_id,
+            deal.extra_info
+        )
+    return get_current_price(TYPE_INDEX, deal.extra_info)
+
+def get_deal_sales_volume(deal):
+    if deal_is_collection(deal):
+        return get_sales_volume(
+            TYPE_COLLECTION,
+            deal.collection_id,
+            deal.extra_info
+        )
+    if deal_is_asset(deal):
+        return get_sales_volume(
+            TYPE_ASSET,
+            deal.collection_id,
+            deal.asset_id,
+            deal.extra_info
+        )
+    return get_sales_volume(TYPE_INDEX, deal.extra_info)
 
 # Main Functions
 def get_info(type, contract, token_id=None, extra_info=None):
@@ -19,6 +91,7 @@ def get_info_collection(contract):
     json_print(collection_info_raw)
     info = {}
     # Required Fields
+    info['collection_name'] = slug
     info['contract'] = collection_info_raw['primary_asset_contracts'][0]['address']
     info['create_date'] = collection_info_raw['created_date']
     info['description'] = collection_info_raw['description']
@@ -36,6 +109,7 @@ def get_info_asset(contract, token_id):
     json_print(collection_info_raw)
     info = {}
     # Required Fields
+    info['collection_name'] = slug
     info['contract'] = collection_info_raw['primary_asset_contracts'][0]['address']
     info['create_date'] = collection_info_raw['created_date']
     info['description'] = collection_info_raw['description']
@@ -95,14 +169,14 @@ def get_sales_volume(type, contract, token_id=None, extra_info=None):
     if type == TYPE_INDEX:
         raise Exception("Index has no sales volume")
     if type == TYPE_ASSET:
-        return get_sales_valume_asset(contract, token_id)
+        return get_sales_volume_asset(contract, token_id)
     return get_sales_volume_collection(contract)
 
 def get_sales_volume_collection(contract):
     # TODO(Add support for variable date range and step length)
     return mn_get_collection_sales_volume_by_day(contract, 7)
 
-def get_sales_valume_asset():
+def get_sales_volume_asset():
     pass
 
 # Additional Helpers
