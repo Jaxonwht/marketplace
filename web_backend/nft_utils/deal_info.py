@@ -1,10 +1,10 @@
 from gc import collect
 from re import L
 from typing import ParamSpecArgs
-from mnemonic_utils import *
+from nft_utils.mnemonic_utils import *
 from utils import *
-from opensea_utils import *
-from quicknode_utils import *
+from nft_utils.opensea_utils import *
+from nft_utils.quicknode_utils import *
 from models.deal_model import Deal
 
 # Abstraction on deal level
