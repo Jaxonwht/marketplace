@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Button, Table } from "antd";
+import { Button, Table, Typography } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { Link } from "react-router-dom";
 
@@ -24,6 +24,7 @@ interface DataType {
 }
 
 const NFT = () => {
+  const { Text } = Typography;
   const [isCreateDealModalVisible, setIsCreateDealModalVisible] =
     useState(false);
   const dispatch = useAppDispatch();
@@ -96,7 +97,7 @@ const NFT = () => {
           Create a deal
         </Button>
       )}
-      <div className={styles.font1}>Top Ongoing table</div>
+      <Text className={styles.font1}>Top Ongoing table</Text>
       <Table
         className={styles["deal-table"]}
         pagination={{ hideOnSinglePage: true }}

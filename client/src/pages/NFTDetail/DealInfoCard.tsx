@@ -62,9 +62,7 @@ const DealInfoCard = ({ dealInfo }: DealInfoCardProps) => {
           )}
         </Descriptions>
       ) : (
-        <div>
-          <Text>Unknown Deal</Text>
-        </div>
+        <Text>Unknown Deal</Text>
       )}
     </Card>
   );

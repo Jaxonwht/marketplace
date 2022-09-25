@@ -155,9 +155,7 @@ const NFTDetail = () => {
                 </Button>
               </>
             ) : (
-              <div>
-                <Text>Sign in as a buyer to transact</Text>
-              </div>
+              <Text>Sign in as a buyer to transact</Text>
             )}
           </Card>
         </div>
@@ -177,9 +175,7 @@ const NFTDetail = () => {
               <div>Dealer Address: {goerliScanLink(dealInfo.dealer_name)}</div>
             </>
           ) : (
-            <div>
-              <Text>Unknown Deal</Text>
-            </div>
+            <Text>Unknown Deal</Text>
           )}
           <div className={styles.tableWrapper}>
             <Table

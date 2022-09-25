@@ -25,12 +25,11 @@ interface CreateDealModalProps {
   setIsModalVisible: (visibility: boolean) => void;
 }
 
-const { RangePicker } = DatePicker;
-
 const CreateDealModal = ({
   isModalVisible,
   setIsModalVisible,
 }: CreateDealModalProps) => {
+  const { RangePicker } = DatePicker;
   const [form] = Form.useForm<CreateDealFormValues>();
   const identity = useAppSelector((state) => state.identity);
   const dispatch = useAppDispatch();

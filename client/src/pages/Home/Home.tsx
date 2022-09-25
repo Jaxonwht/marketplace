@@ -9,9 +9,7 @@ const Home = () => {
   return (
     <div className={styles.home}>
       <div className={styles.homeTop}>
-        <div className={styles.homeTopCaption}>
-          <Text>AISSI</Text>
-        </div>
+        <Text className={styles.homeTopCaption}>AISSI</Text>
         <div className={styles.homeTopDesc}>
           <Text>Play, Pledge and Win</Text>
         </div>
