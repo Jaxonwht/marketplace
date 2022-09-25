@@ -49,12 +49,12 @@ To learn React, check out the [React documentation](https://reactjs.org/).
 Abc.123456
 457353
 
-pm2 start yarn --name "finx" -- start
+pm2 start yarn --name "aissi" -- start
 
-sudo scp -r ./src root@139.196.40.161:/root/taobao/finx
-sudo scp -r ./public root@139.196.40.161:/root/taobao/finx
-sudo scp -r ./package.json root@139.196.40.161:/root/taobao/finx
-sudo scp -r ./tsconfig.json root@139.196.40.161:/root/taobao/finx
+sudo scp -r ./src root@139.196.40.161:/root/taobao/aissi
+sudo scp -r ./public root@139.196.40.161:/root/taobao/aissi
+sudo scp -r ./package.json root@139.196.40.161:/root/taobao/aissi
+sudo scp -r ./tsconfig.json root@139.196.40.161:/root/taobao/aissi
 
 sudo scp -r ./build/\*\* root@139.196.40.161:/root/qingwah5
 
