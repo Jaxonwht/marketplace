@@ -30,16 +30,7 @@ const SearchInput = ({ selectStyle, selectPlaceHolder }: SearchInputProps) => {
   const handleSearch = (newValue: string) => {
     if (!!newValue) {
       const searchResults = fuse.search(newValue);
-      const result = searchResults[0];
-      setResults(
-        new Array(10)
-          .fill(searchResults)
-          .flat(1)
-          .map((result, index) => ({
-            ...result,
-            item: { ...result.item, serial_id: index },
-          }))
-      );
+      setResults(searchResults);
     } else {
       setResults([]);
     }
