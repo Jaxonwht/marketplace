@@ -28,7 +28,7 @@ body,
   background-image: linear-gradient(rgb(91, 168, 232), rgb(68, 121, 206));
   border: none;
   padding: 12px 25px;
-  color: #fff !important;
+  color: #fff;
   border-radius: 5px;
   font-weight: bold;
   cursor: pointer;
@@ -55,7 +55,7 @@ body,
   margin-right: 20px;
 }
 a {
-  color: #3279cc !important;
+  color: #3279cc;
 }
 input {
   line-height: 50px;

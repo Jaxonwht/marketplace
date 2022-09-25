@@ -2,27 +2,27 @@ import React from "react";
 import { Typography } from "antd";
 import styles from "./index.module.scss";
 
-const { Text, Title } = Typography;
+const { Text } = Typography;
 
 const Footer = () => {
   return (
     <div className={styles.footer}>
       <div className={styles.content}>
         <div className={styles.left}>
-          <Title level={3}>CONTACT INFO</Title>
+          <Text>CONTACT INFO</Text>
         </div>
         <div className={styles.right}>
           <div>
             <Text> Email: </Text>
             <a
-              href="mailto:masterSunDoctorNai@unicleChao.com"
+              href="mailto:contact@aissi.com"
               target="_blank"
               className={styles.email}
             >
-              masterSunDoctorNai@unicleChao.com
+              contact@aissi.com
             </a>
           </div>
-          <Text>Phone: (999)999-9999</Text>
+          <Text>Phone: (999) 999-9999</Text>
         </div>
       </div>
     </div>
