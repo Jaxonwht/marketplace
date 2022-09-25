@@ -58,7 +58,7 @@ const App = () => {
     dispatch(fetchAllDealInfo);
     dispatch(fetchBackendConfig);
     loadLocales();
-  }, []);
+  }, [dispatch, theme]);
 
   return initDone ? (
     <HashRouter>
