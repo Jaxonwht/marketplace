@@ -40,19 +40,13 @@ const SearchInput = ({ selectStyle, selectPlaceHolder }: SearchInputProps) => {
     setValue(newValue);
   };
 
-  const [willShowDetail, setWillShowDetail] = useState<Record<number, boolean>>(
-    {}
-  );
-  const handleMouseEnterResult = (serialId: number) =>
-    setWillShowDetail((prevState) => ({ ...prevState, [serialId]: true }));
-  const handleMouseLeaveResult = (serialId: number) =>
-    setWillShowDetail((prevState) => ({ ...prevState, [serialId]: false }));
+  const [showingDetail, setShowingDetail] = useState<number | undefined>();
 
   const options = results.map((result, index) => (
     <Option key={result.item.serial_id}>
       <div
-        onMouseEnter={() => handleMouseEnterResult(result.item.serial_id)}
-        onMouseLeave={() => handleMouseLeaveResult(result.item.serial_id)}
+        onMouseEnter={() => setShowingDetail(result.item.serial_id)}
+        onMouseLeave={() => setShowingDetail(undefined)}
       >
         <Descriptions
           column={1}
@@ -67,7 +61,8 @@ const SearchInput = ({ selectStyle, selectPlaceHolder }: SearchInputProps) => {
             </span>
           }
         >
-          {(index === 0 || !!willShowDetail[result.item.serial_id]) &&
+          {((showingDetail === undefined && index === 0) ||
+            showingDetail === result.item.serial_id) &&
             result.matches?.map((match) => {
               const { indices, key, value } = match;
               return (
