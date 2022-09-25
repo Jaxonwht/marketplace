@@ -2,8 +2,8 @@ import { HashRouter, Route, Routes } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 
 import Home from "./pages/Home/Home";
-import NNF from "./pages/NNF/NNF";
-import NNFDetail from "./pages/NNFDetail/NNFDetail";
+import NFT from "./pages/NFT/NFT";
+import NFTDetail from "./pages/NFTDetail/NFTDetail";
 import About from "./pages/About/About";
 import Signin from "./pages/Signin/Signin";
 import Signup from "./pages/Signup/Signup";
@@ -64,10 +64,10 @@ const App = () => {
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route path="/home" element={<Home />} />
-          <Route path="/nnf" element={<NNF />} />
+          <Route path="/nft" element={<NFT />} />
           <Route path="/about" element={<About />} />
-          <Route path="/nnfdetail">
-            <Route path=":dealSerialId" element={<NNFDetail />} />
+          <Route path="/nftdetail">
+            <Route path=":dealSerialId" element={<NFTDetail />} />
           </Route>
           <Route path="/signin" element={<Signin />} />
           <Route path="/singup" element={<Signup />} />

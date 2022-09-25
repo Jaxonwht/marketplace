@@ -1,9 +1,9 @@
-import styles from "./style.module.css";
+import styles from "./style.module.scss";
 import GeneratedImage from "../../components/generated_image/GeneratedImage";
 import { Dropdown, Select, Avatar, Typography } from "antd";
 
 const Home = () => {
-  const featuredUsers = ["NNF1", "NNF2", "NNF3", "NNF4", "NNF5"];
+  const featuredUsers = ["NFT1", "NFT2", "NFT3", "NFT4", "NFT5"];
   const { Text } = Typography;
 
   return (

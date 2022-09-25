@@ -3,7 +3,7 @@ import { Button, Table } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { Link } from "react-router-dom";
 
-import styles from "./style.module.css";
+import styles from "./style.module.scss";
 import CreateDealModal from "./CreateDealModal";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { selectIsDealer } from "../../selectors/identity";
@@ -23,7 +23,7 @@ interface DataType {
   multiplier: number;
 }
 
-const NNF = () => {
+const NFT = () => {
   const [isCreateDealModalVisible, setIsCreateDealModalVisible] =
     useState(false);
   const dispatch = useAppDispatch();
@@ -124,4 +124,4 @@ const NNF = () => {
   );
 };
 
-export default NNF;
+export default NFT;

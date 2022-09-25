@@ -4,8 +4,8 @@ let menus = [
     path: "/home",
     // children: [
     //   {
-    //     name: "NNF",
-    //     path:"/nnf",
+    //     name: "NFT",
+    //     path:"/nft",
     //     children: [
 
     //     ]
@@ -13,8 +13,8 @@ let menus = [
     // ]
   },
   {
-    name: "NNF",
-    path: "/nnf",
+    name: "NFT",
+    path: "/nft",
     children: [],
   },
 

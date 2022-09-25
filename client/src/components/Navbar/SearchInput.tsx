@@ -78,7 +78,7 @@ const SearchInput = ({ selectStyle, selectPlaceHolder }: SearchInputProps) => {
 
   const selectDeal = (serialId: string) => {
     setValue("");
-    navigate(`/nnfdetail/${serialId}`);
+    navigate(`/nftdetail/${serialId}`);
   };
 
   // TODO Use something other than this shitty shitty Select
