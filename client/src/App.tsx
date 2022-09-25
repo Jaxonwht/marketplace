@@ -52,7 +52,6 @@ const App = () => {
     Object.entries(themeContents).forEach(([key, value]: [string, string]) =>
       document.documentElement.style.setProperty(key, value)
     );
-    console.log("init=====");
 
     dispatch(setIsMobile(isMobile()));
     dispatch(fetchAllDealInfo);

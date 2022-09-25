@@ -73,9 +73,7 @@ const CreateDealModal = ({
         end_time: validatedValues.timeRange[1],
       };
       try {
-        const response = authenticatedAxiosInstance().post("/deal/", postBody);
-        const createdDealInfo = (await response).data as CreateDealResponse;
-        console.log(createdDealInfo);
+        authenticatedAxiosInstance().post("/deal/", postBody);
         setIsModalVisible(false);
         form.resetFields();
       } catch (e: any) {
