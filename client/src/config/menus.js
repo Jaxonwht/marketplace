@@ -1,7 +1,13 @@
 let menus = [
   {
-    name: "Home",
-    path: "/home",
+    name: "NFT",
+    path: "/nft",
+    children: [],
+  },
+
+  {
+    name: "About",
+    path: "/about",
     // children: [
     //   {
     //     name: "NFT",
@@ -11,16 +17,6 @@ let menus = [
     //     ]
     //   }
     // ]
-  },
-  {
-    name: "NFT",
-    path: "/nft",
-    children: [],
-  },
-
-  {
-    name: "About",
-    path: "/about",
   },
 ];
 export default menus;

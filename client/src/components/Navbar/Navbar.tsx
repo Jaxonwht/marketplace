@@ -4,7 +4,7 @@ import styles from "./index.module.scss";
 import { getUser } from "../../utils/storage";
 import MyMenu from "../Menu/Menu";
 import { Link, useNavigate } from "react-router-dom";
-import { Typography } from "antd";
+import { AutoComplete, Typography, Input } from "antd";
 import { isMobile } from "../../utils/utils";
 import { MenuOutlined } from "@ant-design/icons";
 import CryptoSignIn from "../../components/metamask/CryptoSignIn";
@@ -70,10 +70,7 @@ const Navbar = () => {
             />
           </div>
         </Link>
-        <SearchInput
-          selectPlaceHolder="Search Deal"
-          selectStyle={{ marginLeft: 10 }}
-        />
+        <SearchInput selectStyle={{ marginLeft: 10 }} />
         <div style={{ flex: 1 }}>
           <div className={styles.menus}>
             <MyMenu></MyMenu>
