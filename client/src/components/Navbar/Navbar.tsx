@@ -1,16 +1,12 @@
 // components/layout.js
 import React, { useEffect, useState } from "react";
-import styles from "./index.module.css";
-import { clear, getUser, storeCredentialsIfDev } from "../../utils/storage";
+import styles from "./index.module.scss";
+import { getUser } from "../../utils/storage";
 import MyMenu from "../Menu/Menu";
-
 import { Link, useNavigate } from "react-router-dom";
-import { Dropdown, Menu, Switch } from "antd";
-import intl from "react-intl-universal";
-import { useDispatch } from "react-redux";
+import { Typography } from "antd";
 import { isMobile } from "../../utils/utils";
 import { MenuOutlined } from "@ant-design/icons";
-import { request } from "http";
 import CryptoSignIn from "../../components/metamask/CryptoSignIn";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { Theme } from "../../reduxSlices/themeSlice";
@@ -18,13 +14,11 @@ import { refreshSignInStatus } from "../../reduxSlices/identitySlice";
 import { setIsMobile } from "../../reduxSlices/mobileSlice";
 import CryptoSignOut from "../metamask/CryptoSignOut";
 import GeneratedImage from "../generated_image/GeneratedImage";
-import {
-  fuzzySearchDealInfo,
-  selectAllNonClosedDealInfo,
-} from "../../selectors/dealInfo";
-import { fetchAllDealInfo } from "../../reduxSlices/dealInfoSlice";
+import { shortenAddress } from "../../utils/address";
+import SearchInput from "./SearchInput";
 
 const Navbar = () => {
+  const { Text } = Typography;
   const [navBg, setNavBg] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
   const dispatch = useAppDispatch();
@@ -56,19 +50,14 @@ const Navbar = () => {
 
   const signInDisplay = identity ? (
     <div className={styles["sign-out-container"]}>
-      <div className={styles.welcomeMessage}>
-        Welcome, {identity.account_type} {identity.username.substring(0, 8)}****
-      </div>
+      <Text className={styles.welcomeMessage}>
+        Welcome, {identity.account_type} {shortenAddress(identity.username)}
+      </Text>
       <CryptoSignOut />
     </div>
   ) : (
     <CryptoSignIn />
   );
-
-  const [searchStr, setSearchStr] = useState<string>("");
-
-  const fuzzySearchResults = useAppSelector(fuzzySearchDealInfo(searchStr));
-  console.log(fuzzySearchResults);
 
   return (
     <div className={`${styles.header} ${navBg ? styles.navBg : ""}`}>
@@ -76,34 +65,16 @@ const Navbar = () => {
         <Link to={"/home"}>
           <div className={styles.caption} style={{ cursor: "pointer" }}>
             <img
-              alt=""
+              alt="AISSI"
               className={styles.logo}
               src={require("../../assets/images/logo.jpg")}
-            ></img>
-            IIASS
+            />
           </div>
         </Link>
-        <div className={styles.searchInput}>
-          <img
-            style={{ width: 20, height: 20 }}
-            src={require("../../assets/images/search.png")}
-            alt=""
-          ></img>
-          <input
-            placeholder="Search Bar"
-            value={searchStr}
-            onChange={(e) => {
-              e.preventDefault();
-              setSearchStr(e.target.value);
-            }}
-            onKeyUp={(e) => {
-              if (e.keyCode === 13) {
-                dispatch(fetchAllDealInfo);
-                // request()
-              }
-            }}
-          ></input>
-        </div>
+        <SearchInput
+          selectPlaceHolder="Search Deal"
+          selectStyle={{ marginLeft: 10 }}
+        />
         <div style={{ flex: 1 }}>
           <div className={styles.menus}>
             <MyMenu></MyMenu>

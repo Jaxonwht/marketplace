@@ -6,14 +6,14 @@ export const promptSignIn = (
   onCloseCallback?: () => void
 ) => {
   notification["warn"]({
-    message: "Please sign in again",
+    message: "Please sign in to AISSI again.",
     description: (
       <span>
         Will redirect to homepage in{" "}
         <CountDownText
           countDownDurationSeconds={autoCloseDuration}
-          digits={1}
-          pollIntervalMilliseconds={500}
+          digits={0}
+          pollIntervalMilliseconds={1000}
         />
         . Click or this notification to immediately redirect.
       </span>

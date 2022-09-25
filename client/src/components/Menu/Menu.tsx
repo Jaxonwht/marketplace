@@ -4,12 +4,14 @@ import styles from "./index.module.css";
 import { clear, getUser } from "../../utils/storage";
 import menus from "../../config/menus";
 import { Link, useNavigate } from "react-router-dom";
+import { Typography } from "antd";
 import intl from "react-intl-universal";
 
 export default function Layout(props: any) {
   const navigate = useNavigate();
   const user = getUser();
   const [selectMenu, setSelectMenu] = useState(menus[0]);
+  const { Text } = Typography;
 
   return (
     <div className={styles.menu}>
@@ -34,7 +36,7 @@ export default function Layout(props: any) {
                 selectMenu === item ? styles.selectMenuItemName : ""
               }`}
             >
-              {item.name}
+              <Text>{item.name}</Text>
             </div>
             {item.children && item.children.length > 0 ? (
               <div className={styles.menuChildren}>

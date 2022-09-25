@@ -9,11 +9,7 @@ type GeneratedImageProps = Omit<ImgHTMLAttributes<HTMLImageElement>, "src"> & {
 const GeneratedImage = (props: GeneratedImageProps) => {
   const { generateSource, generateSize, ...imgProps } = props;
   const image = encodeURIComponent(toSvg(generateSource, generateSize));
-  return (
-    <div>
-      <img src={`data:image/svg+xml;utf8,${image}`} {...imgProps} />
-    </div>
-  );
+  return <img src={`data:image/svg+xml;utf8,${image}`} {...imgProps} />;
 };
 
 export default GeneratedImage;

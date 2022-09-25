@@ -23,7 +23,7 @@ export const { setOwnershipSummary } = ownershipSummarySlice.actions;
 
 export default ownershipSummarySlice.reducer;
 
-export const fetchOnwershipSummary =
+export const fetchOwnershipSummary =
   (username: string, asDealer: boolean) => async (dispatch: AppDispatch) => {
     try {
       const response = await authenticatedAxiosInstance().get(
