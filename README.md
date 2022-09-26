@@ -7,7 +7,7 @@ Some set up instructions for local development.
 ### Logging (Web Backend)
 
 In web backend, print statements will not appear in the console. Instead, you can import the `app` instance,
-and use `app.logger.info()` or `app.logger.error()` etc.
+and use `current_app.logger.info()` or `current_app.logger.error()` etc.
 
 ### Client Setup
 
