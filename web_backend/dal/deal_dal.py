@@ -73,9 +73,9 @@ def create_deal(
     dealer.lockup_balance = Dealer.lockup_balance + amount_needed
     if collection_id is not None:
         info = deal_info.get_deal_info_with_ids(collection_id, asset_id)
-        collection_name = get_not_none(info, 'collection_name')
-        if asset_id is not None:
-            collection_name += asset_id        
+        collection_name = get_not_none(info, "collection_name")
+        #  if asset_id is not None:
+        #  collection_name += asset_id
     else:
         # TODO Ziyi Add support for index
         # info = deal_info.get_info_index()
@@ -120,7 +120,7 @@ def close_deal(serial_id: int, force: bool = False) -> None:
     dealer: Dealer = flask_session.get(Dealer, deal.dealer_name, with_for_update={"key_share": True})
     if not dealer:
         abort(404, f"Dealer {deal.dealer_name} not found")
-    deal.closed_asset_price = 1.0  # TODO get the correct closed asset price
+    deal.closed_asset_price = deal_info.get_deal_current_price(deal)
     deal.closed = True
     for buyer_name, transaction_ids in prepare_ownerships_for_deal_before_close(deal.serial_id):
         buyer: Buyer = flask_session.get(Buyer, buyer_name, with_for_update={"key_share": True})

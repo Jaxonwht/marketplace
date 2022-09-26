@@ -1,6 +1,7 @@
 import requests
 import json
-from utils import *
+from nft_utils.utils import *
+
 
 def os_get_single_collection(collection_slug):
     """
@@ -14,7 +15,8 @@ def os_get_single_collection(collection_slug):
     url = f"{OPENSEA_API_HEADER}/collection/{collection_slug}"
     response = requests.get(url)
     res_json = json.loads(response.text)
-    return res_json['collection']
+    return res_json["collection"]
+
 
 def os_get_single_contrat(contract):
     # TODO(Add this back when API Key is available)
@@ -28,14 +30,18 @@ def os_get_single_contrat(contract):
     res_json = json.loads(response.text)
     return res_json
 
+
 def os_get_collections():
     pass
+
 
 def os_get_collection_contract_from_slug():
     pass
 
+
 def os_get_collection_creation_time():
     pass
+
 
 def os_get_collection_stats(collection_slug):
     """
@@ -53,8 +59,10 @@ def os_get_collection_stats(collection_slug):
     res_json = json.loads(response.text)
     return res_json
 
+
 def os_get_bundles():
     pass
+
 
 def os_get_owners(asset_contract_address, token_id):
     """Get owners info of an NFT asset
@@ -73,6 +81,7 @@ def os_get_owners(asset_contract_address, token_id):
     res = json.loads(response.text)
     return res
 
+
 def os_get_single_asset(asset_contract_address, token_id):
     """For Testnet NFTs Only
 
@@ -87,7 +96,7 @@ def os_get_single_asset(asset_contract_address, token_id):
     Returns:
         json: _description_
     """
-    
+
     if not isinstance(asset_contract_address, str):
         raise Exception("asset_contract_address must be string")
     if not isinstance(token_id, str):
@@ -98,6 +107,7 @@ def os_get_single_asset(asset_contract_address, token_id):
     response = requests.get(url)
     res_json = json.loads(response.text)
     return res_json
+
 
 # Testing Use Only
 if __name__ == "__main__":

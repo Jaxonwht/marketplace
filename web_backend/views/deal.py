@@ -99,9 +99,7 @@ def create_new_deal():
     start_time_str = get_not_none(request_body_json, "start_time")
     start_time = format_datetime_str_or_raise(start_time_str, current_app.logger)
     end_time_str = get_not_none(request_body_json, "end_time")
-    current_app.logger.info(f"\nFirst {end_time_str}\n")
     end_time = format_datetime_str_or_raise(end_time_str, current_app.logger)
-    current_app.logger.info(f"\nFirst {end_time}\n")
     multiplier = get_not_none(request_body_json, "multiplier")
     created_deal = create_deal(
         dealer_name,
