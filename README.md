@@ -7,7 +7,7 @@ Some set up instructions for local development.
 ### Logging (Web Backend)
 
 In web backend, print statements will not appear in the console. Instead, you can import the `app` instance,
-and use `app.logger.info()` or `app.logger.error()` etc.
+and use `current_app.logger.info()` or `current_app.logger.error()` etc.
 
 ### Client Setup
 
@@ -19,7 +19,7 @@ run at `localhost:3000`.
 This project uses Python 3.10. Please create a virtual environment and upgrade your pip.
 
 ```bash
-cd web
+cd web_backend
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -U pip wheel pip-tools
