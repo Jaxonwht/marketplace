@@ -10,8 +10,8 @@ from models.deal_model import Deal
 from models.dealer_model import Dealer
 from models.ownership_model import Ownership
 from models.transaction_model import Transaction
+from nft_utils.deal_info import get_deal_current_price, get_deal_info_with_ids
 from utils.profits_utils import profit_for_buyer
-import nft_utils.deal_info as deal_info
 from utils.json_utils import get_not_none
 
 
@@ -31,6 +31,11 @@ def get_deals(
 
 def get_deal_by_serial_id(serial_id: int) -> Optional[Deal]:
     return flask_session.get(Deal, serial_id)
+
+
+def get_deals_by_serial_ids(serial_ids: Iterable[int]) -> Iterable[Deal]:
+    for deal in flask_session.scalars(select(Deal).where(Deal.serial_id.in_(serial_ids))):
+        yield deal
 
 
 def create_deal(
@@ -71,11 +76,9 @@ def create_deal(
             f"Issuing these shares require a balance of {dealer.lockup_balance + amount_needed}, but the dealer only has {dealer.balance}",
         )
     dealer.lockup_balance = Dealer.lockup_balance + amount_needed
-    if collection_id is not None:
-        info = deal_info.get_deal_info_with_ids(collection_id, asset_id)
+    if is_nft_index:
+        info = get_deal_info_with_ids(collection_id, asset_id)
         collection_name = get_not_none(info, "collection_name")
-        #  if asset_id is not None:
-        #  collection_name += asset_id
     else:
         # TODO Ziyi Add support for index
         # info = deal_info.get_info_index()
@@ -120,7 +123,7 @@ def close_deal(serial_id: int, force: bool = False) -> None:
     dealer: Dealer = flask_session.get(Dealer, deal.dealer_name, with_for_update={"key_share": True})
     if not dealer:
         abort(404, f"Dealer {deal.dealer_name} not found")
-    deal.closed_asset_price = deal_info.get_deal_current_price(deal)
+    deal.closed_asset_price = get_deal_current_price(deal)
     deal.closed = True
     for buyer_name, transaction_ids in prepare_ownerships_for_deal_before_close(deal.serial_id):
         buyer: Buyer = flask_session.get(Buyer, buyer_name, with_for_update={"key_share": True})

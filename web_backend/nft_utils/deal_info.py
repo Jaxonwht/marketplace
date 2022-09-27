@@ -160,7 +160,7 @@ def get_sales_volume_collection(contract):
     return mn_get_collection_sales_volume_by_day(contract, 7)
 
 
-def get_sales_volume_asset():
+def get_sales_volume_asset(contract, token_id):
     pass
 
 
