@@ -32,10 +32,10 @@ def get_deal_prices_history(deal):
 
 def get_deal_current_price(deal):
     if deal_is_collection(deal):
-        return get_current_price(TYPE_COLLECTION, deal.collection_id, deal.extra_info)
+        return float(get_current_price(TYPE_COLLECTION, deal.collection_id, deal.extra_info))
     if deal_is_asset(deal):
-        return get_current_price(TYPE_ASSET, deal.collection_id, deal.asset_id, deal.extra_info)
-    return get_current_price(TYPE_INDEX, deal.extra_info)
+        return float(get_current_price(TYPE_ASSET, deal.collection_id, deal.asset_id, deal.extra_info))
+    return float(get_current_price(TYPE_INDEX, deal.extra_info))
 
 
 def get_deal_sales_volume(deal):

@@ -1,5 +1,5 @@
 import requests
-from utils import *
+from nft_utils.utils import *
 
 
 def mn_get_asset_raw_transactions(contract, token_id, ascending=True):
