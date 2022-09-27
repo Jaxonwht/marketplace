@@ -58,3 +58,7 @@ spec:
                   name: infura-provider-key-secret
               - secret:
                   name: platform-private-key-secret
+              - secret:
+                  name: mnemonic-api-key-secret
+              - secret:
+                  name: coinmarketcap-api-key-secret
