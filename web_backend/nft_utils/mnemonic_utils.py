@@ -27,7 +27,7 @@ def mn_get_asset_raw_transactions(contract, token_id, ascending=True):
         "transferTypes": "TRANSFER_TYPE_REGULAR",
     }
 
-    headers = {"X-API-Key": MN_API_KEY}
+    headers = {"X-API-Key": MNEMONIC_API_KEY}
 
     response = requests.get(url, headers=headers, params=query)
 
@@ -109,7 +109,7 @@ def mn_get_collection_avg_prices(contract, offset, step, ts=None):
         ts = datetime_to_mn_isoformat(datetime.datetime.now())
 
     query = {"duration": offset, "timestampLt": ts, "groupByPeriod": step}
-    headers = {"X-API-Key": MN_API_KEY}
+    headers = {"X-API-Key": MNEMONIC_API_KEY}
     response = requests.get(url, headers=headers, params=query)
     data = response.json()
 
@@ -155,7 +155,7 @@ def mn_get_collection_sales_volume(contract, offset, step, ts=None):
         ts = datetime_to_mn_isoformat(datetime.datetime.now())
 
     query = {"duration": offset, "timestampLt": ts, "groupByPeriod": step}
-    headers = {"X-API-Key": MN_API_KEY}
+    headers = {"X-API-Key": MNEMONIC_API_KEY}
     response = requests.get(url, headers=headers, params=query)
     data = response.json()
 

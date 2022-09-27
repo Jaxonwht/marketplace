@@ -30,6 +30,8 @@ services:
       - FLASK_SCHEDULER_USERNAME=scheduler
       - INFURA_PROVIDER_KEY
       - PLATFORM_PRIVATE_KEY
+      - MNEMONIC_API_KEY
+      - COINMARKETCAP_API_KEY
     volumes:
       - ./web_backend:/web_backend
     networks:

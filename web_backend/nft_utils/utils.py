@@ -1,5 +1,7 @@
 import json, math
 import datetime
+import os
+from pathlib import Path
 
 # from models.deal_model import Deal
 
@@ -20,7 +22,10 @@ OWNERS_TAIL = "owners?limit=20&order_by=created_date&order_direction=desc"
 QUICKNODE_HTTP_PROVIDER = "https://late-floral-frost.discover.quiknode.pro/d4e3fdf60e299990e90e39291a605e86b4cf2ae2/"
 QUICKNODE_OPTIONS = {"headers": {"x-qn-api-version": "1"}}
 # MNEMONIC Macros
-MN_API_KEY = "lLwbs2sA4AzUrJg2w8jtq7wRQDFzkjAJ7af45ASAqVFi0EDk"
+MNEMONIC_API_KEY = os.getenv("MNEMONIC_API_KEY")
+if MNEMONIC_API_KEY is None:
+    MNEMONIC_API_KEY = (Path("/var") / "MNEMONIC_API_KEY").read_text()
+
 MN_REQ_TRANSFER_HEADER = "https://ethereum.rest.mnemonichq.com/events/v1beta1/transfers/"
 MN_REQ_COLLECTION_PRICE_HEADER = "https://ethereum.rest.mnemonichq.com/pricing/v1beta1/prices/by_contract/"
 MN_REQ_COLLECTION_VOLUMN_HEADER = "https://ethereum.rest.mnemonichq.com/pricing/v1beta1/volumes/by_contract/"
@@ -35,12 +40,14 @@ MN_STEP_1_HR = "GROUP_BY_PERIOD_1_HOUR"
 MN_STEP_1_DAY = "GROUP_BY_PERIOD_1_DAY"
 MN_STEPS = (MN_STEP_15_MIN, MN_STEP_1_HR, MN_STEP_1_DAY)
 # CoinMarketCap Macros
-CMC_API_KEY = "8f86607f-8c64-470e-83e8-2fdfffc12f43"
+COINMARKETCAP_API_KEY = os.getenv("COINMARKETCAP_API_KEY")
+if COINMARKETCAP_API_KEY is None:
+    COINMARKETCAP_API_KEY = (Path("/var") / "COINMARKETCAP_API_KEY").read_text()
 CMC_BASE_URL = "https://pro-api.coinmarketcap.com"
 CMC_API_HEADER = {
     "Accepts": "application/json",
     "Accept-Encoding": "deflate, gzip",
-    "X-CMC_PRO_API_KEY": CMC_API_KEY,
+    "X-CMC_PRO_API_KEY": COINMARKETCAP_API_KEY,
 }
 CMC_INDEX_URL_BASE = "https://coinmarketcap.com/currencies"
 
