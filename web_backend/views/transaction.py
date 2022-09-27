@@ -1,6 +1,5 @@
 from flask import Blueprint, abort, jsonify, request
 from dal.transaction_dal import buy_shares, find_transactions, sell_shares
-
 from utils.json_utils import get_not_none
 
 transaction_bp = Blueprint("transaction", __name__, url_prefix="/transaction")
@@ -28,8 +27,7 @@ def post_buy_transaction():
     shares = get_not_none(request_body_json, "shares")
     if shares <= 0:
         abort(400, "Number of shares to buy must be a positive integer")
-    current_asset_price = 0.5  # TODO how to fetch this
-    created_transaction = buy_shares(buyer_name, deal_serial_id, shares, current_asset_price)
+    created_transaction = buy_shares(buyer_name, deal_serial_id, shares)
     return jsonify(buy_transaction_serial_id=created_transaction.serial_id)
 
 
@@ -51,8 +49,7 @@ def post_sell_transactions():
         abort(400, "Not a valid JSON body")
     buyer_name = get_not_none(request_body_json, "buyer_name")
     deal_serial_id = get_not_none(request_body_json, "deal_serial_id")
-    current_asset_price = 0.5  # TODO how to fetch this
-    created_transactions = sell_shares(buyer_name, deal_serial_id, current_asset_price)
+    created_transactions = sell_shares(buyer_name, deal_serial_id)
     return jsonify(sell_transaction_serial_ids=tuple(map(lambda x: x.serial_id, created_transactions)))
 
 

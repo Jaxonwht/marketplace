@@ -9,12 +9,12 @@ from models.buyer_model import Buyer
 from models.deal_model import Deal
 from models.dealer_model import Dealer
 from models.ownership_model import Ownership
-
 from models.transaction_model import Transaction
 from utils.profits_utils import profit_for_buyer
+import nft_utils.deal_info as deal_info
 
 
-def buy_shares(buyer_name: str, deal_serial_id: int, shares: int, current_asset_price: float) -> Transaction:
+def buy_shares(buyer_name: str, deal_serial_id: int, shares: int) -> Transaction:
     deal = flask_session.get(Deal, deal_serial_id, with_for_update={"key_share": True})
     if not deal:
         abort(404, f"Deal {deal_serial_id} not found")
@@ -32,6 +32,7 @@ def buy_shares(buyer_name: str, deal_serial_id: int, shares: int, current_asset_
     amount_needed = shares * deal.share_price
     if user_balance < amount_needed:
         abort(409, f"Buyer has {user_balance}, need at least {amount_needed}")
+    current_asset_price = deal_info.get_deal_current_price(deal)
     transaction = Transaction(
         buyer_name=buyer_name, deal_serial_id=deal.serial_id, shares=shares, asset_price=current_asset_price
     )
@@ -48,7 +49,7 @@ def buy_shares(buyer_name: str, deal_serial_id: int, shares: int, current_asset_
     return transaction
 
 
-def sell_shares(buyer_name: str, deal_serial_id: int, current_asset_price: float) -> List[Transaction]:
+def sell_shares(buyer_name: str, deal_serial_id: int) -> List[Transaction]:
     """Sell some shares from a buyer."""
     deal: Deal = flask_session.get(Deal, deal_serial_id, with_for_update={"key_share": True})
     if not deal:
@@ -63,6 +64,7 @@ def sell_shares(buyer_name: str, deal_serial_id: int, current_asset_price: float
     sell_transactions: List[Transaction] = []
     total_profit = 0.0
     total_shares_sold = 0
+    current_asset_price = deal_info.get_deal_current_price(deal)
     for ownership in prepare_ownerships_to_sell(deal_serial_id, buyer_name):
         buy_transaction: Transaction = flask_session.get(Transaction, ownership.transaction_serial_id)
         transaction = Transaction(
