@@ -50,7 +50,7 @@ export default function Home() {
       </div>
       <div className={styles.top}>
         <div className={styles.topLeft}>
-          <div>
+          <div className={styles.homeTopCaption}>
             <Text>How to join this game?</Text>
           </div>
           <p className={styles.topDesc}>
@@ -88,7 +88,7 @@ export default function Home() {
       </div>
       <div className={styles.top}>
         <div className={styles.topLeft}>
-          <div>
+          <div className={styles.homeTopCaption}>
             <Text>What makes AISSI different?</Text>
           </div>
           <p className={styles.topDesc}>
