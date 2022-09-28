@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { Button, Table, PageHeader, Descriptions } from "antd";
+import { Button, Table } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { useParams } from "react-router-dom";
 import styles from "./style.module.scss";
 import { Card } from "antd";
-import * as echarts from "echarts";
+import EChartsReact from "echarts-for-react";
 import BuySharesModal from "./BuySharesModal";
 import SellSharesModal from "./SellSharesModal";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
@@ -24,6 +24,12 @@ import {
 } from "../../utils/link";
 import GeneratedImage from "../../components/generated_image/GeneratedImage";
 import DealInfoCard from "./DealInfoCard";
+import { fetchAssetPriceHistory } from "../../reduxSlices/assetPriceHistorySlice";
+import { fetchAssetSaleVolume } from "../../reduxSlices/assetSaleVolumeSlice";
+import TradingEcharts from "../../components/graph/TradingEcharts";
+import { fetchOneAssetPrice } from "../../reduxSlices/assetPriceSlice";
+import { selectAssetPriceForDeal } from "../../selectors/assetPrice";
+import moment from "moment";
 
 interface DataType {
   key: number;
@@ -49,6 +55,13 @@ const NNFDetail = () => {
   const isBuyer = identity?.account_type === AccountType.BUYER;
   useEffect(() => {
     if (dealSerialId !== undefined) {
+      dispatch(fetchAssetPriceHistory(dealSerialId));
+      dispatch(fetchAssetSaleVolume(dealSerialId));
+      dispatch(fetchOneAssetPrice(dealSerialId));
+    }
+  }, [dispatch, dealSerialId]);
+  useEffect(() => {
+    if (dealSerialId !== undefined) {
       dispatch(fetchDealInfoForOneDeal(dealSerialId));
       if (!!identity) {
         const refreshProfitInfo = () =>
@@ -61,60 +74,24 @@ const NNFDetail = () => {
   }, [dispatch, dealSerialId, identity]);
   const profitDetail = useAppSelector((state) => state.profitDetail);
 
-  useEffect(() => {
-    loadChart1();
-    loadChart2();
-  }, []);
-
-  const loadChart1 = async () => {
-    var chartDom: any = document.getElementById("lineChart1");
-    var myChart = echarts.init(chartDom);
-    var option;
-
-    option = {
-      xAxis: {
-        type: "category",
-        data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-      },
-      yAxis: {
-        type: "value",
-      },
-      series: [
-        {
-          symbol: "none",
-          data: [150, 230, 224, 218, 135, 147, 2260],
-          type: "line",
-        },
-      ],
-    };
-
-    option && myChart.setOption(option);
-  };
-
-  const loadChart2 = async () => {
-    var chartDom: any = document.getElementById("lineChart2");
-    var myChart = echarts.init(chartDom);
-    var option;
-
-    option = {
-      xAxis: {
-        type: "category",
-        data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-      },
-      yAxis: {
-        type: "value",
-      },
-      series: [
-        {
-          symbol: "none",
-          data: [150, 230, 224, 518, 135, 147, 260],
-          type: "line",
-        },
-      ],
-    };
-
-    option && myChart.setOption(option);
-  };
+  const [assetPriceTimes, assetHistoricalPrices] = useAppSelector(
+    (state) => state.assetPriceHistory
+  );
+  const currentAssetPrice = useAppSelector(
+    selectAssetPriceForDeal(dealSerialId)
+  );
+  let allAssetPriceTimes: string[];
+  let allAssetHistoricalPrices: number[];
+  if (currentAssetPrice === undefined) {
+    allAssetHistoricalPrices = assetHistoricalPrices;
+    allAssetPriceTimes = assetPriceTimes;
+  } else {
+    allAssetHistoricalPrices = [...assetHistoricalPrices, currentAssetPrice];
+    allAssetPriceTimes = [...assetPriceTimes, moment.utc().format()];
+  }
+  const [assetSaleVolumeTimes, assetSaleVolumes] = useAppSelector(
+    (state) => state.assetSaleVolume
+  );
 
   const profitDetailTableColumns: ColumnsType<DataType> = [
     {
@@ -255,12 +232,20 @@ const NNFDetail = () => {
               }}
             >
               <div className={styles.cardHeader}>NFT Price</div>
-              <div id="lineChart1" className={styles.lineChart1}></div>
+              <TradingEcharts
+                className={styles.lineChart1}
+                timeSeries={allAssetPriceTimes}
+                timeData={allAssetHistoricalPrices}
+              />
             </div>
 
             <div className={styles.card}>
               <div className={styles.cardHeader}>Trading Volume</div>
-              <div id="lineChart2" className={styles.lineChart2}></div>
+              <TradingEcharts
+                className={styles.lineChart2}
+                timeSeries={assetSaleVolumeTimes}
+                timeData={assetSaleVolumes}
+              />
             </div>
           </div>
         </div>

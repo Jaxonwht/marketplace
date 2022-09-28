@@ -6,6 +6,7 @@ from werkzeug.exceptions import HTTPException
 from werkzeug.utils import import_string
 
 from exceptions.error_handlers import handle_http_exception
+from views.asset_prices import asset_prices_bp
 from views.hello_world import hello_world_bp
 from views.counter import counter_bp
 from views.deal import deal_bp
@@ -48,6 +49,7 @@ def create_app() -> Flask:
     app.register_blueprint(scheduler_status_bp)
     app.register_blueprint(platform_transaction_bp)
     app.register_blueprint(public_config_bp)
+    app.register_blueprint(asset_prices_bp)
 
     jwt.init_app(app)
 

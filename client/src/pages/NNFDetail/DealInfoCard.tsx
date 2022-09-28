@@ -1,6 +1,10 @@
 import ReactJson from "@textea/json-viewer";
 import { Card, Descriptions } from "antd";
+import { useEffect } from "react";
 import type { DealInfo } from "../../backendTypes";
+import { fetchOneAssetPrice } from "../../reduxSlices/assetPriceSlice";
+import { selectAssetPriceForDeal } from "../../selectors/assetPrice";
+import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { utcStringToLocalShort } from "../../utils/datetime";
 import styles from "./style.module.scss";
 
@@ -9,6 +13,17 @@ interface DealInfoCardProps {
 }
 
 const DealInfoCard = ({ dealInfo }: DealInfoCardProps) => {
+  const dispatch = useAppDispatch();
+  useEffect(() => {
+    if (dealInfo !== undefined) {
+      dispatch(fetchOneAssetPrice(dealInfo?.serial_id));
+    }
+  }, [dealInfo, dispatch]);
+
+  const currentAssetPrice = useAppSelector(
+    selectAssetPriceForDeal(dealInfo?.serial_id)
+  );
+
   return (
     <Card title="DEAL INFO" className={styles["narrow-window"]}>
       {!!dealInfo ? (
@@ -20,10 +35,7 @@ const DealInfoCard = ({ dealInfo }: DealInfoCardProps) => {
             {dealInfo.multiplier}
           </Descriptions.Item>
           <Descriptions.Item label="Current Asset Price">
-            {
-              // TODO ZIYI
-            }
-            0.5
+            {currentAssetPrice ?? "Unknown asset price"}
           </Descriptions.Item>
           <Descriptions.Item label="Start Time">
             {utcStringToLocalShort(dealInfo.start_time)}

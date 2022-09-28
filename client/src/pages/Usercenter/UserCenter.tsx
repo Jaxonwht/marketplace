@@ -18,6 +18,7 @@ import { getDealReadableName } from "../../backendTypes/utils";
 import GeneratedImage from "../../components/generated_image/GeneratedImage";
 import DealLinkWithIcon from "../../components/links/DealLinkWithIcon";
 import { promptSignIn } from "../../components/error/promptSignIn";
+import { fetchMultipleAssetPrices } from "../../reduxSlices/assetPriceSlice";
 
 interface DataType {
   key: number;
@@ -61,9 +62,14 @@ const UserCenter = () => {
       );
       return () => clearTimeout(timeoutId);
     }
-  }, [dispatch, identity]);
+  }, [dispatch, identity, navigate]);
   const ownershipSummary = useAppSelector((state) => state.ownershipSummary);
   const nonClosedDealInfo = useAppSelector(selectAllNonClosedDealInfo);
+  useEffect(() => {
+    dispatch(
+      fetchMultipleAssetPrices(Object.keys(nonClosedDealInfo).map(Number))
+    );
+  }, [dispatch, nonClosedDealInfo]);
   const ownershipSummaryFormattedList = ownershipSummary.map(
     (ownershipForDeal) => {
       const dealInfo = nonClosedDealInfo[ownershipForDeal.deal_serial_id];
@@ -104,7 +110,10 @@ const UserCenter = () => {
       ),
     },
     {
-      title: "Holding Shares",
+      title:
+        identity?.account_type === AccountType.DEALER
+          ? "Outstanding Shares"
+          : "Holding Shares",
       dataIndex: "holdingShares",
       key: "holdingShares",
     },
@@ -124,6 +133,8 @@ const UserCenter = () => {
       key: "currentAssetPrice",
     },
   ];
+
+  const currentAssetPrices = useAppSelector((state) => state.assetPrice);
 
   if (!identity) {
     return <Empty />;
@@ -192,8 +203,9 @@ const UserCenter = () => {
                   holdingShares: item.shares,
                   profit: item.profit,
                   profitPercentage: item.profitPercentage,
-                  // TODO: ZIYI!!
-                  currentAssetPrice: 0.5,
+                  currentAssetPrice:
+                    currentAssetPrices[item.dealSerialId] ??
+                    "Unknown asset price",
                 };
               })}
             />

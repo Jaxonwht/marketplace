@@ -7,6 +7,9 @@ import bakcendConfigReducer from "../reduxSlices/backendConfigSlice";
 import dealInfoReducer from "../reduxSlices/dealInfoSlice";
 import profitDetailReducer from "../reduxSlices/profitDetailSlice";
 import ownershipSummaryReducer from "../reduxSlices/ownershipSummarySlice";
+import assetPriceReducer from "../reduxSlices/assetPriceSlice";
+import assetPriceHistoryReducer from "../reduxSlices/assetPriceHistorySlice";
+import assetSaleVolumeReducer from "../reduxSlices/assetSaleVolumeSlice";
 
 const store = configureStore({
   reducer: {
@@ -18,6 +21,9 @@ const store = configureStore({
     dealInfo: dealInfoReducer,
     profitDetail: profitDetailReducer,
     ownershipSummary: ownershipSummaryReducer,
+    assetPrice: assetPriceReducer,
+    assetPriceHistory: assetPriceHistoryReducer,
+    assetSaleVolume: assetSaleVolumeReducer,
   },
 });
 
