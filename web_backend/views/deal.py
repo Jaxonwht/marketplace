@@ -1,6 +1,5 @@
 from typing import Any, Dict
 from flask_jwt_extended import jwt_required
-import requests
 from flask import Blueprint, abort, current_app, jsonify, request
 from werkzeug.exceptions import HTTPException
 
@@ -113,7 +112,7 @@ def create_new_deal():
         end_time,
         multiplier,
     )
-    response = requests.post(
+    response = current_app.config["SCHEDULER_REQUEST_SESSION"].post(
         f'{current_app.config["SCHEDULER_URL"]}/jobs/close-deal-in-future',
         json={"deal_serial_id": created_deal.serial_id, "end_time": end_time_str},
     )

@@ -5,6 +5,7 @@ import json
 from logging import DEBUG
 from eth_typing.evm import ChecksumAddress, HexAddress
 from eth_typing.encoding import HexStr
+from requests import Session
 from web3 import Web3
 
 from web3.contract import Contract
@@ -25,6 +26,7 @@ class Config:  # pylint: disable=too-few-public-methods
     JWT_TOKEN_LOCATION = ["headers"]
     PLATFORM_ADDRESS = "0x49d0739eb001ff73b394a5a2054694a650dc9cec"
     TOKEN_CURRENCY = "mwei"  # 6 decimals
+    SCHEDULER_REQUEST_SESSION = Session()
 
     @property
     def PLATFORM_PRIVATE_KEY(self) -> str:  # pylint: disable=invalid-name

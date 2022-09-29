@@ -35,8 +35,6 @@ spec:
           ports:
             - containerPort: 4000
           env:
-            - name: FLASK_ENV
-              value: production
             - name: FLASK_CONFIG
               value: ProductionConfig
       # The secret data is exposed to Containers in the Pod through a Volume.
