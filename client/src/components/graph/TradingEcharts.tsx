@@ -3,17 +3,20 @@ import EChartsReact from "echarts-for-react";
 
 type TradingEchartsProps = Omit<EChartsReactProps, "option"> & {
   timeSeries: string[];
-  timeData: number[];
+  timeData: number[][];
+  seriesLegends?: string[];
 };
 
 const TradingEcharts = ({
   timeSeries,
   timeData,
+  seriesLegends,
   ...otherProps
 }: TradingEchartsProps) => {
-  const zippedData = timeData.map(
-    (value, index) => [timeSeries[index], value] as [string, number]
-  );
+  const zippedData = timeSeries.map((timestamp, index) => [
+    timestamp,
+    ...timeData.map((data) => data[index]),
+  ]);
   const option = {
     tooltip: {
       trigger: "axis",
@@ -24,19 +27,24 @@ const TradingEcharts = ({
     yAxis: {
       type: "value",
     },
+    legend: {
+      data: seriesLegends,
+    },
     dataset: {
       source: zippedData,
-      dimensions: ["timestamp", "dataPoint"],
+      dimensions: [
+        "timestamp",
+        ...timeData.map((_value, index) => `dataPoint${index}`),
+      ],
     },
-    series: [
-      {
-        type: "line",
-        encode: {
-          x: "timestamp",
-          y: "dataPoint",
-        },
+    series: timeData.map((_value, index) => ({
+      name: seriesLegends?.[index],
+      type: "line",
+      encode: {
+        x: "timestamp",
+        y: `dataPoint${index}`,
       },
-    ],
+    })),
   };
   return <EChartsReact option={option} {...otherProps} />;
 };

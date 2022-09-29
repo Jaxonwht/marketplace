@@ -81,4 +81,8 @@ export type AssetPrices = Record<number, number | null>;
 
 export type AssetPriceHistory = [string[], number[]];
 
-export type AssetSaleVolume = [string[], number[]];
+export interface AssetSaleVolume {
+  readonly timestamps: string[];
+  readonly sale_counts: number[];
+  readonly sale_money_values: number[];
+}
