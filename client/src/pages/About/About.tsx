@@ -1,6 +1,6 @@
 import styles from "./style.module.css";
 import GeneratedImage from "../../components/generated_image/GeneratedImage";
-import { Dropdown, Select, Avatar, Typography } from "antd";
+import { Typography } from "antd";
 
 export default function Home() {
   const featuredUsers = ["NNFF1", "NNFF2", "NNFF3", "NNFF4", "NNFF5"];
@@ -139,7 +139,7 @@ export default function Home() {
       </div>
       <div className={styles.list}>
         {featuredUsers.map((user) => (
-          <div className={styles.listItem}>
+          <div className={styles.listItem} key={user}>
             <GeneratedImage
               generateSource={user}
               generateSize={120}

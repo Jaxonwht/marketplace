@@ -19,7 +19,7 @@ const DealSliderItem = ({ name, dealSerialId }: DealSliderItemProps) => {
       <GeneratedImage
         generateSource={dealSerialId}
         alt={name}
-        generateSize={100}
+        generateSize={80}
       />
       <div>{name}</div>
     </div>

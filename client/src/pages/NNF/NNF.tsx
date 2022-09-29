@@ -98,6 +98,7 @@ const NNF = () => {
       )}
       <div className={styles.font1}>Top Ongoing table</div>
       <Table
+        className={styles["deal-table"]}
         pagination={{ hideOnSinglePage: true }}
         columns={topOngoingTableColumns}
         dataSource={dealInfoList.map((item, i) => {
