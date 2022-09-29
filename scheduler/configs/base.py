@@ -3,7 +3,6 @@ from logging import DEBUG
 from pytz import utc
 from apscheduler.jobstores.sqlalchemy import SQLAlchemyJobStore
 from apscheduler.executors.pool import ThreadPoolExecutor
-from requests import Session
 
 
 class Config:  # pylint: disable=too-few-public-methods
@@ -24,4 +23,3 @@ class Config:  # pylint: disable=too-few-public-methods
     SCHEDULER_JOB_DEFAULTS = {"max_instances": 3}
     SCHEDULER_TIMEZONE = utc
     WEB_BACKEND_URL = "http://localhost:5000"
-    WEB_BACKEND_SESSION = Session()

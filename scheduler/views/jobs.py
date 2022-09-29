@@ -1,5 +1,6 @@
 """Jobs api views."""
 from flask import Blueprint, abort, current_app, jsonify, request
+from singletons.session import WEB_BACKEND_SESSION
 from utils.datetime_utils import format_datetime_str_or_raise
 from utils.json_utils import get_not_none
 from scheduler import scheduler
@@ -14,7 +15,7 @@ def jobs():
 
 
 def _request_close_deal(web_backend_url: str, serial_id: int) -> None:
-    response = current_app.config["WEB_BACKEND_SESSION"].patch(f"{web_backend_url}/deal/{serial_id}/close")
+    response = WEB_BACKEND_SESSION.patch(f"{web_backend_url}/deal/{serial_id}/close")
     response.raise_for_status()
 
 
