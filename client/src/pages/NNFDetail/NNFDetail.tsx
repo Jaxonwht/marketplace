@@ -89,9 +89,11 @@ const NNFDetail = () => {
     allAssetHistoricalPrices = [...assetHistoricalPrices, currentAssetPrice];
     allAssetPriceTimes = [...assetPriceTimes, moment.utc().format()];
   }
-  const [assetSaleVolumeTimes, assetSaleVolumes] = useAppSelector(
-    (state) => state.assetSaleVolume
-  );
+  const {
+    timestamps: assetSaleVolumeTimes,
+    saleCounts: assetSaleCounts,
+    saleMoneyValues: assetSaleMoneyValues,
+  } = useAppSelector((state) => state.assetSaleVolume);
 
   const profitDetailTableColumns: ColumnsType<DataType> = [
     {
@@ -235,7 +237,7 @@ const NNFDetail = () => {
               <TradingEcharts
                 className={styles.lineChart1}
                 timeSeries={allAssetPriceTimes}
-                timeData={allAssetHistoricalPrices}
+                timeData={[allAssetHistoricalPrices]}
               />
             </div>
 
@@ -244,7 +246,8 @@ const NNFDetail = () => {
               <TradingEcharts
                 className={styles.lineChart2}
                 timeSeries={assetSaleVolumeTimes}
-                timeData={assetSaleVolumes}
+                timeData={[assetSaleCounts, assetSaleMoneyValues]}
+                seriesLegends={["sale count", "sale money value"]}
               />
             </div>
           </div>

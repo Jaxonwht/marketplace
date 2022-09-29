@@ -198,7 +198,7 @@ def mn_get_collection_latest_avg_prices_by_day(contract, n_days):
     while n_days > n_days_options[idx] and idx < 3:
         idx += 1
     res = mn_get_collection_avg_prices(contract, offset=MN_OFFSET[n_days_options[idx]], step=MN_STEP_1_DAY)
-    return res[1][-n_days:]
+    return [res[0][-n_days:], res[1][-n_days:]]
 
 
 if __name__ == "__main__":

@@ -4,21 +4,34 @@ import type { AssetSaleVolume } from "../backendTypes";
 import { AppDispatch } from "../store";
 import { axiosInstance } from "../utils/network";
 
-type AssetSaleVolumeState = [string[], number[]];
+interface AssetSaleVolumeState {
+  readonly timestamps: string[];
+  readonly saleCounts: number[];
+  readonly saleMoneyValues: number[];
+}
 
-const initialState: AssetSaleVolumeState = [[], []];
+const initialState: AssetSaleVolumeState = {
+  timestamps: [],
+  saleCounts: [],
+  saleMoneyValues: [],
+};
 
 const assetSaleVolumeSlice = createSlice({
   name: "assetSaleVolume",
   initialState,
   reducers: {
-    setAssetSaleVolume: (_state, action: PayloadAction<AssetSaleVolume>) => {
-      // TODO ZIYI unify api
+    setAssetSaleVolume: (
+      state,
+      action: PayloadAction<AssetSaleVolume | null>
+    ) => {
       const payload = action.payload;
-      if (payload === null || !Array.isArray(payload[0])) {
+      if (payload === null) {
         return initialState;
       }
-      return payload;
+      const { timestamps, sale_counts, sale_money_values } = payload;
+      state.timestamps = timestamps;
+      state.saleCounts = sale_counts;
+      state.saleMoneyValues = sale_money_values;
     },
   },
 });
@@ -35,7 +48,7 @@ export const fetchAssetSaleVolume =
       );
       dispatch(setAssetSaleVolume(response.data));
     } catch (e) {
-      dispatch(setAssetSaleVolume(initialState));
+      dispatch(setAssetSaleVolume(null));
       console.error(e);
     }
   };

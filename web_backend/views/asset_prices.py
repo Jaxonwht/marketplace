@@ -72,12 +72,14 @@ def get_deal_asset_sale_volumes(serial_id: int):
         serial_id: The id of the deal to fetch history from.
 
     Returns:
-        [
-            ["2022-01-01", "2022-01-02"],
-            [1.2312, 1.234]
+        {
+            "timestamps": ["2022-01-01", "2022-01-02"],
+            "sale_counts": [12, 23],
+            "sale_money_values": [1.2312, 1.234]
         ]
     """
     deal = get_deal_by_serial_id(serial_id)
     if not deal:
         abort(404, f"Deal {serial_id} not found")
-    return jsonify(get_deal_sales_volume(deal))
+    timestamps, sale_counts, sale_money_values = get_deal_sales_volume(deal)
+    return jsonify(timestamps=timestamps, sale_counts=sale_counts, sale_money_values=sale_money_values)
