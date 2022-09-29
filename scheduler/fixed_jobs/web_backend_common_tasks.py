@@ -1,8 +1,7 @@
 """There are some tasks that require periodic execution."""
 
 from typing import cast
-import requests
-from flask import Flask
+from flask import Flask, current_app
 from scheduler import scheduler
 
 
@@ -10,7 +9,9 @@ from scheduler import scheduler
 def close_all_eligible_deals():
     """Close all the eligible deals that should be closed."""
     app = cast(Flask, scheduler.app)
-    response = requests.post(f'{app.config["WEB_BACKEND_URL"]}/deal/close-all-eligible')
+    response = current_app.config["WEB_BACKEND_SESSION"].post(
+        f'{app.config["WEB_BACKEND_URL"]}/deal/close-all-eligible'
+    )
     response.raise_for_status()
 
 
@@ -18,5 +19,7 @@ def close_all_eligible_deals():
 def check_pending_platform_transactions():
     """Check all the PENDING platform transactions."""
     app = cast(Flask, scheduler.app)
-    response = requests.post(f'{app.config["WEB_BACKEND_URL"]}/platform-transaction/check-all-pending')
+    response = current_app.config["WEB_BACKEND_SESSION"].post(
+        f'{app.config["WEB_BACKEND_URL"]}/platform-transaction/check-all-pending'
+    )
     response.raise_for_status()

@@ -7,4 +7,5 @@ pycodestyle
 pylint
 pynvim
 types-python-dateutil
+types-pytz
 types-requests

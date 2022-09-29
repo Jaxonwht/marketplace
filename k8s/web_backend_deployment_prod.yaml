@@ -35,8 +35,6 @@ spec:
           ports:
             - containerPort: 5000
           env:
-            - name: FLASK_ENV
-              value: production
             - name: FLASK_CONFIG
               value: ProductionConfig
             - name: FLASK_ADMIN_USERNAME
