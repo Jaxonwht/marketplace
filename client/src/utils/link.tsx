@@ -37,3 +37,16 @@ export const goerliScanLink = (
     {displayString}
   </a>
 );
+
+export const coinmarketcapLink = (
+  cmcName: string,
+  displayString: string = cmcName
+) => (
+  <a
+    target="_blank"
+    rel="noreferrer"
+    href={`https://coinmarketcap.com/currencies/${cmcName}`}
+  >
+    {displayString}
+  </a>
+);

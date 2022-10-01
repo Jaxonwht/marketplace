@@ -84,12 +84,12 @@ def wei_to_eth(wei):
 
 def datetime_to_iso8610(time, with_tz=False):
     if with_tz:
-        return time.strftime('%Y-%m-%dT%H:%M:%S.%f%z')
-    return time.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
+        return time.strftime("%Y-%m-%dT%H:%M:%S.%f%z")
+    return time.strftime("%Y-%m-%dT%H:%M:%S.%fZ")
 
 
 def iso8610_to_datetime(time_str):
-    return datetime.strptime(time_str, '%Y-%m-%dT%H:%M:%S.%f%z')
+    return datetime.strptime(time_str, "%Y-%m-%dT%H:%M:%S.%f%z")
 
 
 def time_series_group_by_day(time_arr):
@@ -114,14 +114,13 @@ def time_series_group_by_day(time_arr):
 
 # deal related helper functions
 def deal_is_collection(deal):
-    if deal.collection_id is not None:
-        return deal.asset_id is None
+    return not deal.is_nft_index and deal.asset_id is not None
 
 
 def deal_is_asset(deal):
     # TODO (Maybe add check to catch no collection_id but asset_id?)
-    return deal.asset_id is not None
+    return not deal.is_nft_index and deal.asset_id is not None
 
 
 def deal_is_index(deal):
-    return deal.collection_id is None
+    return deal.is_nft_index

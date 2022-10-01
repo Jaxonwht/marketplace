@@ -36,7 +36,7 @@ def get_deal_current_price(deal):
         return float(get_current_price(TYPE_COLLECTION, deal.collection_id, deal.extra_info))
     if deal_is_asset(deal):
         return float(get_current_price(TYPE_ASSET, deal.collection_id, deal.asset_id, deal.extra_info))
-    return float(get_current_price(TYPE_INDEX, deal.extra_info))
+    return float(get_current_price(TYPE_INDEX, None, extra_info=deal.extra_info))
 
 
 def get_deal_sales_volume(deal):
@@ -120,9 +120,9 @@ def get_info_index(index_metadata):
     Returns:
         dict: keys: [id(int), name(str), cmc_url(str), fullname(str), url(str)]
     """
-    cmc_id = index_metadata['cmc_id']
+    cmc_id = index_metadata["cmc_id"]
     # cmc_name = index_metadata['cmc_name']
-    return cmc_get_info_by_id(cmc_id)
+    return cmc_get_index_info_by_id(cmc_id)
 
 
 def get_prices_history(type, contract, token_id=None, extra_info=None):
@@ -171,7 +171,7 @@ def get_prices_history_index(index_metadata):
     Returns:
         list[list]: [timestamp(list of str), prices(list of float)]
     """
-    cmc_id = index_metadata['cmc_id']
+    cmc_id = index_metadata["cmc_id"]
     return cmc_get_index_past_nday_prices(cmc_id)
 
 
@@ -221,7 +221,7 @@ def get_current_price_index(index_metadata):
     Returns:
         float: latest quote price of this index
     """
-    cmc_id = index_metadata['cmc_id']
+    cmc_id = index_metadata["cmc_id"]
     return cmc_get_index_latest_price(cmc_id)
 
 
@@ -242,7 +242,7 @@ def get_sales_volume_collection(contract):
     Returns:
         list[list]: [
             timestamp(list of str),
-            sales count(list of float), 
+            sales count(list of float),
             volume=sales count * sales price(list of float)
         ]
     """
@@ -260,7 +260,7 @@ def get_sales_volume_asset(contract, token_id):
     Returns:
         list[list]: [
             timestamp(list of str),
-            sales count(list of float), 
+            sales count(list of float),
             volume=sales count * sales price(list of float)
         ]
     """
@@ -280,7 +280,7 @@ def get_sales_volume_index(index_metadata):
             volume=sales count * sales price(list of float)
         ]
     """
-    cmc_id = index_metadata['cmc_id']
+    cmc_id = index_metadata["cmc_id"]
     return cmc_get_index_past_nday_volume(cmc_id)
 
 
@@ -337,7 +337,7 @@ if __name__ == "__main__":
     res = get_prices_history_asset(contract, token_id)
     print(res, type(res[1][0]))
 
-    res = get_prices_history_index({'cmc_id': 9816})
+    res = get_prices_history_index({"cmc_id": 9816})
     print(res, type(res[1][0]))
 
     res = get_current_price_collection(contract)
@@ -346,7 +346,7 @@ if __name__ == "__main__":
     res = get_current_price_asset(contract, token_id)
     print(res, type(res))
 
-    res = get_current_price_index({'cmc_id': 9816})
+    res = get_current_price_index({"cmc_id": 9816})
     print(res, type(res))
 
     res = get_sales_volume_collection(contract)
@@ -355,5 +355,5 @@ if __name__ == "__main__":
     res = get_sales_volume_asset(contract, token_id)
     print(res, type(res[1][0]))
 
-    res = get_sales_volume_index({'cmc_id': 9816})
+    res = get_sales_volume_index({"cmc_id": 9816})
     print(res, type(res[1][0]))

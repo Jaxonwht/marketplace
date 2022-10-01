@@ -20,6 +20,7 @@ import {
   openseaAssetLink,
   openseaCollectionLink,
   goerliScanLink,
+  coinmarketcapLink,
 } from "../../utils/link";
 import GeneratedImage from "../../components/generated_image/GeneratedImage";
 import DealInfoCard from "./DealInfoCard";
@@ -164,7 +165,9 @@ const NFTDetail = () => {
             <>
               <div className={styles["dashboardHeader__main-header"]}>
                 {`${dealInfo.is_nft_index ? "Index" : "Collection"}`} Name:{" "}
-                {openseaCollectionLink(dealInfo.collection_name)}
+                {dealInfo.is_nft_index
+                  ? coinmarketcapLink(dealInfo.collection_name)
+                  : openseaCollectionLink(dealInfo.collection_name)}
               </div>
               {!!dealInfo.asset_id && (
                 <div className={styles["dashboardHeader__sub-header"]}>
