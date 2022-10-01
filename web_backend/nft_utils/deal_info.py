@@ -28,7 +28,7 @@ def get_deal_prices_history(deal):
         return get_prices_history(TYPE_COLLECTION, deal.collection_id, deal.extra_info)
     if deal_is_asset(deal):
         return get_prices_history(TYPE_ASSET, deal.collection_id, deal.asset_id, deal.extra_info)
-    return get_prices_history(TYPE_INDEX, deal.extra_info)
+    return get_prices_history(TYPE_INDEX, None, extra_info=deal.extra_info)
 
 
 def get_deal_current_price(deal):
@@ -44,7 +44,7 @@ def get_deal_sales_volume(deal):
         return get_sales_volume(TYPE_COLLECTION, deal.collection_id, deal.extra_info)
     if deal_is_asset(deal):
         return get_sales_volume(TYPE_ASSET, deal.collection_id, deal.asset_id, deal.extra_info)
-    return get_sales_volume(TYPE_INDEX, deal.extra_info)
+    return get_sales_volume(TYPE_INDEX, None, extra_info=deal.extra_info)
 
 
 # Main Functions
