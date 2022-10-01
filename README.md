@@ -125,6 +125,8 @@ secret = (Path("<mount-path>") / "<key>").read_text()
 4. PERPETUAL_SCHEDULER_TOKEN
 5. INFURA_PROVIDER_KEY
 6. PLATFORM_PRIVATE_KEY
+7. COINMARKETCAP_API_KEY
+8. MNEMONIC_API_KEY
 
 ### Stage
 
