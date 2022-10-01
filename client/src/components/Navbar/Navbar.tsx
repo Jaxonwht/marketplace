@@ -70,7 +70,10 @@ const Navbar = () => {
             />
           </div>
         </Link>
-        <SearchInput selectStyle={{ marginLeft: 10 }} />
+        <SearchInput
+          selectPlaceHolder="Search Deal"
+          selectStyle={{ marginLeft: 10 }}
+        />
         <div style={{ flex: 1 }}>
           <div className={styles.menus}>
             <MyMenu></MyMenu>
