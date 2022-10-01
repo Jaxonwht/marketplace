@@ -15,7 +15,7 @@ const DealLinkWithIcon = ({
 }: DealLinkWithIconProps) => {
   return (
     <div className={styles["link-icon-wrapper"]}>
-      <Link to={`/nnfdetail/${dealSerialId}`}>{dealName}</Link>
+      <Link to={`/nftdetail/${dealSerialId}`}>{dealName}</Link>
       <GeneratedImage generateSource={dealSerialId} generateSize={iconSize} />
     </div>
   );

@@ -1,9 +1,9 @@
-import styles from "./style.module.css";
+import styles from "./style.module.scss";
 import GeneratedImage from "../../components/generated_image/GeneratedImage";
 import { Typography } from "antd";
 
 export default function Home() {
-  const featuredUsers = ["NNFF1", "NNFF2", "NNFF3", "NNFF4", "NNFF5"];
+  const featuredUsers = ["NFT1", "NFT2", "NFT3", "NFT4", "NFT5"];
   const { Text } = Typography;
 
   return (
@@ -43,7 +43,7 @@ export default function Home() {
         <div>
           <img
             style={{ width: 600, height: 600, objectFit: "contain" }}
-            src={require("../../assets/images/nnf.jpg")}
+            src={require("../../assets/images/nft.jpg")}
             alt=""
           ></img>
         </div>
@@ -55,17 +55,17 @@ export default function Home() {
           </div>
           <p className={styles.topDesc}>
             <Text>
-              Users may use u to invest in our products. Simply transfer u into
-              aissi from their wallet and choose the product. Platform will
+              Users may use u to invest in our products. Simply transfer USDT
+              into Aissi from their wallet and choose the product. Platform will
               calculate number of the spot share or perpetual according to their
-              u amount.
+              USDT amount.
             </Text>
           </p>
           <p className={styles.topDesc}>
             <Text>
               NFT holders can choose to provide liquidity for our NFT spot
-              liquidity pool. Users can assess their NFT first, aissi will
-              decide whether or not the price is acceptable, if not, aissi will
+              liquidity pool. Users can assess their NFT first, Aissi will
+              decide whether or not the price is acceptable, if not, Aissi will
               provide an acceptable valuation. When pledgers agree on the price,
               the NFT will go into the pool, and pledgers can see their NFT
               values and percent of NFT shares sold, and start earning the

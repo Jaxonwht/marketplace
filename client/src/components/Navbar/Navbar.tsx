@@ -4,7 +4,7 @@ import styles from "./index.module.scss";
 import { getUser } from "../../utils/storage";
 import MyMenu from "../Menu/Menu";
 import { Link, useNavigate } from "react-router-dom";
-import { Typography } from "antd";
+import { AutoComplete, Typography, Input } from "antd";
 import { isMobile } from "../../utils/utils";
 import { MenuOutlined } from "@ant-design/icons";
 import CryptoSignIn from "../../components/metamask/CryptoSignIn";
@@ -26,7 +26,6 @@ const Navbar = () => {
   const identity = useAppSelector((state) => state.identity);
 
   const user = getUser();
-  console.log("getUser", user);
 
   useEffect(() => {
     window.onscroll = function () {

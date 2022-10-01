@@ -1,26 +1,26 @@
-let menus = [
+const menus = [
   {
     name: "Home",
     path: "/home",
-    // children: [
-    //   {
-    //     name: "NNF",
-    //     path:"/nnf",
-    //     children: [
-
-    //     ]
-    //   }
-    // ]
   },
   {
-    name: "NNF",
-    path: "/nnf",
+    name: "NFT",
+    path: "/nft",
     children: [],
   },
 
   {
     name: "About",
     path: "/about",
+    // children: [
+    //   {
+    //     name: "NFT",
+    //     path:"/nft",
+    //     children: [
+
+    //     ]
+    //   }
+    // ]
   },
 ];
 export default menus;

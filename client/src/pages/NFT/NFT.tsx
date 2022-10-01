@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import { Button, Table } from "antd";
+import { Button, Table, Typography } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { Link } from "react-router-dom";
 
-import styles from "./style.module.css";
+import styles from "./style.module.scss";
 import CreateDealModal from "./CreateDealModal";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { selectIsDealer } from "../../selectors/identity";
@@ -23,7 +23,8 @@ interface DataType {
   multiplier: number;
 }
 
-const NNF = () => {
+const NFT = () => {
+  const { Text } = Typography;
   const [isCreateDealModalVisible, setIsCreateDealModalVisible] =
     useState(false);
   const dispatch = useAppDispatch();
@@ -96,7 +97,7 @@ const NNF = () => {
           Create a deal
         </Button>
       )}
-      <div className={styles.font1}>Top Ongoing table</div>
+      <Text className={styles.font1}>Top Ongoing table</Text>
       <Table
         className={styles["deal-table"]}
         pagination={{ hideOnSinglePage: true }}
@@ -124,4 +125,4 @@ const NNF = () => {
   );
 };
 
-export default NNF;
+export default NFT;

@@ -1,6 +1,6 @@
 import ReactJson from "@textea/json-viewer";
-import { Card, Descriptions } from "antd";
 import { useEffect } from "react";
+import { Card, Descriptions, Typography } from "antd";
 import type { DealInfo } from "../../backendTypes";
 import { fetchOneAssetPrice } from "../../reduxSlices/assetPriceSlice";
 import { selectAssetPriceForDeal } from "../../selectors/assetPrice";
@@ -24,6 +24,7 @@ const DealInfoCard = ({ dealInfo }: DealInfoCardProps) => {
     selectAssetPriceForDeal(dealInfo?.serial_id)
   );
 
+  const { Text } = Typography;
   return (
     <Card title="DEAL INFO" className={styles["narrow-window"]}>
       {!!dealInfo ? (
@@ -61,7 +62,7 @@ const DealInfoCard = ({ dealInfo }: DealInfoCardProps) => {
           )}
         </Descriptions>
       ) : (
-        <div>Unknown Deal??</div>
+        <Text>Unknown Deal</Text>
       )}
     </Card>
   );

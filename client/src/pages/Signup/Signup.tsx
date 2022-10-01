@@ -29,7 +29,7 @@ const Signup = (props: any) => {
     console.log("Received values of form: ", values);
 
     // let res = await request(
-    //   '/v2/nnf/signUp',
+    //   '/v2/nft/signUp',
     //   {
     //     username: values.email,
     //     password: values.password,
@@ -143,7 +143,7 @@ const Signup = (props: any) => {
       <div className={style.tailfont}>
         {intl.get("home.needMerchant")}?
         <a
-          href="https://otc.finxgateway.exchange/register"
+          href="https://otc.aissigateway.exchange/register"
           target="new"
           style={{ marginLeft: 10 }}
         >

@@ -14,7 +14,7 @@ const DealSliderItem = ({ name, dealSerialId }: DealSliderItemProps) => {
     <div
       className={styles["list-item"]}
       key={dealSerialId}
-      onClick={() => navigate(`/nnfdetail/${dealSerialId}`)}
+      onClick={() => navigate(`/nftdetail/${dealSerialId}`)}
     >
       <GeneratedImage
         generateSource={dealSerialId}

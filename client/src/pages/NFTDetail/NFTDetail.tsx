@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { Button, Table } from "antd";
+import { Button, Table, Typography } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { useParams } from "react-router-dom";
 import styles from "./style.module.scss";
 import { Card } from "antd";
-import EChartsReact from "echarts-for-react";
 import BuySharesModal from "./BuySharesModal";
 import SellSharesModal from "./SellSharesModal";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
@@ -41,7 +40,8 @@ interface DataType {
 
 const PROFIT_INFO_REFRESH_MS = 3000;
 
-const NNFDetail = () => {
+const NFTDetail = () => {
+  const { Text } = Typography;
   const [isBuySharesModalVisible, setIsBuySharesModalVisible] = useState(false);
   const [isSellSharesModalVisible, setIsSellSharesModalVisible] =
     useState(false);
@@ -155,7 +155,7 @@ const NNFDetail = () => {
                 </Button>
               </>
             ) : (
-              <div>Sign in as a buyer to transact</div>
+              <Text>Sign in as a buyer to transact</Text>
             )}
           </Card>
         </div>
@@ -175,7 +175,7 @@ const NNFDetail = () => {
               <div>Dealer Address: {goerliScanLink(dealInfo.dealer_name)}</div>
             </>
           ) : (
-            "Unknown Deal"
+            <Text>Unknown Deal</Text>
           )}
           <div className={styles.tableWrapper}>
             <Table
@@ -268,4 +268,4 @@ const NNFDetail = () => {
   );
 };
 
-export default NNFDetail;
+export default NFTDetail;
