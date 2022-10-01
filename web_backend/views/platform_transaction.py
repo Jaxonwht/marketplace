@@ -36,6 +36,7 @@ def withdraw():
 
 
 @platform_transaction_bp.post("/<transaction_hash>")
+@jwt_required()
 def post_platform_transaction(transaction_hash: str):
     """
     Add a platform transaction to the database. This transaction represents an actual token
@@ -58,7 +59,9 @@ def post_platform_transaction(transaction_hash: str):
     return jsonify(transaction_hash=transaction_hash)
 
 
+# TODO: Only allowed to view own transactions
 @platform_transaction_bp.get("/<transaction_hash>")
+@jwt_required()
 def get_platform_transaction_by_hash(transaction_hash: str):
     """
     Get a transaction with the provided hash.
@@ -73,6 +76,8 @@ def get_platform_transaction_by_hash(transaction_hash: str):
 
 
 @platform_transaction_bp.post("/check-all-pending")
+@jwt_required()
+@admin_jwt_required
 def check_all_pending_platform_transactions():
     """
     Check all pending platform transactions. No parameters or arguments.

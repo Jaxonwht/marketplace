@@ -11,6 +11,7 @@ from utils.json_utils import get_not_none
 buyer_bp = Blueprint("buyer", __name__, url_prefix="/buyer")
 
 
+# TODO: Secure this route
 @buyer_bp.route("/", methods=["GET"])
 def get_buyers():
     """
@@ -31,6 +32,7 @@ def get_buyers():
     return jsonify(tuple(buyer.info for buyer in buyers))
 
 
+# TODO: Secure this route
 @buyer_bp.route("/<name>", methods=["GET"])
 def get_buyer(name: str):
     """

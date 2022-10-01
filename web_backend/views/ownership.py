@@ -40,6 +40,7 @@ def get_profits_summary(user_name: str):
     return jsonify(tuple(find_ownership_summaries(user_name.lower(), as_dealer)))
 
 
+# TODO: Secure this route
 @ownership_bp.get("/")
 def query_ownerships():
     """

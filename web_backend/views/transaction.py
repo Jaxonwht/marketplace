@@ -5,6 +5,7 @@ from utils.json_utils import get_not_none
 transaction_bp = Blueprint("transaction", __name__, url_prefix="/transaction")
 
 
+# TODO: Secure this route
 @transaction_bp.post("/buy")
 def post_buy_transaction():
     """
