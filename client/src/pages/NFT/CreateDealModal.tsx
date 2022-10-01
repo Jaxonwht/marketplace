@@ -49,11 +49,18 @@ const CreateDealModal = ({
   const handleSubmit = async () => {
     try {
       const validatedValues = await form.validateFields();
-      const { isNftIndex, collectionId } = validatedValues;
+      const { isNftIndex, collectionId, assetId } = validatedValues;
       if (!isNftIndex && !web3.utils.isAddress(collectionId)) {
         Modal.error({
           title: "Invalid Collection Address",
           content: <div>The address is not a valid contract address</div>,
+        });
+        return;
+      }
+      if (isNftIndex && !!assetId) {
+        Modal.error({
+          title: "Invalid Index",
+          content: <div>We do not support NFT indices with asset_id</div>,
         });
         return;
       }
