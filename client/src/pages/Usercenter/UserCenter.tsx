@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, Empty, Table } from "antd";
+import { Button, Empty, Table, Typography } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { useNavigate } from "react-router-dom";
 import styles from "./style.module.scss";
@@ -19,6 +19,7 @@ import GeneratedImage from "../../components/generated_image/GeneratedImage";
 import DealLinkWithIcon from "../../components/links/DealLinkWithIcon";
 import { promptSignIn } from "../../components/error/promptSignIn";
 import { fetchMultipleAssetPrices } from "../../reduxSlices/assetPriceSlice";
+import { shortenAddress } from "../../utils/address";
 
 interface DataType {
   key: number;
@@ -32,6 +33,7 @@ interface DataType {
 const ACCOUNT_INFO_REFRESH_MS = 3000;
 
 const UserCenter = () => {
+  const { Text } = Typography;
   const [isAddBalanceModalVisible, setIsAddBalanceModalVisible] =
     useState(false);
   const [isWithdrawModalVisible, setIsWithdrawModalVisible] = useState(false);
@@ -148,16 +150,16 @@ const UserCenter = () => {
           generateSource={identity?.username}
           alt={identity?.username}
         />
-        <div style={{ fontSize: 20, fontWeight: "bold", marginTop: 10 }}>
-          {identity?.username?.substring(0, 10) || "Unknown user"}
-        </div>
-        <div style={{ fontSize: 20, marginTop: 20 }}>
+        <Text strong style={{ fontSize: 20, marginTop: 10 }}>
+          {shortenAddress(identity?.username) || "Unknown user"}
+        </Text>
+        <Text style={{ fontSize: 20, marginTop: 20 }}>
           Balance: {balance?.balance || 0}
-        </div>
+        </Text>
         {balance?.lockup_balance && (
-          <div style={{ fontSize: 20, marginTop: 0 }}>
+          <Text style={{ fontSize: 20, marginTop: 0 }}>
             Lock-up balance: {balance.lockup_balance}
-          </div>
+          </Text>
         )}
         <Button
           className={styles["add-balance-button"]}
@@ -187,8 +189,8 @@ const UserCenter = () => {
           }}
         >
           <div className={styles.cardHeader}>
-            <div style={{ fontWeight: "bold" }}>Participating</div>
-            <div>Total Deal Balance: 10.89</div>
+            <Text strong>Participating</Text>
+            <Text>Total Deal Balance: 10.89</Text>
           </div>
 
           <div className={styles.listContainer}>

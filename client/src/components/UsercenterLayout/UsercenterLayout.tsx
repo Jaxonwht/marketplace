@@ -91,10 +91,8 @@ export default function Layout(props: any) {
     },
   ]);
 
-  console.log("params", location);
   useEffect(() => {
     if (location.pathname === "/usercenter") {
-      console.log("redirext");
       navigate("dashboard");
     }
   }, []);

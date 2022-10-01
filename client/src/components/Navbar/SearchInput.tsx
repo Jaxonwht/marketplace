@@ -1,6 +1,6 @@
+import { ReactNode, useEffect, useState } from "react";
 import { Descriptions, Select } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
-import { ReactNode, useEffect, useState } from "react";
 import type Fuse from "fuse.js";
 import type { DealInfo } from "../../backendTypes";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
@@ -18,7 +18,6 @@ interface SearchInputProps {
 
 const SearchInput = ({ selectStyle, selectPlaceHolder }: SearchInputProps) => {
   const [results, setResults] = useState<Fuse.FuseResult<DealInfo>[]>([]);
-  const [value, setValue] = useState<string>("");
   const { Option } = Select;
   const fuse = useAppSelector(fuzzySearchFuse);
   const dispatch = useAppDispatch();
@@ -27,17 +26,13 @@ const SearchInput = ({ selectStyle, selectPlaceHolder }: SearchInputProps) => {
   }, [dispatch]);
   const navigate = useNavigate();
 
-  const handleSearch = (newValue: string) => {
-    if (!!newValue) {
-      const searchResults = fuse.search(newValue);
+  const handleSearch = (value: string) => {
+    if (!!value) {
+      const searchResults = fuse.search(value);
       setResults(searchResults);
     } else {
       setResults([]);
     }
-  };
-
-  const handleChange = (newValue: string) => {
-    setValue(newValue);
   };
 
   const [showingDetail, setShowingDetail] = useState<number | undefined>();
@@ -77,24 +72,20 @@ const SearchInput = ({ selectStyle, selectPlaceHolder }: SearchInputProps) => {
   ));
 
   const selectDeal = (serialId: string) => {
-    setValue("");
-    navigate(`/nnfdetail/${serialId}`);
+    navigate(`/nftdetail/${serialId}`);
   };
 
-  // TODO Use something other than this shitty shitty Select
   return (
     <Select
       className={styles["search-input"]}
       showSearch
       dropdownMatchSelectWidth={550}
-      value={value}
       placeholder={selectPlaceHolder}
       style={selectStyle}
       defaultActiveFirstOption={false}
       showArrow={true}
       filterOption={false}
       onSearch={handleSearch}
-      onChange={handleChange}
       notFoundContent={null}
       suffixIcon={<SearchOutlined />}
       onSelect={selectDeal}

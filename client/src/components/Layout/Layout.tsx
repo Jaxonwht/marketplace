@@ -2,13 +2,7 @@
 import React, { useEffect } from "react";
 import styles from "./style.module.css";
 import { clear, getUser } from "../../utils/storage";
-import {
-  Link,
-  Outlet,
-  useNavigate,
-  useParams,
-  useLocation,
-} from "react-router-dom";
+import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import Navbar from "../Navbar/Navbar";
 import Footer from "../Footer/Footer";
 
@@ -17,10 +11,8 @@ export default function Layout(props: any) {
   const location = useLocation();
   const navigate = useNavigate();
 
-  console.log("params", location);
   useEffect(() => {
     if (location.pathname === "/") {
-      console.log("redirext");
       navigate("/home");
     }
   }, []);

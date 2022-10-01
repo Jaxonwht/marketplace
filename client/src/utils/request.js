@@ -47,7 +47,6 @@ export function request(path, params, method) {
     .then((response) => response.json())
     .then((res) => {
       const json = res;
-      console.log("json===", json);
       if (res.statusCode && res.statusCode === 401) {
         window.location.href = ".#/signin";
         return Promise.reject("");
@@ -67,7 +66,6 @@ export function request(path, params, method) {
       // }
     })
     .catch((error) => {
-      console.log("json===222222", error);
       message.error("error");
       return Promise.reject(error);
     });
@@ -97,7 +95,6 @@ export function request2(path, params, method) {
     .then((response) => response.json())
     .then((res) => {
       const json = res;
-      console.log("json===", json);
       // if (json.status_code !== 200 && json.status_code !== 104 && json.status_code != 0) {
       //   message.error(json.msg);
       //   return Promise.reject(json.msg)
@@ -106,7 +103,6 @@ export function request2(path, params, method) {
       // }
     })
     .catch((error) => {
-      console.log("json===222222", error);
       message.error("error");
       return Promise.reject(error);
     });
