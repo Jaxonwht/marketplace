@@ -1,5 +1,5 @@
 import json, math
-import datetime
+from datetime import datetime, timedelta
 import os
 from pathlib import Path
 
@@ -82,9 +82,14 @@ def wei_to_eth(wei):
     return eth
 
 
-def datetime_to_mn_isoformat(dt):
-    # TODO(Finish Implementation)
-    return dt.isoformat(timespec="milliseconds")[:-1] + "Z"
+def datetime_to_iso8610(time, with_tz=False):
+    if with_tz:
+        return time.strftime('%Y-%m-%dT%H:%M:%S.%f%z')
+    return time.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
+
+
+def iso8610_to_datetime(time_str):
+    return datetime.strptime(time_str, '%Y-%m-%dT%H:%M:%S.%f%z')
 
 
 def time_series_group_by_day(time_arr):

@@ -61,18 +61,21 @@ def mn_get_asset_transactions(contract, token_id, ascending=True):
 
 def mn_get_asset_sales_volume(contract, token_id, ascending=True):
     raw_txs = mn_get_asset_raw_transactions(contract, token_id, ascending)
-    sales = [[], []]
+    sales = [[], [], []]
     cnt = 0
+    volume = 0.0
     for trans in raw_txs:
         sales[0].append(trans["blockTimestamp"])
-        sales[1].append(cnt)
+        sales[1].append(float(cnt))
+        volume += float(trans["txValue"]["decimalValue"])
+        sales[2].append(volume)
         cnt += 1
     return sales
 
 
 def mn_get_asset_latest_price(contract, token_id):
     raw_txs = mn_get_asset_raw_transactions(contract, token_id, ascending=False)
-    return raw_txs[0]["txValue"]["decimalValue"]
+    return float(raw_txs[0]["txValue"]["decimalValue"])
 
 
 def mn_get_asset_latest_sale_time(contract, token_id):
@@ -106,7 +109,7 @@ def mn_get_collection_avg_prices(contract, offset, step, ts=None):
         raise Exception(f"Collection Price step can only be {MN_STEPS}")
 
     if ts is None:
-        ts = datetime_to_mn_isoformat(datetime.datetime.now())
+        ts = datetime_to_iso8610(datetime.now())
 
     query = {"duration": offset, "timestampLt": ts, "groupByPeriod": step}
     headers = {"X-API-Key": MNEMONIC_API_KEY}
@@ -152,7 +155,7 @@ def mn_get_collection_sales_volume(contract, offset, step, ts=None):
         raise Exception(f"Collection Price step can only be {MN_STEPS}")
 
     if ts is None:
-        ts = datetime_to_mn_isoformat(datetime.datetime.now())
+        ts = datetime_to_iso8610(datetime.now())
 
     query = {"duration": offset, "timestampLt": ts, "groupByPeriod": step}
     headers = {"X-API-Key": MNEMONIC_API_KEY}
@@ -162,7 +165,7 @@ def mn_get_collection_sales_volume(contract, offset, step, ts=None):
     volume = [[], [], []]
     for dp in data["dataPoints"]:
         volume[0].append(dp["timestamp"])
-        volume[1].append(int(dp["count"]))
+        volume[1].append(float(dp["count"]))
         volume[2].append(float(dp["volume"]))
 
     return volume

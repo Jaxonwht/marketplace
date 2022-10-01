@@ -5,6 +5,7 @@ from nft_utils.mnemonic_utils import *
 from nft_utils.utils import *
 from nft_utils.opensea_utils import *
 from nft_utils.quicknode_utils import *
+from nft_utils.cmc_utils import *
 from models.deal_model import Deal
 
 # Abstraction on deal level
@@ -81,7 +82,6 @@ def get_info_asset(contract, token_id):
     info = {}
     # Required Fields
     info["collection_name"] = slug
-    info["collection_name"] = slug
     info["contract"] = collection_info_raw["primary_asset_contracts"][0]["address"]
     info["create_date"] = collection_info_raw["created_date"]
     info["description"] = collection_info_raw["description"]
@@ -95,8 +95,9 @@ def get_info_asset(contract, token_id):
 
 
 def get_info_index(index_metadata):
-    # TODO(Add support later)
-    return index_metadata
+    cmc_id = index_metadata['cmc_id']
+    # cmc_name = index_metadata['cmc_name']
+    return cmc_get_info_by_id(cmc_id)
 
 
 def get_prices_history(type, contract, token_id=None, extra_info=None):
@@ -120,7 +121,8 @@ def get_prices_history_asset(contract, token_id):
 
 
 def get_prices_history_index(index_metadata):
-    raise Exception("Not Implemented")
+    cmc_id = index_metadata['cmc_id']
+    return cmc_get_index_past_nday_prices(cmc_id)
 
 
 def get_current_price(type, contract, token_id=None, extra_info=None):
@@ -143,13 +145,14 @@ def get_current_price_asset(contract, token_id):
     return res
 
 
-def get_current_price_index():
-    raise Exception("Not Implemented")
+def get_current_price_index(index_metadata):
+    cmc_id = index_metadata['cmc_id']
+    return cmc_get_index_latest_price(cmc_id)
 
 
 def get_sales_volume(type, contract, token_id=None, extra_info=None):
     if type == TYPE_INDEX:
-        raise Exception("Index has no sales volume")
+        return get_sales_volume_index(extra_info)
     if type == TYPE_ASSET:
         return get_sales_volume_asset(contract, token_id)
     return get_sales_volume_collection(contract)
@@ -161,7 +164,12 @@ def get_sales_volume_collection(contract):
 
 
 def get_sales_volume_asset(contract, token_id):
-    pass
+    return mn_get_asset_sales_volume(contract, token_id)
+
+
+def get_sales_volume_index(index_metadata):
+    cmc_id = index_metadata['cmc_id']
+    return cmc_get_index_past_nday_volume(cmc_id)
 
 
 # Additional Helpers
@@ -208,4 +216,32 @@ if __name__ == "__main__":
     token_id = "73969"
     # print(get_collection_slug(contract))
     # get_collection_contract(slug)
-    get_info_collection(contract)
+    # get_info_collection(contract)
+    # print(get_sales_volume_asset(contract, token_id))
+
+    # res = get_prices_history_collection(contract)
+    # print(res, type(res[1][0]))
+
+    # res = get_prices_history_asset(contract, token_id)
+    # print(res, type(res[1][0]))
+
+    # res = get_prices_history_index({'cmc_id': 9816})
+    # print(res, type(res[1][0]))
+
+    # res = get_current_price_collection(contract)
+    # print(res, type(res))
+
+    # res = get_current_price_asset(contract, token_id)
+    # print(res, type(res))
+
+    # res = get_current_price_index({'cmc_id': 9816})
+    # print(res, type(res))
+
+    res = get_sales_volume_collection(contract)
+    print(res, type(res[1][0]))
+
+    res = get_sales_volume_asset(contract, token_id)
+    print(res, type(res[1][0]))
+
+    res = get_sales_volume_index({'cmc_id': 9816})
+    print(res, type(res[1][0]))

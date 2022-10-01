@@ -76,14 +76,16 @@ def create_deal(
             f"Issuing these shares require a balance of {dealer.lockup_balance + amount_needed}, but the dealer only has {dealer.balance}",
         )
     dealer.lockup_balance = Dealer.lockup_balance + amount_needed
+    extra_info: Dict[str, Any] = {}
+    # TODO(Is the logit reversed here? is_nft_index=True -> index branch)
     if is_nft_index:
         info = get_deal_info_with_ids(collection_id, asset_id)
         collection_name = get_not_none(info, "collection_name")
     else:
-        # TODO Ziyi Add support for index
-        # info = deal_info.get_info_index()
-        collection_name = "dummy_index"
-    extra_info: Dict[str, Any] = {}
+        # TODO(Improve later: currently using collection_id field to hold index cmc_id)
+        extra_info['cmc_id'] = collection_id
+        info = deal_info.get_info_index(extra_info)
+        collection_name = get_not_none(info, "fullname")
     new_deal = Deal(
         dealer_name=dealer_name,
         collection_id=collection_id,
