@@ -92,6 +92,8 @@ def cmc_get_index_past_nday_prices(cmc_id, ndays=7):
 
 def cmc_get_index_past_nday_volume(cmc_id, ndays=7):
     # (TODO: Replace with a real one)
+    # No sales count for index: return [timestamp, count, volume].
+    # volumes[1] count is only placeholder for shape consistency
     url = "cryptocurrency/quotes/latest"
     version = "v2"
     parameters = {
@@ -100,7 +102,7 @@ def cmc_get_index_past_nday_volume(cmc_id, ndays=7):
     res = cmc_request(url, parameters, version)
     volume_24h = res["data"][str(cmc_id)]["quote"]["USD"]["volume_24h"]
     latest_ts = res["data"][str(cmc_id)]["quote"]["USD"]["last_updated"]
-    volumes = [[latest_ts]*7, [volume_24h]*7]
+    volumes = [[latest_ts]*7, [0]*7, [volume_24h]*7]
     i = 5
     while i >= 0:
         time = iso8610_to_datetime(volumes[0][i+1])

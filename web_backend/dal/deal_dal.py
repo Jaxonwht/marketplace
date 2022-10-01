@@ -83,7 +83,11 @@ def create_deal(
         collection_name = get_not_none(info, "collection_name")
     else:
         # TODO(Improve later: currently using collection_id field to hold index cmc_id)
-        extra_info['cmc_id'] = collection_id
+        try:
+            cmc_id = int(collection_id)
+        except:
+            raise Exception("index not fed with correct id")
+        extra_info['cmc_id'] = cmc_id
         info = deal_info.get_info_index(extra_info)
         collection_name = get_not_none(info, "fullname")
     new_deal = Deal(

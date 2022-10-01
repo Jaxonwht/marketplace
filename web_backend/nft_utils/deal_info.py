@@ -57,6 +57,14 @@ def get_info(type, contract, token_id=None, extra_info=None):
 
 
 def get_info_collection(contract):
+    """Return info of a collection
+
+    Args:
+        contract (str): contract address
+
+    Returns:
+        dict: _description_
+    """
     slug = get_collection_slug(contract)
     collection_info_raw = os_get_single_collection(slug)
     json_print(collection_info_raw)
@@ -76,6 +84,15 @@ def get_info_collection(contract):
 
 
 def get_info_asset(contract, token_id):
+    """Return info of an asset in a collection
+
+    Args:
+        contract (str): contract address
+        token_id (str): token_id inside constract address
+
+    Returns:
+        dict: _description_
+    """
     slug = get_collection_slug(contract)
     collection_info_raw = os_get_single_collection(slug)
     json_print(collection_info_raw)
@@ -95,6 +112,14 @@ def get_info_asset(contract, token_id):
 
 
 def get_info_index(index_metadata):
+    """Return info of an index
+
+    Args:
+        index_metadata (dict): must contain field 'cmc_id': (int)
+
+    Returns:
+        dict: keys: [id(int), name(str), cmc_url(str), fullname(str), url(str)]
+    """
     cmc_id = index_metadata['cmc_id']
     # cmc_name = index_metadata['cmc_name']
     return cmc_get_info_by_id(cmc_id)
@@ -109,18 +134,43 @@ def get_prices_history(type, contract, token_id=None, extra_info=None):
 
 
 def get_prices_history_collection(contract):
+    """Return past prices of a collection
+
+    Args:
+        contract (str): contract address
+
+    Returns:
+        list[list]: [timestamp(list of str), prices(list of float)]
+    """
     # TODO(Add support for variable collection price date range)
     res = mn_get_collection_latest_avg_prices_by_day(contract, 7)
     return res
 
 
 def get_prices_history_asset(contract, token_id):
+    """Return history prices an asset in a collection
+
+    Args:
+        contract (str): contract address
+        token_id (str): token_id inside constract address
+
+    Returns:
+        list[list]: [timestamp(list of str), prices(list of float)]
+    """
     # TODO(Add support for latest n transactions)
     res = mn_get_asset_transactions(contract, token_id, ascending=True)
     return res
 
 
 def get_prices_history_index(index_metadata):
+    """Return info of an index
+
+    Args:
+        index_metadata (dict): must contain field 'cmc_id': (int)
+
+    Returns:
+        list[list]: [timestamp(list of str), prices(list of float)]
+    """
     cmc_id = index_metadata['cmc_id']
     return cmc_get_index_past_nday_prices(cmc_id)
 
@@ -134,18 +184,43 @@ def get_current_price(type, contract, token_id=None, extra_info=None):
 
 
 def get_current_price_collection(contract):
+    """Return info of a collection
+
+    Args:
+        contract (str): contract address
+
+    Returns:
+        float: 24hr avg transaction prices of assets in this collection
+    """
     # Avg transaction prices of the whole collection in the latest 1-day
     res = mn_get_collection_latest_1day_avg_price(contract)
     return res
 
 
 def get_current_price_asset(contract, token_id):
+    """Return info of an asset in a collection
+
+    Args:
+        contract (str): contract address
+        token_id (str): token_id inside constract address
+
+    Returns:
+        float: latest transaction price of an asset
+    """
     # Latest Transaction price of the asset
     res = mn_get_asset_latest_price(contract, token_id)
     return res
 
 
 def get_current_price_index(index_metadata):
+    """Return info of an index
+
+    Args:
+        index_metadata (dict): must contain field 'cmc_id': (int)
+
+    Returns:
+        float: latest quote price of this index
+    """
     cmc_id = index_metadata['cmc_id']
     return cmc_get_index_latest_price(cmc_id)
 
@@ -159,15 +234,52 @@ def get_sales_volume(type, contract, token_id=None, extra_info=None):
 
 
 def get_sales_volume_collection(contract):
+    """Return past sales volume of a collection
+
+    Args:
+        contract (str): contract address
+
+    Returns:
+        list[list]: [
+            timestamp(list of str),
+            sales count(list of float), 
+            volume=sales count * sales price(list of float)
+        ]
+    """
     # TODO(Add support for variable date range and step length)
     return mn_get_collection_sales_volume_by_day(contract, 7)
 
 
 def get_sales_volume_asset(contract, token_id):
+    """Return history prices an asset in a collection
+
+    Args:
+        contract (str): contract address
+        token_id (str): token_id inside constract address
+
+    Returns:
+        list[list]: [
+            timestamp(list of str),
+            sales count(list of float), 
+            volume=sales count * sales price(list of float)
+        ]
+    """
     return mn_get_asset_sales_volume(contract, token_id)
 
 
 def get_sales_volume_index(index_metadata):
+    """Return info of an index
+
+    Args:
+        index_metadata (dict): must contain field 'cmc_id': (int)
+
+    Returns:
+        list[list]: [
+            timestamp(list of str),
+            sales count(list of float), #placehold, no meaningful value
+            volume=sales count * sales price(list of float)
+        ]
+    """
     cmc_id = index_metadata['cmc_id']
     return cmc_get_index_past_nday_volume(cmc_id)
 
@@ -219,23 +331,23 @@ if __name__ == "__main__":
     # get_info_collection(contract)
     # print(get_sales_volume_asset(contract, token_id))
 
-    # res = get_prices_history_collection(contract)
-    # print(res, type(res[1][0]))
+    res = get_prices_history_collection(contract)
+    print(res, type(res[1][0]))
 
-    # res = get_prices_history_asset(contract, token_id)
-    # print(res, type(res[1][0]))
+    res = get_prices_history_asset(contract, token_id)
+    print(res, type(res[1][0]))
 
-    # res = get_prices_history_index({'cmc_id': 9816})
-    # print(res, type(res[1][0]))
+    res = get_prices_history_index({'cmc_id': 9816})
+    print(res, type(res[1][0]))
 
-    # res = get_current_price_collection(contract)
-    # print(res, type(res))
+    res = get_current_price_collection(contract)
+    print(res, type(res))
 
-    # res = get_current_price_asset(contract, token_id)
-    # print(res, type(res))
+    res = get_current_price_asset(contract, token_id)
+    print(res, type(res))
 
-    # res = get_current_price_index({'cmc_id': 9816})
-    # print(res, type(res))
+    res = get_current_price_index({'cmc_id': 9816})
+    print(res, type(res))
 
     res = get_sales_volume_collection(contract)
     print(res, type(res[1][0]))
