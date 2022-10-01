@@ -1,4 +1,8 @@
-let menus = [
+const menus = [
+  {
+    name: "Home",
+    path: "/home",
+  },
   {
     name: "NFT",
     path: "/nft",
