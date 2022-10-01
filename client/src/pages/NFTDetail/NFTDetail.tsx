@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, Table, Typography } from "antd";
+import { Button, Modal, Table, Typography } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { useParams } from "react-router-dom";
 import styles from "./style.module.scss";
@@ -20,6 +20,7 @@ import {
   openseaAssetLink,
   openseaCollectionLink,
   goerliScanLink,
+  coinmarketcapLink,
 } from "../../utils/link";
 import GeneratedImage from "../../components/generated_image/GeneratedImage";
 import DealInfoCard from "./DealInfoCard";
@@ -29,6 +30,7 @@ import TradingEcharts from "../../components/graph/TradingEcharts";
 import { fetchOneAssetPrice } from "../../reduxSlices/assetPriceSlice";
 import { selectAssetPriceForDeal } from "../../selectors/assetPrice";
 import moment from "moment";
+import { FullscreenOutlined } from "@ant-design/icons";
 
 interface DataType {
   key: number;
@@ -125,6 +127,26 @@ const NFTDetail = () => {
 
   const hasStakes = profitDetail.length !== 0;
 
+  const [pricesChartFullscreen, setPricesChartFullscreen] = useState(false);
+  const [saleChartFullscreen, setSaleChartFullscreen] = useState(false);
+  const pricesChart = (willShowInModal: boolean) => (
+    <TradingEcharts
+      className={willShowInModal ? undefined : styles.lineChart1}
+      timeSeries={allAssetPriceTimes}
+      moreDetails={willShowInModal}
+      timeData={[allAssetHistoricalPrices]}
+    />
+  );
+  const saleChart = (willShowInModal: boolean) => (
+    <TradingEcharts
+      className={willShowInModal ? undefined : styles.lineChart2}
+      timeSeries={assetSaleVolumeTimes}
+      timeData={[assetSaleCounts, assetSaleMoneyValues]}
+      seriesLegends={["sale count", "sale money value"]}
+      moreDetails={willShowInModal}
+    />
+  );
+
   return (
     <div className={styles.container}>
       <div className={styles.containerWrapper}>
@@ -164,7 +186,9 @@ const NFTDetail = () => {
             <>
               <div className={styles["dashboardHeader__main-header"]}>
                 {`${dealInfo.is_nft_index ? "Index" : "Collection"}`} Name:{" "}
-                {openseaCollectionLink(dealInfo.collection_name)}
+                {dealInfo.is_nft_index
+                  ? coinmarketcapLink(dealInfo.collection_name)
+                  : openseaCollectionLink(dealInfo.collection_name)}
               </div>
               {!!dealInfo.asset_id && (
                 <div className={styles["dashboardHeader__sub-header"]}>
@@ -233,22 +257,26 @@ const NFTDetail = () => {
                 marginRight: 20,
               }}
             >
-              <div className={styles.cardHeader}>NFT Price</div>
-              <TradingEcharts
-                className={styles.lineChart1}
-                timeSeries={allAssetPriceTimes}
-                timeData={[allAssetHistoricalPrices]}
-              />
+              <div className={styles.cardHeader}>
+                NFT Price
+                <FullscreenOutlined
+                  className={styles["fullscreen-icon"]}
+                  style={{ color: "gray" }}
+                  onClick={() => setPricesChartFullscreen(true)}
+                />
+              </div>
+              {pricesChart(false)}
             </div>
-
             <div className={styles.card}>
-              <div className={styles.cardHeader}>Trading Volume</div>
-              <TradingEcharts
-                className={styles.lineChart2}
-                timeSeries={assetSaleVolumeTimes}
-                timeData={[assetSaleCounts, assetSaleMoneyValues]}
-                seriesLegends={["sale count", "sale money value"]}
-              />
+              <div className={styles.cardHeader}>
+                Trading Volume
+                <FullscreenOutlined
+                  className={styles["fullscreen-icon"]}
+                  style={{ color: "gray" }}
+                  onClick={() => setSaleChartFullscreen(true)}
+                />
+              </div>
+              {saleChart(false)}
             </div>
           </div>
         </div>
@@ -264,6 +292,24 @@ const NFTDetail = () => {
         isModalVisible={isSellSharesModalVisible}
         setIsModalVisible={setIsSellSharesModalVisible}
       />
+      <Modal
+        title="NFT Price"
+        visible={pricesChartFullscreen}
+        onOk={() => setPricesChartFullscreen(false)}
+        onCancel={() => setPricesChartFullscreen(false)}
+        width={1200}
+      >
+        {pricesChart(true)}
+      </Modal>
+      <Modal
+        title="NFT Price"
+        visible={saleChartFullscreen}
+        onOk={() => setSaleChartFullscreen(false)}
+        onCancel={() => setSaleChartFullscreen(false)}
+        width={1200}
+      >
+        {saleChart(true)}
+      </Modal>
     </div>
   );
 };

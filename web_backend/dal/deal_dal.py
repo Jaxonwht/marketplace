@@ -10,7 +10,7 @@ from models.deal_model import Deal
 from models.dealer_model import Dealer
 from models.ownership_model import Ownership
 from models.transaction_model import Transaction
-from nft_utils.deal_info import get_deal_current_price, get_deal_info_with_ids
+from nft_utils.deal_info import get_deal_current_price, get_deal_info_with_ids, get_info_index
 from utils.profits_utils import profit_for_buyer
 from utils.json_utils import get_not_none
 
@@ -76,14 +76,20 @@ def create_deal(
             f"Issuing these shares require a balance of {dealer.lockup_balance + amount_needed}, but the dealer only has {dealer.balance}",
         )
     dealer.lockup_balance = Dealer.lockup_balance + amount_needed
+    extra_info: Dict[str, Any] = {}
+    # TODO(Is the logit reversed here? is_nft_index=True -> index branch)
     if is_nft_index:
+        # TODO(Improve later: currently using collection_id field to hold index cmc_id)
+        try:
+            cmc_id = int(collection_id)
+        except ValueError as e:
+            raise Exception("index not fed with correct id") from e
+        extra_info["cmc_id"] = cmc_id
+        info = get_info_index(extra_info)
+        collection_name = get_not_none(info, "fullname")
+    else:
         info = get_deal_info_with_ids(collection_id, asset_id)
         collection_name = get_not_none(info, "collection_name")
-    else:
-        # TODO Ziyi Add support for index
-        # info = deal_info.get_info_index()
-        collection_name = "dummy_index"
-    extra_info: Dict[str, Any] = {}
     new_deal = Deal(
         dealer_name=dealer_name,
         collection_id=collection_id,

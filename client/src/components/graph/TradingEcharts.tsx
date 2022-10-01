@@ -5,12 +5,14 @@ type TradingEchartsProps = Omit<EChartsReactProps, "option"> & {
   timeSeries: string[];
   timeData: number[][];
   seriesLegends?: string[];
+  moreDetails?: boolean;
 };
 
 const TradingEcharts = ({
   timeSeries,
   timeData,
   seriesLegends,
+  moreDetails,
   ...otherProps
 }: TradingEchartsProps) => {
   const zippedData = timeSeries.map((timestamp, index) => [
@@ -23,9 +25,18 @@ const TradingEcharts = ({
     },
     xAxis: {
       type: "time",
+      name: moreDetails ? "Timestamp in Your Local Timezone" : undefined,
+      nameLocation: "center",
+      nameGap: 30,
+      minorTick: {
+        show: moreDetails,
+      },
     },
     yAxis: {
       type: "value",
+      minorTick: {
+        show: moreDetails,
+      },
     },
     legend: {
       data: seriesLegends,

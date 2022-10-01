@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { Button, Table, Typography } from "antd";
 import type { ColumnsType } from "antd/es/table";
-import { Link } from "react-router-dom";
 
 import styles from "./style.module.scss";
 import CreateDealModal from "./CreateDealModal";
@@ -22,6 +21,8 @@ interface DataType {
   profitLossCap: number;
   multiplier: number;
 }
+
+const FETCH_ALL_DEAL_INFO_PERIOD_MS = 3000;
 
 const NFT = () => {
   const { Text } = Typography;
@@ -84,7 +85,11 @@ const NFT = () => {
   ];
 
   useEffect(() => {
-    dispatch(fetchAllDealInfo);
+    const intervalId = setInterval(
+      () => dispatch(fetchAllDealInfo),
+      FETCH_ALL_DEAL_INFO_PERIOD_MS
+    );
+    return () => clearInterval(intervalId);
   }, [dispatch]);
 
   return (

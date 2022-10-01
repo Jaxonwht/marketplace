@@ -49,6 +49,21 @@ const CreateDealModal = ({
   const handleSubmit = async () => {
     try {
       const validatedValues = await form.validateFields();
+      const { isNftIndex, collectionId, assetId } = validatedValues;
+      if (!isNftIndex && !web3.utils.isAddress(collectionId)) {
+        Modal.error({
+          title: "Invalid Collection Address",
+          content: <div>The address is not a valid contract address</div>,
+        });
+        return;
+      }
+      if (isNftIndex && !!assetId) {
+        Modal.error({
+          title: "Invalid Index",
+          content: <div>We do not support NFT indices with asset_id</div>,
+        });
+        return;
+      }
       if (!identity || identity.account_type !== AccountType.DEALER) {
         Modal.error({
           title: "Identity Error",
@@ -95,22 +110,13 @@ const CreateDealModal = ({
       <Form form={form}>
         <Form.Item
           name="collectionId"
-          label="Collection TXN Addr"
+          label="Collection/Index ID"
           validateFirst
           rules={[
             {
               required: true,
               message:
                 "Please input the transaction address of the NFT collection on the ETH chain",
-            },
-            {
-              validator: async (_, addr: string) => {
-                if (!web3.utils.isAddress(addr)) {
-                  throw new Error(
-                    "The address is not a valid contract address"
-                  );
-                }
-              },
             },
           ]}
         >
@@ -120,6 +126,7 @@ const CreateDealModal = ({
           name="isNftIndex"
           label="Is an NFT Index"
           valuePropName="checked"
+          initialValue={false}
           rules={[
             {
               required: true,
