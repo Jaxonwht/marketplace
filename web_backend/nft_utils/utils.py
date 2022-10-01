@@ -114,7 +114,7 @@ def time_series_group_by_day(time_arr):
 
 # deal related helper functions
 def deal_is_collection(deal):
-    return not deal.is_nft_index and deal.asset_id is not None
+    return not deal.is_nft_index and deal.asset_id is None
 
 
 def deal_is_asset(deal):
