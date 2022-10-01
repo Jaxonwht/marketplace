@@ -53,6 +53,7 @@ const DealInfoCard = ({ dealInfo }: DealInfoCardProps) => {
           {dealInfo.extra_info && (
             <Descriptions.Item label="Extra Info">
               <ReactJson
+                collapsed
                 displayDataTypes={false}
                 displayObjectSize={false}
                 name={false}
