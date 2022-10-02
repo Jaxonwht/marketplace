@@ -77,16 +77,15 @@ def create_deal(
         )
     dealer.lockup_balance = Dealer.lockup_balance + amount_needed
     extra_info: Dict[str, Any] = {}
-    # TODO(Is the logit reversed here? is_nft_index=True -> index branch)
     if is_nft_index:
-        # TODO(Improve later: currently using collection_id field to hold index cmc_id)
-        try:
-            cmc_id = int(collection_id)
-        except ValueError as e:
-            raise Exception("index not fed with correct id") from e
+        # Currently using index name to create index deal
+        # TODO(Improve later: currently using collection_id field to hold index cmc_name)
+        cmc_name = collection_id
+        extra_info["cmc_name"] = cmc_name
+        info = get_info_index(extra_info, with_name=True)
+        collection_name = cmc_name
+        cmc_id = get_not_none(info, "id")
         extra_info["cmc_id"] = cmc_id
-        info = get_info_index(extra_info)
-        collection_name = get_not_none(info, "fullname")
     else:
         info = get_deal_info_with_ids(collection_id, asset_id)
         collection_name = get_not_none(info, "collection_name")

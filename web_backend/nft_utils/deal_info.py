@@ -111,7 +111,7 @@ def get_info_asset(contract, token_id):
     return info
 
 
-def get_info_index(index_metadata):
+def get_info_index(index_metadata, with_name=False):
     """Return info of an index
 
     Args:
@@ -120,8 +120,10 @@ def get_info_index(index_metadata):
     Returns:
         dict: keys: [id(int), name(str), cmc_url(str), fullname(str), url(str)]
     """
+    if with_name:
+        cmc_name = index_metadata["cmc_name"]
+        return cmc_get_index_info_by_name(cmc_name)
     cmc_id = index_metadata["cmc_id"]
-    # cmc_name = index_metadata['cmc_name']
     return cmc_get_index_info_by_id(cmc_id)
 
 
