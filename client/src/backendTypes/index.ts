@@ -77,7 +77,7 @@ export interface TransactionInfo {
   readonly buy_asset_price: number;
 }
 
-export type AssetPrices = Record<number, number | null>;
+export type AssetPrices = Record<string, number | null>;
 
 export type AssetPriceHistory = [string[], number[]];
 

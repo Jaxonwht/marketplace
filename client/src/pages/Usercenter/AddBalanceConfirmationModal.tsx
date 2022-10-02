@@ -40,7 +40,7 @@ const AddBalanceConfirmationModal = ({
   }, [dispatch, identity, isModalVisible]);
   return (
     <Modal
-      title=""
+      title="Add Funds"
       cancelText="Cancel"
       okText="Confirm"
       okButtonProps={{ disabled: !readyToSend }}
@@ -56,7 +56,8 @@ const AddBalanceConfirmationModal = ({
               ERC_20_ABI,
               GOERLI_USDC,
               PLATFORM_ADDRESS,
-              amount
+              amount,
+              identity.account_type === AccountType.DEALER
             );
           } catch (e) {
             genericErrorModal("Top-up Error", e);
@@ -72,9 +73,8 @@ const AddBalanceConfirmationModal = ({
           margin: "20px 0px",
         }}
       >
-        <div className={styles.addBalanceModalText}>Add Balance</div>
         <div className={styles.addBalanceModalText}>
-          {balance?.balance || 0}
+          Current balance: {balance?.balance || 0}
         </div>
       </div>
       <input

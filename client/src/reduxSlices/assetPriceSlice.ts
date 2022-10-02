@@ -3,6 +3,7 @@ import type { PayloadAction } from "@reduxjs/toolkit";
 import { AssetPrices } from "../backendTypes";
 import { AppDispatch } from "../store";
 import { axiosInstance } from "../utils/network";
+import { listRequestArg } from "../utils/array";
 
 const initialState: Record<number, number> = {};
 
@@ -25,6 +26,8 @@ const assetPriceSlice = createSlice({
       Object.entries(action.payload).forEach(([dealSerialId, price]) => {
         if (price === null) {
           delete state[Number(dealSerialId)];
+        } else {
+          state[Number(dealSerialId)] = price;
         }
       });
     },
@@ -50,10 +53,13 @@ export const fetchOneAssetPrice =
 
 export const fetchMultipleAssetPrices =
   (dealSerialIdList: number[]) => async (dispatch: AppDispatch) => {
+    if (dealSerialIdList.length === 0) {
+      return;
+    }
     try {
-      const response = await axiosInstance.get("/asset_prices/deal", {
-        params: { serial_ids: dealSerialIdList },
-      });
+      const response = await axiosInstance.get(
+        `/asset_prices/deal?${listRequestArg("serial_ids", dealSerialIdList)}`
+      );
       dispatch(setAssetPrices(response.data));
     } catch (e) {
       console.error(e);

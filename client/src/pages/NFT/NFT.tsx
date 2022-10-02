@@ -11,12 +11,14 @@ import { getDealReadableName } from "../../backendTypes/utils";
 import DealSlider from "../../components/dealSlider/DealSlider";
 import { selectAllNonClosedDealInfoList } from "../../selectors/dealInfo";
 import DealLinkWithIcon from "../../components/links/DealLinkWithIcon";
+import { fetchMultipleAssetPrices } from "../../reduxSlices/assetPriceSlice";
+import { goerliScanLink } from "../../utils/link";
 
 interface DataType {
   key: number;
   deal: { name: string; serialId: number };
-  currentAssetPrice: number;
-  assetPriceChange: string;
+  currentAssetPrice: string;
+  dealerAddress: string;
   sharePrice: number;
   profitLossCap: number;
   multiplier: number;
@@ -29,16 +31,24 @@ const NFT = () => {
   const [isCreateDealModalVisible, setIsCreateDealModalVisible] =
     useState(false);
   const dispatch = useAppDispatch();
-
   const isDealer = useAppSelector(selectIsDealer);
   const nonClosedDealInfo = useAppSelector(selectAllNonClosedDealInfoList);
   const headImg = require("../../assets/images/headimg.png");
+  useEffect(() => {
+    dispatch(
+      fetchMultipleAssetPrices(
+        nonClosedDealInfo.map((dealInfo) => dealInfo.serial_id)
+      )
+    );
+  }, [dispatch, nonClosedDealInfo]);
+  const assetPrices = useAppSelector((state) => state.assetPrice);
   const dealInfoList = nonClosedDealInfo.map((singleDealInfo) => ({
     dealSerialId: singleDealInfo.serial_id,
     image: headImg,
     name: getDealReadableName(singleDealInfo),
-    currentAssetPrice: 20.85,
-    assetPriceChange: "+30.87%",
+    currentAssetPrice:
+      assetPrices[singleDealInfo.serial_id]?.toPrecision(4) ?? "Loading",
+    dealerAddress: singleDealInfo.dealer_name,
     sharePrice: singleDealInfo.share_price,
     profitLossCap: singleDealInfo.rate,
     multiplier: singleDealInfo.multiplier,
@@ -63,9 +73,10 @@ const NFT = () => {
       key: "currentAssetPrice",
     },
     {
-      title: "Asset Price Change",
-      dataIndex: "assetPriceChange",
-      key: "assetPriceChange",
+      title: "Dealer",
+      dataIndex: "dealerAddress",
+      key: "dealerAddress",
+      render: (dealerAddress: string) => goerliScanLink(dealerAddress),
     },
     {
       title: "Share Price",
@@ -112,7 +123,7 @@ const NFT = () => {
             key: i,
             deal: { name: item.name, serialId: item.dealSerialId },
             currentAssetPrice: item.currentAssetPrice,
-            assetPriceChange: item.assetPriceChange,
+            dealerAddress: item.dealerAddress,
             sharePrice: item.sharePrice,
             profitLossCap: item.profitLossCap,
             multiplier: item.multiplier,
