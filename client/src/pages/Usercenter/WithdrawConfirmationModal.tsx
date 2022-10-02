@@ -91,9 +91,9 @@ const WithdrawConfirmationModal = ({
       <InputNumber
         style={{ width: 200 }}
         stringMode
+        controls={false}
         value={amount}
         onChange={handleAmountInputChanged}
-        type="number"
         min={"0"}
         placeholder="Amount of tokens to withdraw"
       />
@@ -113,7 +113,9 @@ const WithdrawConfirmationModal = ({
           margin: "20px 0px",
         }}
       >
-        {totalAmountWithdrawn < 0.51
+        {totalAmountWithdrawn <
+        MINIMUM_TRANSACTION_FEE / TRANSACTION_FEE_PERCENTAGE +
+          MINIMUM_TRANSACTION_FEE
           ? `Note: A minimum transaction fee of ${MINIMUM_TRANSACTION_FEE} will be added.`
           : `Note: A transaction fee percentage of ${
               TRANSACTION_FEE_PERCENTAGE * 100

@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Form, InputNumber, Modal } from "antd";
+import { Form, InputNumber, Modal, Typography } from "antd";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { AccountType } from "../../reduxSlices/identitySlice";
 import { authenticatedAxiosInstance } from "../../utils/network";
@@ -22,6 +22,7 @@ const SellSharesModal = ({
   isModalVisible,
   setIsModalVisible,
 }: SellSharesModalProps) => {
+  const { Text } = Typography;
   const [form] = Form.useForm<SellSharesFormValues>();
   const identity = useAppSelector((state) => state.identity);
   const isBuyer = identity?.account_type === AccountType.BUYER;
@@ -82,6 +83,17 @@ const SellSharesModal = ({
           <InputNumber controls={false} disabled />
         </Form.Item>
       </Form>
+
+      <Text
+        type="danger"
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          margin: "20px 0px",
+        }}
+      >
+        Note: All bought shares will be sold.
+      </Text>
     </Modal>
   );
 };

@@ -76,12 +76,22 @@ const AddBalanceConfirmationModal = ({
       <InputNumber
         style={{ width: 200 }}
         stringMode
+        controls={false}
         value={amount}
         onChange={handleAmountInputChanged}
-        type="number"
         min={"0"}
         placeholder="Amount of tokens to add"
       />
+      <Text
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          margin: "20px 0px",
+        }}
+      >
+        Note: Please ensure that the correct chain and token are selected in
+        MetaMask.
+      </Text>
     </Modal>
   );
 };

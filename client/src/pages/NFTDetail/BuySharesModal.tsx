@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Form, InputNumber, Modal } from "antd";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { AccountType } from "../../reduxSlices/identitySlice";
@@ -25,18 +25,25 @@ const BuySharesModal = ({
   setIsModalVisible,
 }: BuySharesModalProps) => {
   const [form] = Form.useForm<BuySharesFormValues>();
+  const [shares, setShares] = useState("0");
   const identity = useAppSelector((state) => state.identity);
   const isBuyer = identity?.account_type === AccountType.BUYER;
   const dispatch = useAppDispatch();
   const dealInfo = useAppSelector(
     selectDealInfoForSerialId(dealSerialIdPrepopulated)
   );
+  const readyToSend =
+    !!shares && !!identity && shares !== "0" && Number(shares) > 0;
 
   useEffect(() => {
     if (dealSerialIdPrepopulated !== undefined) {
       dispatch(fetchDealInfoForOneDeal(dealSerialIdPrepopulated));
     }
   }, [dealSerialIdPrepopulated, dispatch]);
+
+  const handleShareInputChanged = (value: string | null) => {
+    setShares(value ? value : "");
+  };
 
   const handleCancel = () => {
     setIsModalVisible(false);
@@ -75,6 +82,7 @@ const BuySharesModal = ({
       title="Buy Shares"
       cancelText="Cancel"
       okText="Confirm"
+      okButtonProps={{ disabled: !readyToSend }}
       visible={isModalVisible}
       onCancel={handleCancel}
       onOk={handleSubmit}
@@ -107,7 +115,12 @@ const BuySharesModal = ({
             },
           ]}
         >
-          <InputNumber placeholder="Number of shares" min={0} />
+          <InputNumber
+            controls={false}
+            onChange={handleShareInputChanged}
+            placeholder="Number of shares"
+            min={"0"}
+          />
         </Form.Item>
       </Form>
     </Modal>
