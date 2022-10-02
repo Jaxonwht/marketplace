@@ -18,6 +18,7 @@ interface SearchInputProps {
 
 const SearchInput = ({ selectStyle, selectPlaceHolder }: SearchInputProps) => {
   const [results, setResults] = useState<Fuse.FuseResult<DealInfo>[]>([]);
+  const [value, setValue] = useState<string>("");
   const { Option } = Select;
   const fuse = useAppSelector(fuzzySearchFuse);
   const dispatch = useAppDispatch();
@@ -33,6 +34,10 @@ const SearchInput = ({ selectStyle, selectPlaceHolder }: SearchInputProps) => {
     } else {
       setResults([]);
     }
+  };
+
+  const handleChange = (newValue: string) => {
+    setValue(newValue);
   };
 
   const [showingDetail, setShowingDetail] = useState<number | undefined>();
@@ -72,6 +77,7 @@ const SearchInput = ({ selectStyle, selectPlaceHolder }: SearchInputProps) => {
   ));
 
   const selectDeal = (serialId: string) => {
+    setValue("");
     navigate(`/nftdetail/${serialId}`);
   };
 
@@ -82,10 +88,12 @@ const SearchInput = ({ selectStyle, selectPlaceHolder }: SearchInputProps) => {
       dropdownMatchSelectWidth={550}
       placeholder={selectPlaceHolder}
       style={selectStyle}
+      value={value}
       defaultActiveFirstOption={false}
       showArrow={true}
       filterOption={false}
       onSearch={handleSearch}
+      onChange={handleChange}
       notFoundContent={null}
       suffixIcon={<SearchOutlined />}
       onSelect={selectDeal}
