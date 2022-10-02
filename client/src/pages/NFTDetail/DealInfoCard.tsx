@@ -36,7 +36,7 @@ const DealInfoCard = ({ dealInfo }: DealInfoCardProps) => {
             {dealInfo.multiplier}
           </Descriptions.Item>
           <Descriptions.Item label="Current Asset Price">
-            {currentAssetPrice ?? "Unknown asset price"}
+            {currentAssetPrice?.toPrecision(5) ?? "Unknown asset price"}
           </Descriptions.Item>
           <Descriptions.Item label="Start Time">
             {utcStringToLocalShort(dealInfo.start_time)}

@@ -5,7 +5,7 @@ import { Form, DatePicker, Input, InputNumber, Modal, Switch } from "antd";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { AccountType } from "../../reduxSlices/identitySlice";
 import { authenticatedAxiosInstance } from "../../utils/network";
-import { CreateDealResponse, CreateDealRequestBody } from "../../backendTypes";
+import { CreateDealRequestBody } from "../../backendTypes";
 import { fetchBackendConfig } from "../../reduxSlices/backendConfigSlice";
 import { genericErrorModal } from "../../components/error/genericErrorModal";
 
@@ -87,7 +87,7 @@ const CreateDealModal = ({
         end_time: validatedValues.timeRange[1],
       };
       try {
-        authenticatedAxiosInstance().post("/deal/", postBody);
+        await authenticatedAxiosInstance().post("/deal/", postBody);
         setIsModalVisible(false);
         form.resetFields();
       } catch (e: any) {
@@ -230,6 +230,7 @@ const CreateDealModal = ({
             showTime
             ranges={{
               "next month": [moment(), moment().add(1, "month")],
+              "next year": [moment(), moment().add(1, "year")],
             }}
           />
         </Form.Item>

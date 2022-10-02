@@ -41,6 +41,7 @@ interface DataType {
 }
 
 const PROFIT_INFO_REFRESH_MS = 3000;
+const DEAL_INFO_REFRESH_MS = 3000;
 
 const NFTDetail = () => {
   const { Text } = Typography;
@@ -64,7 +65,6 @@ const NFTDetail = () => {
   }, [dispatch, dealSerialId]);
   useEffect(() => {
     if (dealSerialId !== undefined) {
-      dispatch(fetchDealInfoForOneDeal(dealSerialId));
       if (!!identity) {
         const refreshProfitInfo = () =>
           dispatch(fetchProfitDetail(identity.username, dealSerialId));
@@ -74,6 +74,15 @@ const NFTDetail = () => {
       }
     }
   }, [dispatch, dealSerialId, identity]);
+  useEffect(() => {
+    if (dealSerialId !== undefined) {
+      const intervalId = setInterval(
+        () => dispatch(fetchDealInfoForOneDeal(dealSerialId)),
+        DEAL_INFO_REFRESH_MS
+      );
+      return () => clearInterval(intervalId);
+    }
+  }, [dispatch, dealSerialId]);
   const profitDetail = useAppSelector((state) => state.profitDetail);
 
   const [assetPriceTimes, assetHistoricalPrices] = useAppSelector(

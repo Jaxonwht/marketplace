@@ -8,7 +8,8 @@ export const handleSendTransaction = async (
   tokenContractABI: AbiItem[],
   tokenContractAddress: string,
   recipientAddress: string,
-  amount: string
+  amount: string,
+  asDealer: boolean
 ) => {
   let web3: Web3;
   try {
@@ -36,7 +37,7 @@ export const handleSendTransaction = async (
       ],
     })) as string;
     await axiosInstance.post(`/platform-transaction/${txnHash}`, {
-      as_dealer: false,
+      as_dealer: asDealer,
     });
   } catch (error) {
     console.error(error);

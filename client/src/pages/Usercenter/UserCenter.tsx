@@ -72,9 +72,11 @@ const UserCenter = () => {
       fetchMultipleAssetPrices(Object.keys(nonClosedDealInfo).map(Number))
     );
   }, [dispatch, nonClosedDealInfo]);
+  let totalHeldValue = 0;
   const ownershipSummaryFormattedList = ownershipSummary.map(
     (ownershipForDeal) => {
       const dealInfo = nonClosedDealInfo[ownershipForDeal.deal_serial_id];
+      totalHeldValue += dealInfo.share_price * ownershipForDeal.shares;
       return {
         dealSerialId: ownershipForDeal.deal_serial_id,
         name: dealInfo ? getDealReadableName(dealInfo) : "Unknown Deal",
@@ -88,13 +90,18 @@ const UserCenter = () => {
   );
 
   useEffect(() => {
-    if (identity) {
-      dispatch(
-        fetchBalance(
-          identity.username,
-          identity.account_type === AccountType.DEALER
-        )
+    if (!!identity) {
+      const intervalId = setInterval(
+        () =>
+          dispatch(
+            fetchBalance(
+              identity.username,
+              identity.account_type === AccountType.DEALER
+            )
+          ),
+        ACCOUNT_INFO_REFRESH_MS
       );
+      return () => clearInterval(intervalId);
     }
   }, [dispatch, identity]);
 
@@ -190,7 +197,7 @@ const UserCenter = () => {
         >
           <div className={styles.cardHeader}>
             <Text strong>Participating</Text>
-            <Text>Total Deal Balance: 10.89</Text>
+            <Text>Total Deal Balance: {totalHeldValue}</Text>
           </div>
 
           <div className={styles.listContainer}>
