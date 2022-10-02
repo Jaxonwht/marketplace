@@ -269,3 +269,5 @@ export const ERC_20_ABI: Array<AbiItem> = [
 ];
 
 export const PLATFORM_ADDRESS = "0x49d0739EB001FF73b394a5A2054694A650dC9cec";
+export const TRANSACTION_FEE_PERCENTAGE = 0.02;
+export const MINIMUM_TRANSACTION_FEE = 0.01;

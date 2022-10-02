@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
-import type { ChangeEvent } from "react";
-import styles from "./style.module.scss";
-import { Modal } from "antd";
+import { Modal, Typography, InputNumber } from "antd";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
-import { authenticatedAxiosInstance } from "../../utils/network";
+import {
+  authenticatedAxiosInstance,
+  MINIMUM_TRANSACTION_FEE,
+  TRANSACTION_FEE_PERCENTAGE,
+} from "../../utils/network";
 import { AccountType } from "../../reduxSlices/identitySlice";
 import { fetchBalance } from "../../reduxSlices/balanceSlice";
 import { genericErrorModal } from "../../components/error/genericErrorModal";
@@ -17,9 +19,16 @@ const WithdrawConfirmationModal = ({
   isModalVisible,
   setIsModalVisible,
 }: WithdrawConfirmationModalProps) => {
+  const { Text } = Typography;
   const identity = useAppSelector((state) => state.identity);
   const balance = useAppSelector((state) => state.balance);
-  const [amount, setAmount] = useState("");
+  const [amount, setAmount] = useState("0");
+  const totalAmountWithdrawn =
+    Number(amount) +
+    Math.max(
+      MINIMUM_TRANSACTION_FEE,
+      Number(amount) * TRANSACTION_FEE_PERCENTAGE
+    );
   const availableBalance = balance?.balance
     ? balance.balance - (balance?.lockup_balance || 0)
     : 0;
@@ -27,10 +36,9 @@ const WithdrawConfirmationModal = ({
     !!amount &&
     !!identity &&
     amount !== "0" &&
-    Number(amount) < availableBalance;
-  const handleAmountInputChanged = (event: ChangeEvent<HTMLInputElement>) => {
-    event.preventDefault();
-    setAmount(event.target.value);
+    totalAmountWithdrawn < availableBalance;
+  const handleAmountInputChanged = (value: string) => {
+    setAmount(value);
   };
   const dispatch = useAppDispatch();
   useEffect(() => {
@@ -45,7 +53,7 @@ const WithdrawConfirmationModal = ({
   }, [dispatch, identity, isModalVisible]);
   return (
     <Modal
-      title=""
+      title="Cash Out"
       cancelText="Cancel"
       okText="Confirm"
       okButtonProps={{ disabled: !readyToSend }}
@@ -71,25 +79,46 @@ const WithdrawConfirmationModal = ({
         setIsModalVisible(false);
       }}
     >
-      <div
+      <Text
         style={{
           display: "flex",
           justifyContent: "space-between",
           margin: "20px 0px",
         }}
       >
-        <div className={styles.addBalanceModalText}>Add Balance</div>
-        <div className={styles.addBalanceModalText}>
-          {balance?.balance || 0}
-        </div>
-      </div>
-      <input
+        Current Balance: {balance?.balance || 0}
+      </Text>
+      <InputNumber
+        style={{ width: 200 }}
+        stringMode
         value={amount}
         onChange={handleAmountInputChanged}
         type="number"
-        min={0}
+        min={"0"}
         placeholder="Amount of tokens to withdraw"
       />
+      <Text
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          margin: "20px 0px",
+        }}
+      >
+        Total funds to be withdrawn: {totalAmountWithdrawn}
+      </Text>
+      <Text
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          margin: "20px 0px",
+        }}
+      >
+        {totalAmountWithdrawn < 0.51
+          ? `Note: A minimum transaction fee of ${MINIMUM_TRANSACTION_FEE} will be added.`
+          : `Note: A transaction fee percentage of ${
+              TRANSACTION_FEE_PERCENTAGE * 100
+            }% will be applied.`}
+      </Text>
     </Modal>
   );
 };

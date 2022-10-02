@@ -77,16 +77,9 @@ const SellSharesModal = ({
         <Form.Item
           name="dealSerialId"
           label="Deal Serial ID"
-          validateFirst
-          rules={[
-            {
-              required: true,
-              message: "Please input a deal serial ID",
-            },
-          ]}
           initialValue={dealSerialIdPrepopulated}
         >
-          <InputNumber controls={false} />
+          <InputNumber controls={false} disabled />
         </Form.Item>
       </Form>
     </Modal>

@@ -67,7 +67,7 @@ class Config:  # pylint: disable=too-few-public-methods
 
     TRANSACTION_TYPE = "0x2"
 
-    TRANSACTION_FEE_PERCENTAGE = 0.03
+    TRANSACTION_FEE_PERCENTAGE = 0.02
     MINIMUM_TRANSACTION_FEE = 0.01
 
     ERC20_ABI = json.loads(
