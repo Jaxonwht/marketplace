@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import type { ChangeEvent } from "react";
-import styles from "./style.module.scss";
-import { Modal } from "antd";
+import { Modal, Typography } from "antd";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { authenticatedAxiosInstance } from "../../utils/network";
 import { AccountType } from "../../reduxSlices/identitySlice";
@@ -17,9 +16,10 @@ const WithdrawConfirmationModal = ({
   isModalVisible,
   setIsModalVisible,
 }: WithdrawConfirmationModalProps) => {
+  const { Text } = Typography;
   const identity = useAppSelector((state) => state.identity);
   const balance = useAppSelector((state) => state.balance);
-  const [amount, setAmount] = useState("");
+  const [amount, setAmount] = useState("0");
   const availableBalance = balance?.balance
     ? balance.balance - (balance?.lockup_balance || 0)
     : 0;
@@ -45,7 +45,7 @@ const WithdrawConfirmationModal = ({
   }, [dispatch, identity, isModalVisible]);
   return (
     <Modal
-      title=""
+      title="Cash Out"
       cancelText="Cancel"
       okText="Confirm"
       okButtonProps={{ disabled: !readyToSend }}
@@ -71,18 +71,25 @@ const WithdrawConfirmationModal = ({
         setIsModalVisible(false);
       }}
     >
-      <div
+      <Text
         style={{
           display: "flex",
           justifyContent: "space-between",
           margin: "20px 0px",
         }}
       >
-        <div className={styles.addBalanceModalText}>Add Balance</div>
-        <div className={styles.addBalanceModalText}>
-          {balance?.balance || 0}
-        </div>
-      </div>
+        Current Balance: {balance?.balance || 0}
+      </Text>
+
+      <Text
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          margin: "20px 0px",
+        }}
+      >
+        A total of max(0.01, {amount}) will be deducted from your balance.
+      </Text>
       <input
         value={amount}
         onChange={handleAmountInputChanged}
