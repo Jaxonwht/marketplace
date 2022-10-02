@@ -88,6 +88,15 @@ const WithdrawConfirmationModal = ({
       >
         Current Balance: {balance?.balance || 0}
       </Text>
+      <InputNumber
+        style={{ width: 200 }}
+        stringMode
+        value={amount}
+        onChange={handleAmountInputChanged}
+        type="number"
+        min={"0"}
+        placeholder="Amount of tokens to withdraw"
+      />
       <Text
         style={{
           display: "flex",
@@ -97,7 +106,6 @@ const WithdrawConfirmationModal = ({
       >
         Total funds to be withdrawn: {totalAmountWithdrawn}
       </Text>
-
       <Text
         style={{
           display: "flex",
@@ -111,15 +119,6 @@ const WithdrawConfirmationModal = ({
               TRANSACTION_FEE_PERCENTAGE * 100
             }% will be applied.`}
       </Text>
-      <InputNumber
-        style={{ width: 200 }}
-        stringMode
-        value={amount}
-        onChange={handleAmountInputChanged}
-        type="number"
-        min={"0"}
-        placeholder="Amount of tokens to withdraw"
-      />
     </Modal>
   );
 };
