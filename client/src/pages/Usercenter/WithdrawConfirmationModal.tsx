@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from "react";
-import type { ChangeEvent } from "react";
-import { Modal, Typography } from "antd";
+import { Modal, Typography, InputNumber } from "antd";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
-import { authenticatedAxiosInstance } from "../../utils/network";
+import {
+  authenticatedAxiosInstance,
+  MINIMUM_TRANSACTION_FEE,
+  TRANSACTION_FEE_PERCENTAGE,
+} from "../../utils/network";
 import { AccountType } from "../../reduxSlices/identitySlice";
 import { fetchBalance } from "../../reduxSlices/balanceSlice";
 import { genericErrorModal } from "../../components/error/genericErrorModal";
@@ -20,6 +23,12 @@ const WithdrawConfirmationModal = ({
   const identity = useAppSelector((state) => state.identity);
   const balance = useAppSelector((state) => state.balance);
   const [amount, setAmount] = useState("0");
+  const totalAmountWithdrawn =
+    Number(amount) +
+    Math.max(
+      MINIMUM_TRANSACTION_FEE,
+      Number(amount) * TRANSACTION_FEE_PERCENTAGE
+    );
   const availableBalance = balance?.balance
     ? balance.balance - (balance?.lockup_balance || 0)
     : 0;
@@ -27,10 +36,9 @@ const WithdrawConfirmationModal = ({
     !!amount &&
     !!identity &&
     amount !== "0" &&
-    Number(amount) < availableBalance;
-  const handleAmountInputChanged = (event: ChangeEvent<HTMLInputElement>) => {
-    event.preventDefault();
-    setAmount(event.target.value);
+    totalAmountWithdrawn < availableBalance;
+  const handleAmountInputChanged = (value: string) => {
+    setAmount(value);
   };
   const dispatch = useAppDispatch();
   useEffect(() => {
@@ -80,6 +88,15 @@ const WithdrawConfirmationModal = ({
       >
         Current Balance: {balance?.balance || 0}
       </Text>
+      <Text
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          margin: "20px 0px",
+        }}
+      >
+        Total funds to be withdrawn: {totalAmountWithdrawn}
+      </Text>
 
       <Text
         style={{
@@ -88,13 +105,19 @@ const WithdrawConfirmationModal = ({
           margin: "20px 0px",
         }}
       >
-        A total of max(0.01, {amount}) will be deducted from your balance.
+        {totalAmountWithdrawn < 0.51
+          ? `Note: A minimum transaction fee of ${MINIMUM_TRANSACTION_FEE} will be added.`
+          : `Note: A transaction fee percentage of ${
+              TRANSACTION_FEE_PERCENTAGE * 100
+            }% will be applied.`}
       </Text>
-      <input
+      <InputNumber
+        style={{ width: 200 }}
+        stringMode
         value={amount}
         onChange={handleAmountInputChanged}
         type="number"
-        min={0}
+        min={"0"}
         placeholder="Amount of tokens to withdraw"
       />
     </Modal>

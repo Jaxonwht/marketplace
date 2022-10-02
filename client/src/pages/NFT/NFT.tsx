@@ -13,6 +13,7 @@ import { selectAllNonClosedDealInfoList } from "../../selectors/dealInfo";
 import DealLinkWithIcon from "../../components/links/DealLinkWithIcon";
 import { fetchMultipleAssetPrices } from "../../reduxSlices/assetPriceSlice";
 import { goerliScanLink } from "../../utils/link";
+import { shortenAddress } from "../../utils/address";
 
 interface DataType {
   key: number;
@@ -76,7 +77,8 @@ const NFT = () => {
       title: "Dealer",
       dataIndex: "dealerAddress",
       key: "dealerAddress",
-      render: (dealerAddress: string) => goerliScanLink(dealerAddress),
+      render: (dealerAddress: string) =>
+        goerliScanLink(dealerAddress, shortenAddress(dealerAddress)),
     },
     {
       title: "Share Price",

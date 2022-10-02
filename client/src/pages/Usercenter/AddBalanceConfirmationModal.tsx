@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
-import type { ChangeEvent } from "react";
-import styles from "./style.module.scss";
-import { Modal, Typography } from "antd";
+import { InputNumber, Modal, Typography } from "antd";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { ERC_20_ABI, GOERLI_USDC, PLATFORM_ADDRESS } from "../../utils/network";
 import { handleSendTransaction } from "../../utils/sendTokens";
@@ -24,9 +22,8 @@ const AddBalanceConfirmationModal = ({
   const [amount, setAmount] = useState("0");
   const readyToSend =
     !!amount && !!identity && amount !== "0" && Number(amount) > 0;
-  const handleAmountInputChanged = (event: ChangeEvent<HTMLInputElement>) => {
-    event.preventDefault();
-    setAmount(event.target.value);
+  const handleAmountInputChanged = (value: string) => {
+    setAmount(value);
   };
   const dispatch = useAppDispatch();
   useEffect(() => {
@@ -67,20 +64,22 @@ const AddBalanceConfirmationModal = ({
         setIsModalVisible(false);
       }}
     >
-      <div
+      <Text
         style={{
           display: "flex",
           justifyContent: "space-between",
           margin: "20px 0px",
         }}
       >
-        <Text>Current Balance: {balance?.balance || 0}</Text>
-      </div>
-      <input
+        Current Balance: {balance?.balance || 0}
+      </Text>
+      <InputNumber
+        style={{ width: 200 }}
+        stringMode
         value={amount}
         onChange={handleAmountInputChanged}
         type="number"
-        min={0}
+        min={"0"}
         placeholder="Amount of tokens to add"
       />
     </Modal>
