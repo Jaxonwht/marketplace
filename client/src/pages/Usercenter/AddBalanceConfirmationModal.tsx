@@ -22,8 +22,8 @@ const AddBalanceConfirmationModal = ({
   const [amount, setAmount] = useState("0");
   const readyToSend =
     !!amount && !!identity && amount !== "0" && Number(amount) > 0;
-  const handleAmountInputChanged = (value: string) => {
-    setAmount(value);
+  const handleAmountInputChanged = (value: string | null) => {
+    setAmount(value ? value : "");
   };
   const dispatch = useAppDispatch();
   useEffect(() => {

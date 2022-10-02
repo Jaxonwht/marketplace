@@ -37,8 +37,8 @@ const WithdrawConfirmationModal = ({
     !!identity &&
     amount !== "0" &&
     totalAmountWithdrawn < availableBalance;
-  const handleAmountInputChanged = (value: string) => {
-    setAmount(value);
+  const handleAmountInputChanged = (value: string | null) => {
+    setAmount(value ? value : "");
   };
   const dispatch = useAppDispatch();
   useEffect(() => {
