@@ -20,6 +20,7 @@ import DealLinkWithIcon from "../../components/links/DealLinkWithIcon";
 import { promptSignIn } from "../../components/error/promptSignIn";
 import { fetchMultipleAssetPrices } from "../../reduxSlices/assetPriceSlice";
 import { shortenAddress } from "../../utils/address";
+import { callAndSetInterval } from "../../utils/interval";
 
 interface DataType {
   key: number;
@@ -47,16 +48,16 @@ const UserCenter = () => {
   const navigate = useNavigate();
   useEffect(() => {
     if (!!identity) {
-      const refreshOwnershipSummary = () =>
-        dispatch(
-          fetchOwnershipSummary(
-            identity.username,
-            identity.account_type === AccountType.DEALER
-          )
-        );
-      refreshOwnershipSummary();
-      const id = setInterval(refreshOwnershipSummary, ACCOUNT_INFO_REFRESH_MS);
-      return () => clearInterval(id);
+      return callAndSetInterval(
+        () =>
+          dispatch(
+            fetchOwnershipSummary(
+              identity.username,
+              identity.account_type === AccountType.DEALER
+            )
+          ),
+        ACCOUNT_INFO_REFRESH_MS
+      );
     } else {
       const timeoutId = setTimeout(
         () => promptSignIn(3, () => navigate("/home")),
@@ -91,7 +92,7 @@ const UserCenter = () => {
 
   useEffect(() => {
     if (!!identity) {
-      const intervalId = setInterval(
+      return callAndSetInterval(
         () =>
           dispatch(
             fetchBalance(
@@ -101,7 +102,6 @@ const UserCenter = () => {
           ),
         ACCOUNT_INFO_REFRESH_MS
       );
-      return () => clearInterval(intervalId);
     }
   }, [dispatch, identity]);
 
