@@ -31,6 +31,7 @@ import { fetchOneAssetPrice } from "../../reduxSlices/assetPriceSlice";
 import { selectAssetPriceForDeal } from "../../selectors/assetPrice";
 import moment from "moment";
 import { FullscreenOutlined } from "@ant-design/icons";
+import { callAndSetInterval } from "../../utils/interval";
 
 interface DataType {
   key: number;
@@ -66,21 +67,19 @@ const NFTDetail = () => {
   useEffect(() => {
     if (dealSerialId !== undefined) {
       if (!!identity) {
-        const refreshProfitInfo = () =>
-          dispatch(fetchProfitDetail(identity.username, dealSerialId));
-        refreshProfitInfo();
-        const id = setInterval(refreshProfitInfo, PROFIT_INFO_REFRESH_MS);
-        return () => clearInterval(id);
+        return callAndSetInterval(
+          () => dispatch(fetchProfitDetail(identity.username, dealSerialId)),
+          PROFIT_INFO_REFRESH_MS
+        );
       }
     }
   }, [dispatch, dealSerialId, identity]);
   useEffect(() => {
     if (dealSerialId !== undefined) {
-      const intervalId = setInterval(
+      return callAndSetInterval(
         () => dispatch(fetchDealInfoForOneDeal(dealSerialId)),
         DEAL_INFO_REFRESH_MS
       );
-      return () => clearInterval(intervalId);
     }
   }, [dispatch, dealSerialId]);
   const profitDetail = useAppSelector((state) => state.profitDetail);

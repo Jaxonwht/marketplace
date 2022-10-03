@@ -14,6 +14,7 @@ import DealLinkWithIcon from "../../components/links/DealLinkWithIcon";
 import { fetchMultipleAssetPrices } from "../../reduxSlices/assetPriceSlice";
 import { goerliScanLink } from "../../utils/link";
 import { shortenAddress } from "../../utils/address";
+import { callAndSetInterval } from "../../utils/interval";
 
 interface DataType {
   key: number;
@@ -98,11 +99,10 @@ const NFT = () => {
   ];
 
   useEffect(() => {
-    const intervalId = setInterval(
+    return callAndSetInterval(
       () => dispatch(fetchAllDealInfo),
       FETCH_ALL_DEAL_INFO_PERIOD_MS
     );
-    return () => clearInterval(intervalId);
   }, [dispatch]);
 
   return (
