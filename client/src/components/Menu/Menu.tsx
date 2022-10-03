@@ -1,15 +1,13 @@
 // components/layout.js
 import React, { useState } from "react";
 import styles from "./index.module.css";
-import { clear, getUser } from "../../utils/storage";
 import menus from "../../config/menus";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Typography } from "antd";
 import intl from "react-intl-universal";
 
 export default function Layout(props: any) {
   const navigate = useNavigate();
-  const user = getUser();
   const [selectMenu, setSelectMenu] = useState(menus[0]);
   const { Text } = Typography;
 

@@ -1,10 +1,9 @@
 // components/layout.js
 import React, { useEffect, useState } from "react";
 import styles from "./index.module.scss";
-import { getUser } from "../../utils/storage";
 import MyMenu from "../Menu/Menu";
 import { Link, useNavigate } from "react-router-dom";
-import { AutoComplete, Typography, Input } from "antd";
+import { Typography } from "antd";
 import { isMobile } from "../../utils/utils";
 import { MenuOutlined } from "@ant-design/icons";
 import CryptoSignIn from "../../components/metamask/CryptoSignIn";
@@ -24,8 +23,6 @@ const Navbar = () => {
   const dispatch = useAppDispatch();
   const theme = useAppSelector((state) => state.theme);
   const identity = useAppSelector((state) => state.identity);
-
-  const user = getUser();
 
   useEffect(() => {
     window.onscroll = function () {

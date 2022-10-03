@@ -1,7 +1,7 @@
 // components/layout.js
 import React, { useEffect } from "react";
 import styles from "./style.module.css";
-import { clear, getUser } from "../../utils/storage";
+import { getUser } from "../../utils/storage";
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import Navbar from "../Navbar/Navbar";
 import Footer from "../Footer/Footer";
