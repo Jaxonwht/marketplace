@@ -24,7 +24,7 @@ def post_buy_transaction():
         abort(400, "Not a valid JSON body")
     buyer_name = get_not_none(request_body_json, "buyer_name")
     deal_serial_id = get_not_none(request_body_json, "deal_serial_id")
-    shares = get_not_none(request_body_json, "shares")
+    shares = int(get_not_none(request_body_json, "shares"))
     if shares <= 0:
         abort(400, "Number of shares to buy must be a positive integer")
     created_transaction = buy_shares(buyer_name, deal_serial_id, shares)
