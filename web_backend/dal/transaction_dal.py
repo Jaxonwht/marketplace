@@ -24,8 +24,6 @@ def buy_shares(buyer_name: str, deal_serial_id: int, shares: int) -> Transaction
         abort(409, f"Deal {deal_serial_id} has ended at {deal.end_time}")
     if deal.shares_remaining < shares:
         abort(409, f"Deal {deal_serial_id} only has {deal.shares_remaining} shares left")
-    if shares == 0:
-        abort(409, "Shares must be > 0")
     buyer = flask_session.get(Buyer, buyer_name, with_for_update={"key_share": True})
     if buyer is None:
         abort(404, f"Can't find buyer {buyer_name}")
